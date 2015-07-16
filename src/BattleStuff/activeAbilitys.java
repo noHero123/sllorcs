@@ -1,0 +1,25 @@
+package BattleStuff;
+
+public enum activeAbilitys{
+Move,
+SummonWolf,
+SacrificeAttack,
+TribalMemorialAbility,
+DrawScrollAbility,
+GrowthRegenerateAbility,
+ToolInitiate,
+SacrificeSelf,
+CursemongerAbility,
+EnergyCountdownAbility,
+Flying,
+MysticAltar,
+Stitcher,
+FulminationConduit,
+MarksmanAttack,
+DrawEnchantment,
+BannerOfOrdinance,
+WingsSorceress,
+Uhu,
+SnarglOmelette,
+WindupAutomaton,
+}
