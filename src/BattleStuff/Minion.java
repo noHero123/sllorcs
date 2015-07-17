@@ -9,6 +9,7 @@ public class Minion {
 	public Kind cardType = Kind.NONE;
 	public long cardID = -1;
 	public int typeId = 0;
+	public ArrayList<subType> subtypes = new ArrayList<subType>();
 	
 	public int Ap = 0;
 	public int Hp =0;
@@ -56,6 +57,8 @@ public class Minion {
 	public boolean deadTriggersDone=false;
 	public int currentAttackPlus = 0; // for kinfolk jarl 
 	public int turnsInplay=0;
+	public int aoeDmgToDo=0;
+	public boolean imuneToNextDmg=false;
 	
 	public int getAc()
 	{
@@ -75,8 +78,8 @@ public class Minion {
 	
 	public Minion(Card c, long cid, Color playercol)
 	{
-		this.cardID = cid;
 		this.card = c;
+		this.cardID = cid;
 		this.Ap = c.ap;
 		this.Hp = c.hp;
 		this.Ac = c.ac;
@@ -88,7 +91,28 @@ public class Minion {
 		
 		this.cardType = c.cardKind;
 		this.typeId = c.typeId;
+		this.buffName="";
+		this.buffDescription="";
+		this.bufftype="";
+		this.attackType = c.getAttackType();
+		this.subtypes.clear();
+		for(subType s : c.subtypes)
+		{
+			this.subtypes.add(s);
+		}
+		
+		
 	}
+	
+	public Minion getMinionToken()
+	{
+		Minion temp = new Minion(this.card, -1, this.position.color);
+
+		temp.isToken =true;
+		
+		return temp;
+	}
+	
 	
 	public Minion(int maxHP, Color col, int pos)
 	{
@@ -106,7 +130,9 @@ public class Minion {
 		this.buffName = name;
 		this.buffDescription = description;
 		this.card = c;
+		this.typeId = c.typeId;
 		this.position.color = ownercolor;
+		this.isToken=true;
 	}
 	
 	/*public String getStatusUpdate()
@@ -321,5 +347,21 @@ public class Minion {
 			}
 		}
 	}
+	
+	public boolean hasPotionOfResistance(Board b)
+	{
+		if(this.card.cardSim.reduceDmgToOne(b, this)) return true; //waking stone
+		for(Minion e : this.attachedCards)
+		{
+			if(e.card.cardSim.reduceDmgToOne(b, e)) 
+			{
+				return true;
+			}
+
+		}
+		
+		return false;
+	}
+	
 	
 }

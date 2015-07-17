@@ -8,7 +8,7 @@ import BattleStuff.subType;
 public class VitalityWell_Sim extends Simtemplate {
 	//"id":63,"name":"Vitality Well","description":"When Vitality Well's Countdown becomes 0, units you control are [healed] by 1."
 	
-	public  boolean doesAttack()
+	public  boolean doesAttack(Board b, Minion m)
     {
         return false;
     }

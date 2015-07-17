@@ -10,7 +10,7 @@ public class Junkyard_Sim extends Simtemplate {
     {
 		for(Minion m : b.getPlayerFieldList(own.position.color))
 		{
-			if(m.card.subtypes.contains(subType.Rat))
+			if(m.subtypes.contains(subType.Rat))
 			{
 				m.buffMinion(1, 1, 0, b);
 			}
@@ -22,7 +22,7 @@ public class Junkyard_Sim extends Simtemplate {
     {
 		if(summonedMinion.position.color != triggerEffectMinion.position.color) return; //only buff opp. minions
 		
-		if(summonedMinion.card.subtypes.contains(subType.Rat))
+		if(summonedMinion.subtypes.contains(subType.Rat))
 		{
 			summonedMinion.buffMinion(1, 1, 0, b);
 		}
@@ -33,7 +33,7 @@ public class Junkyard_Sim extends Simtemplate {
     {
 		for(Minion m : b.getPlayerFieldList(auraendminion.position.color))
 		{
-			if(m.card.subtypes.contains(subType.Rat))
+			if(m.subtypes.contains(subType.Rat))
 			{
 				m.buffMinion(-1, -1, 0, b);
 			}

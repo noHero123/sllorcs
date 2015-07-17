@@ -12,8 +12,8 @@ import BattleStuff.Position;
 import BattleStuff.subType;
 import BattleStuff.tileSelector;
 
-public class FrostGale_Sim extends Simtemplate {
-	//"id":84,"name":"Frost Gale","description":"Deal 1 [magic damage] to all units."
+public class Quake_Sim extends Simtemplate {
+	//"id":34,"name":"Quake","description":"Deal 3 [magic damage] to all structures and 2 [magic damage] to all creatures."
 	
 	
 	public tileSelector getTileSelectorForFirstSelection()
@@ -26,8 +26,13 @@ public class FrostGale_Sim extends Simtemplate {
 		
 		//draw creature scroll
 		ArrayList<Minion> all = new ArrayList<Minion>(b.getAllMinionOfField());
+		for(Minion m : all)
+		{
+			if(m.cardType == Kind.CREATURE) m.aoeDmgToDo = 2;
+			if(m.cardType == Kind.STRUCTURE) m.aoeDmgToDo = 3;
+		}
 		
-		b.doDmg(all, playedCard, 1, AttackType.UNDEFINED, DamageType.MAGICAL);
+		b.doDmg(all, playedCard, -100, AttackType.UNDEFINED, DamageType.MAGICAL);//dmg=-100 => aoedmg :D
 		
         return;
     }

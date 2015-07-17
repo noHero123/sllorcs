@@ -10,6 +10,8 @@ public enum tileSelector {//used for getting tiles for cardinfo-msg
 	all_creatures, //target all creatures
 	all_structures, // all structures
 	all_free, // all free tiles
+	all_lobbers_or_ranged_units,
+	all_melees, 
 	
 	opp_all,
 	opp_units, 

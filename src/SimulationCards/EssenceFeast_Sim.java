@@ -28,7 +28,7 @@ public class EssenceFeast_Sim extends Simtemplate {
 		
 		for(Minion m : b.getPlayerFieldList(playedCard.position.color))
 		{
-			if(m.getAc()>=0 && m.card.subtypes.contains(subType.Beast))
+			if(m.getAc()>=0 && m.subtypes.contains(subType.Beast))
 			{
 				m.buffMinionWithoutMessage(2, 0, 0, b);
 				m.addnewEnchantments("BUFF", "Essence Feast", playedCard.card.cardDescription, playedCard.card, b, playedCard.position.color);
@@ -41,7 +41,7 @@ public class EssenceFeast_Sim extends Simtemplate {
 		for(int i=0; i<deck.size(); i++)
 		{
 			Minion m= deck.get(i);
-			if(m.card.subtypes.contains(subType.Beast))
+			if(m.subtypes.contains(subType.Beast))
 			{
 				found=true;
 				b.currentHand.add(m);
@@ -59,7 +59,7 @@ public class EssenceFeast_Sim extends Simtemplate {
 			for(int i=0; i<deck.size(); i++)
 			{
 				Minion m= deck.get(i);
-				if(m.card.subtypes.contains(subType.Beast))
+				if(m.subtypes.contains(subType.Beast))
 				{	
 					found=true;
 					b.currentHand.add(m);
@@ -83,7 +83,7 @@ public class EssenceFeast_Sim extends Simtemplate {
 	public Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, Color turnEndColor)
     {
 
-		/*if(triggerEffectMinion.owner.Ac>=0 && triggerEffectMinion.owner.card.subtypes.contains(subType.Beast))
+		/*if(triggerEffectMinion.owner.Ac>=0 && triggerEffectMinion.owner.subtypes.contains(subType.Beast))
 		{
 			triggerEffectMinion.owner.buffMinionWithoutMessage(-2, 0, 0, b);
 		}*/

@@ -6,29 +6,29 @@ import BattleStuff.AttackType;
 import BattleStuff.Board;
 import BattleStuff.Color;
 import BattleStuff.DamageType;
-import BattleStuff.Kind;
 import BattleStuff.Minion;
 import BattleStuff.Position;
-import BattleStuff.subType;
 import BattleStuff.tileSelector;
 
-public class FrostGale_Sim extends Simtemplate {
-	//"id":84,"name":"Frost Gale","description":"Deal 1 [magic damage] to all units."
+public class Burn_Sim extends Simtemplate
+{
 	
-	
+	//"id":27,"name":"Burn","description":"Deal 3 [magic damage] to target unit. If that unit is destroyed, draw 1 scroll."
 	public tileSelector getTileSelectorForFirstSelection()
 	{
-		return tileSelector.None;
+		return tileSelector.all_units;
 	}
 	
 	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
     {
+		Minion target = b.getMinionOnPosition(targets.get(0));
 		
-		//draw creature scroll
-		ArrayList<Minion> all = new ArrayList<Minion>(b.getAllMinionOfField());
-		
-		b.doDmg(all, playedCard, 1, AttackType.UNDEFINED, DamageType.MAGICAL);
-		
+		b.doDmg(target, playedCard, 3, AttackType.UNDEFINED, DamageType.MAGICAL);
+		if(target.Hp<=0)
+		{
+			b.drawCards(playedCard.position.color, 1);
+		}
+        
         return;
     }
 	

@@ -10,7 +10,7 @@ public class MangyWolf_Sim extends Simtemplate {
     {
 		for(Minion m : b.getPlayerFieldList(own.position.color))
 		{
-			if(m.card.subtypes.contains(subType.Wolf))
+			if(m.subtypes.contains(subType.Wolf))
 			{
 				m.buffMinion(0, 0, -1, b);
 			}

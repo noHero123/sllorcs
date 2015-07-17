@@ -42,6 +42,73 @@ public class ActiveAbility {
 		this.costSpecial =s;
 	}
 	
+	public void payEnergy(Board b, Minion m)
+	{
+		int summe= this.costGrowth+this.costOrder+this.costEnergy+this.costDecay+this.costSpecial;
+		if(summe==0)return;
+		
+		//better:
+		int[] curE = b.whitecurrentRessources;
+		if(m.position.color == Color.black) 
+		{
+			curE = b.blackcurrentRessources;
+		}
+		curE[0] -= this.costGrowth;
+		curE[1] -= this.costOrder;
+		curE[2] -= this.costEnergy;
+		curE[3] -= this.costDecay;
+		curE[4] -= this.costSpecial;
+		
+		b.addMessageToBothPlayers(b.getResourcesUpdateMessage());
+		return;
+	}
+	
+	public Boolean hasEnoughRessis(Board b, Minion m)
+	{
+		Boolean isp = true;
+		
+		//better:
+		int[] curE = b.whitecurrentRessources;
+		if(m.position.color == Color.black) 
+		{
+			curE = b.blackcurrentRessources;
+		}
+		if(curE[0] < this.costGrowth) isp=false;
+		if(curE[1] < this.costOrder) isp=false;
+		if(curE[2] < this.costEnergy) isp=false;
+		if(curE[3] < this.costDecay) isp=false;
+		if(curE[4] < this.costSpecial) isp=false;
+		
+		return isp;
+		//old
+		/*
+		isp = false;
+		
+		if(this.id == activeAbilitys.Move)
+		{
+			return true;
+		}
+		if(this.id == activeAbilitys.SummonWolf)
+		{
+			return true;
+		}
+		
+		if(this.id == activeAbilitys.TribalMemorialAbility)
+		{
+			//pay 2 energy
+			int[] curE = b.whitecurrentRessources;
+			if(m.position.color == Color.black) 
+			{
+				curE = b.blackcurrentRessources;
+			}
+			if(curE[2] >= 2) return true;
+			
+			return false;
+		}
+		*/
+		//return isp;
+	}
+	
 	
 	public Boolean isPlayAble(Board b, Minion m, ArrayList<Position> poses)
 	{
@@ -55,25 +122,19 @@ public class ActiveAbility {
 			if(m.getAc() == 0 && poses.size()>=1) return true;
 			return false;
 		}
-		
-		return isp;
-	}
-	
-	public Boolean hasEnoughRessis(Board b, Minion m)
-	{
-		Boolean isp = false;
-		if(this.id == activeAbilitys.Move)
+		if(this.id == activeAbilitys.TribalMemorialAbility)//TODO or return false if energy is to low?
 		{
 			return true;
 		}
-		if(this.id == activeAbilitys.SummonWolf)
+		if(this.id == activeAbilitys.ToolInitiate)
 		{
-			return true;
+			if(m.getAc() == 0 && poses.size()>=1) return true;
+			return false;
 		}
-		
 		return isp;
 	}
 	
+
 	public Boolean needPosition(Board b, Minion m)
 	{
 		if(this.id == activeAbilitys.Move)
@@ -81,6 +142,14 @@ public class ActiveAbility {
 			return true;
 		}
 		if(this.id == activeAbilitys.SummonWolf)
+		{
+			return true;
+		}
+		if(this.id == activeAbilitys.TribalMemorialAbility)
+		{
+			return false;
+		}
+		if(this.id == activeAbilitys.ToolInitiate)
 		{
 			return true;
 		}
@@ -116,6 +185,24 @@ public class ActiveAbility {
 				}
 				
 				if(isEmpty) isp.add(pp);
+			}
+			return isp;
+		}
+		
+		if(this.id == activeAbilitys.TribalMemorialAbility)
+		{
+			return isp;
+		}
+		
+		if(this.id == activeAbilitys.ToolInitiate)
+		{
+			ArrayList<Minion> mins = b.getPlayerFieldList(m.position.color);
+			for(Minion pp : mins)
+			{
+				if(pp.cardType == Kind.STRUCTURE && pp.maxAc>=1)
+				{
+					isp.add(new Position(pp.position));
+				}
 			}
 			return isp;
 		}

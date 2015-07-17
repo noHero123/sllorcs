@@ -38,6 +38,15 @@ public class Card {
 	public Simtemplate cardSim = new Simtemplate();
 	
 	
+	public AttackType getAttackType()
+	{
+		for(String s : this.passiveAbilitys)
+		{
+			if(s.equals("Ranged attack")) return AttackType.RANGED;
+			if(s.startsWith("Lobber")) return AttackType.BALLISTIC;
+		}
+		return AttackType.MELEE;
+	}
 	
 	
 }

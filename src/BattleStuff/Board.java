@@ -427,6 +427,11 @@ public class Board {
 			temphand.add(c);
 			//System.out.println(c.cardType);
 		}
+		String s="";
+		s=this.getHandUpdateMessage(col);
+		this.addMessageToPlayer(col, s);
+		s= this.getCardStackUpdate(col);
+		this.addMessageToBothPlayers(s);
 		
 	}
 	
@@ -444,6 +449,8 @@ public class Board {
 		this.activePlayerColor= Color.white;
 		drawCards(Color.white, 4);
 		drawCards(Color.black, 5);
+		this.messagesToWhite.clear();
+		this.messagesToBlack.clear();
 	}
 	
 	public String getPlayerColor(String playername)
@@ -693,7 +700,7 @@ public class Board {
 		drawCards(this.activePlayerColor, n);
 		
 		this.addMulliganDisabledMessage();
-		this.addMessageToPlayer(this.activePlayerColor, this.getHandUpdateMessage(this.activePlayerColor));
+		//this.addMessageToPlayer(this.activePlayerColor, this.getHandUpdateMessage(this.activePlayerColor));
 		
 		this.sendEffectMessagesToPlayers();
 	}
@@ -922,26 +929,43 @@ public class Board {
 	public void unitAttackStarting(Minion m, Minion[][] defffield)
 	{
 		String s ="";
-		if(m.card.cardSim.hasSpecialAttack())
+		
+		ArrayList<Minion> temp = new ArrayList<Minion>(m.attachedCards);
+		for(Minion e : temp)
+		{
+			e.card.cardSim.onUnitIsGoingToAttack(this, e, m);//TODO bunnys do it after attack done! but concentrate fire not! (maybe we add two types?)
+		}
+		
+		if(m.Hp<=0) return; // no attack if died
+		
+		if(m.card.cardSim.hasSpecialAttack()) //ether pump does this for example
 		{
 			//{"UnitPlayAnimation":{"tile":{"color":"white","position":"2,1"},"animation":"ACTION"}},
 			s= "{\"UnitPlayAnimation\":{\"tile\":"+m.position.posToString()+",\"animation\":\"ACTION\"}}";
 			this.addMessageToBothPlayers(s);
-			
 			m.card.cardSim.doSpecialAttack(this, m);
-			
-			s = getUnitAttackDoneMessage(m);
-			this.addMessageToBothPlayers(s);
-			return;
+		}
+		else
+		{
+			unitAttacking(m, defffield, m.Ap, m.attackType, DamageType.COMBAT);
+		}
+		//unit is ready
+		
+		temp = new ArrayList<Minion>(m.attachedCards);
+		for(Minion e : temp)
+		{
+			if(e.typeId == 149) e.card.cardSim.onAttackDone(this, m, e);//only concentrate fire
 		}
 		
-		unitAttacking(m, defffield, m.Ap, m.attackType, DamageType.COMBAT);
-		
-		//unit is ready
 		s = getUnitAttackDoneMessage(m);
 		this.addMessageToBothPlayers(s);
-		m.card.cardSim.onAttackDone(this,m);
 		
+		m.card.cardSim.onAttackDone(this,m, m);//bunnys do it after attack done! but concentrate fire not! (maybe we add two types?)
+		for(Minion e : temp)
+		{
+			if(e.typeId != 149) e.card.cardSim.onAttackDone(this, m, e);//for magmapack and stuff
+		}
+		//todo other minions call on Attack Done?
 	}
 	
 	
@@ -965,7 +989,7 @@ public class Board {
 		int relentlessAttackvalue = 0;
 		boolean idol=false;
 		
-		if(m.card.cardSim.doesAttack())
+		if(m.card.cardSim.doesAttack(this, m))
 		{
 			if(m.card.trgtArea == targetArea.RADIUS_4)
 			{
@@ -994,12 +1018,19 @@ public class Board {
 			
 			if(idol) relentlessAttackvalue=0;
 			
-			if(m.isRelentless && relentlessAttackvalue >=1 && m.Hp>=1 )
+			boolean relentless = m.isRelentless || m.card.cardSim.isRelentless(this, m);
+			for(Minion e: m.attachedCards)
+			{
+				relentless = relentless || e.card.cardSim.isRelentless(this, e);
+			}
+			
+			if(relentless && relentlessAttackvalue >=1 && m.Hp>=1 )
 			{
 				unitAttacking(m, defffield, relentlessAttackvalue, attt, dmgt);
 			}
 			
 		}
+
 		
 		return ;
 	}
@@ -1084,6 +1115,7 @@ public class Board {
 		
 		for(Minion m: this.getAllMinionOfField())
 		{
+			if(m.Hp<=0) continue;
 			m.movesThisTurn = 0;
 			m.card.cardSim.onTurnStartTrigger(this, m, this.activePlayerColor);
 			//tested: scrolls is doing this the same way:
@@ -1111,6 +1143,7 @@ public class Board {
 		
 		for(Minion m: this.getAllMinionOfField())
 		{
+			if(m.Hp<=0) continue;
 			m.card.cardSim.onTurnEndsTrigger(this, m, this.activePlayerColor);
 			//delete turn-buffs and stuff
 			m.turnEndingDebuffing(this);
@@ -1217,15 +1250,15 @@ public class Board {
 				
 				String s = this.getResourcesUpdateMessage();
 				this.addMessageToBothPlayers(s);
-
+				//this.addMessageToPlayer(this.activePlayerColor, this.getHandUpdateMessage(this.activePlayerColor));
 				
 				//send handupdate to the active player
 				
-				this.addMessageToPlayer(this.activePlayerColor, this.getHandUpdateMessage(this.activePlayerColor));
+				
 				
 				//send cardstackupdates
-				s = getCardStackUpdate(this.activePlayerColor);
-				this.addMessageToBothPlayers(s);
+				//s = getCardStackUpdate(this.activePlayerColor);
+				//this.addMessageToBothPlayers(s);
 				
 				//send effect Messages!
 				
@@ -1459,7 +1492,7 @@ public class Board {
 		
 		this.doDeathRattles();
 		
-		s=this.getCardStackUpdate(this.activePlayerColor);
+		s=this.getCardStackUpdate(this.activePlayerColor);//TODO we may can delete this, if the last message on both stacks is a cardstack update?
 		this.addMessageToBothPlayers(s);
 		
 		this.addMulliganDisabledMessage();
@@ -1854,6 +1887,50 @@ public class Board {
 			return ret;
 		}
 		
+		if(ts == tileSelector.all_melees)
+		{
+			for(int i=0; i<5; i++)
+			{
+				for(int j=0; j<3; j++)
+				{
+					Minion m = this.whiteField[i][j];
+					if(m!=null && m.attackType == AttackType.MELEE )
+					{
+						ret.add(new Position(Color.white, i, j));
+					}
+					
+					m = this.blackField[i][j];
+					if(m!=null && m.attackType == AttackType.MELEE )
+					{
+						ret.add(new Position(Color.black, i, j));
+					}
+				}
+			}
+			return ret;
+		}
+		
+		if(ts == tileSelector.all_lobbers_or_ranged_units)
+		{
+			for(int i=0; i<5; i++)
+			{
+				for(int j=0; j<3; j++)
+				{
+					Minion m = this.whiteField[i][j];
+					if(m!=null && (m.attackType == AttackType.RANGED || m.attackType == AttackType.BALLISTIC) )
+					{
+						ret.add(new Position(Color.white, i, j));
+					}
+					
+					m = this.blackField[i][j];
+					if(m!=null && (m.attackType == AttackType.RANGED || m.attackType == AttackType.BALLISTIC) )
+					{
+						ret.add(new Position(Color.black, i, j));
+					}
+				}
+			}
+			return ret;
+		}
+		
 		if(ts == tileSelector.all_units_with_ac)
 		{
 			for(int i=0; i<5; i++)
@@ -2224,13 +2301,7 @@ public class Board {
 		this.currentHand.remove(sacCard);
 		this.currentGrave.add(sacCard);
 		
-		if(ressource.equals("CARDS"))
-		{
-			//same message as sac for ressource, just draw 2 cards...
-			
-			this.drawCards(this.activePlayerColor, 2);
-			
-		}
+		
 		
 		String s = "{\"CardSacrificed\":{\"color\":\""+ Board.colorToString(p.color) +"\",\"resource\":\""+ ressource +"\"}}";
 		this.messagesToWhite.add(s);
@@ -2240,10 +2311,23 @@ public class Board {
 		this.messagesToWhite.add(s);
 		this.messagesToBlack.add(s);
 		
-		s=this.getHandUpdateMessage(this.activePlayerColor);
-		this.addMessageToPlayer(this.activePlayerColor, s);
+		if(ressource.equals("CARDS"))
+		{
+			//same message as sac for ressource, just draw 2 cards...
+			
+			this.drawCards(this.activePlayerColor, 2);
+			
+		}
+		else
+		{
+			s=this.getHandUpdateMessage(this.activePlayerColor);
+			this.addMessageToPlayer(this.activePlayerColor, s);
+			s= this.getCardStackUpdate(this.activePlayerColor);
+		}
 		
-		s= this.getCardStackUpdate(this.activePlayerColor);
+		
+		
+		
 		this.messagesToWhite.add(s);
 		this.messagesToBlack.add(s);
 
@@ -2606,7 +2690,7 @@ public class Board {
 		{
 			if(aa.id ==  va.id)
 			{
-				
+				va = aa;
 				ressis= aa.hasEnoughRessis(this, m);
 				pospositions.addAll(aa.getPositions(this, m));
 				playable = aa.isPlayAble(this, m, pospositions);
@@ -2655,12 +2739,17 @@ public class Board {
 			s = "{\"MoveUnit\":{\"from\":"+unitPos.posToString()+",\"to\":"+targ.posToString()+"}}";
 			this.addMessageToBothPlayers(s);
 			m.movesThisTurn++;
-			unitChangesPlace(unitPos, targ);
+			this.unitChangesPlace(unitPos, targ);
 		}
 		else
 		{
 			m.card.cardSim.onAbilityIsActivated(this, m, poses);
 		}
+		
+		//pay energy:
+		//dont do this earlier!
+		va.payEnergy(this, m);
+		
 		
 		//trigger onFieldChanged!
 		//doOnFieldChangedTriggers();
@@ -2668,20 +2757,36 @@ public class Board {
 		this.sendEffectMessagesToPlayers();
 	}
 	
-	//no switching, position from will be nulled, to overwritten
-	public void unitChangesPlace(Position from, Position to)
+	//with switching, minions change place
+	public void unitChangesPlace(Position ofrom, Position oto, Boolean doTrigger)
 	{
+		Position from  = new Position(ofrom);
+		Position to  = new Position(oto);
+		
 		Minion m = this.getPlayerField(from.color)[from.row][from.column];
 		if(m==null) return;//error?
+		
+		Minion otherm = this.getPlayerField(to.color)[to.row][to.column];
+		if(otherm!=null)
+		{
+			otherm.position.color = from.color;
+			otherm.position.row = from.row;
+			otherm.position.column = from.column;
+		}
 		
 		m.position.color = to.color;
 		m.position.row = to.row;
 		m.position.column = to.column;
 		
 		this.getPlayerField(to.color)[to.row][to.column] = m;
-		this.getPlayerField(from.color)[from.row][from.column] = null;
+		this.getPlayerField(from.color)[from.row][from.column] = otherm;
 		
-		doOnFieldChangedTriggers();
+		if(doTrigger)doOnFieldChangedTriggers();
+	}
+	
+	public void unitChangesPlace(Position from, Position to)
+	{
+		unitChangesPlace( from,  to, true);
 	}
 	
 	public void doOnFieldChangedTriggers()
@@ -2700,19 +2805,21 @@ public class Board {
 		public Minion attacker;
 		public Minion deffender;
 		public AttackType attackType;
+		public int dmgdone;
 		
-		public DmgRegisterUnit(Minion a, Minion d, AttackType att)
+		public DmgRegisterUnit(Minion a, Minion d, AttackType att, int dmgd)
 		{
 			this.attacker=a;
 			this.deffender =d;
 			this.attackType=att;
+			this.dmgdone = dmgd;
 		}
 	}
 	
 	private ArrayList<DmgRegisterUnit>dmgregister = new ArrayList<DmgRegisterUnit>();
 	
 	//dmg calculations + trigger of events#######################################################
-	
+	//if dmg == -100 use the minon.aoeDmgToDo value instead (and set it to zero)
 	public int doDmg(Minion target, Minion attacker, int dmg, AttackType attackType, DamageType damageType )
 	{
 		ArrayList<Minion> targs = new ArrayList<Minion>();
@@ -2729,7 +2836,7 @@ public class Board {
         {
         	DmgRegisterUnit pair = this.dmgregister.get(0);
             this.dmgregister.remove(0);
-            performDmgTriggers(pair.attacker, pair.deffender, pair.attackType);
+            performDmgTriggers(pair.attacker, pair.deffender, pair.attackType, pair.dmgdone);
         }
         
         
@@ -2796,6 +2903,11 @@ public class Board {
 			this.getPlayerField(m.position.color)[m.position.row][m.position.column]=null;
 		}
 		
+		if(m.cardType == Kind.ENCHANTMENT)//special deathrattle for enchantments!
+		{
+			m.card.cardSim.onDeathrattle(this, m);
+		}
+		
 		for(Minion mnn : m.attachedCards)
 		{
 			//say enchantment that owner died
@@ -2834,30 +2946,69 @@ public class Board {
 		
 	}
 	
-	private int performDmg(ArrayList<Minion> targets, Minion attacker, AttackType attackType, DamageType damageType, int dmg)
+	private int performDmg(ArrayList<Minion> targets, Minion attacker, AttackType attackType, DamageType damageType, int odmg)
 	{
 		int overAttack2 = 0;
+		int dmg = odmg;
 		for(Minion target : targets)
 		{
-			
+			if(odmg == -100) //aoe dmg :D
+			{
+				dmg = target.aoeDmgToDo;
+				target.aoeDmgToDo=0;
+			}
 			
 			int overAttack = 0;
 			int oldHP = target.Hp;
 			
 			int newHPDefender = oldHP;
-			if(damageType == DamageType.COMBAT)
+			if(damageType == DamageType.COMBAT || damageType == DamageType.PHYSICAL)
 			{
-					newHPDefender = Math.min(target.Hp , target.Hp + target.armor - target.curse - dmg); //defender is not healed if Armor > attack :D
+					int rdmg = target.curse + dmg;
+					if(rdmg >=1 && target.imuneToNextDmg) 
+					{
+						target.imuneToNextDmg=false;
+						rdmg = 0;
+					}
+					if(rdmg >=2 && target.hasPotionOfResistance(this)) rdmg = 1;
+					newHPDefender = Math.min(target.Hp , target.Hp + target.armor - rdmg); //defender is not healed if Armor > attack :D
 			}
 			
 			if(damageType == DamageType.MAGICAL)
 			{
-					newHPDefender = Math.min(target.Hp , target.Hp + target.magicRessi - dmg); //defender is not healed if Armor > attack :D
+					int rdmg = dmg;
+					if(rdmg >=1 && target.imuneToNextDmg) 
+					{
+						target.imuneToNextDmg=false;
+						rdmg = 0;
+					}
+					if(rdmg >=2 && target.hasPotionOfResistance(this)) rdmg = 1;
+					newHPDefender = Math.min(target.Hp , target.Hp + target.magicRessi - rdmg); //defender is not healed if Armor > attack :D
 			}
 			
 			if(damageType == DamageType.POISON)
 			{
-					newHPDefender = Math.min(target.Hp , target.Hp - target.curse - dmg); //defender is not healed if Armor > attack :D
+					int rdmg = target.curse + dmg;
+					if(rdmg >=1 && target.imuneToNextDmg) 
+					{
+						target.imuneToNextDmg=false;
+						rdmg = 0;
+					}
+					if(rdmg >=2 && target.hasPotionOfResistance(this)) rdmg = 1;
+					newHPDefender = Math.min(target.Hp , target.Hp - rdmg); //defender is not healed if Armor > attack :D
+			}
+			
+			if(damageType == DamageType.SUPERIOR)
+			{
+					int rdmg = dmg;
+					//TODO is pure dmg nilled by plating?
+					//if(target.hasPotionOfResistance()) rdmg = 1;//TODO is pure-dmg affected by potionOfResistance-effects?
+					newHPDefender = Math.min(target.Hp , target.Hp - rdmg); //defender is not healed if Armor > attack :D
+			}
+			
+			if(damageType == DamageType.TERMINAL)
+			{
+					newHPDefender = 0; //is killed
 			}
 			
 			if(newHPDefender<0) overAttack = Math.min(dmg, -newHPDefender);
@@ -2877,7 +3028,7 @@ public class Board {
 			
 			this.getDmgUnitMessage(attacker, target, dmgdone, realdmgDone, attackType, damageType, iskill);
 			
-			this.dmgregister.add(new DmgRegisterUnit(attacker, target, attackType));
+			this.dmgregister.add(new DmgRegisterUnit(attacker, target, attackType, dmgdone));
 			
 		}
 		
@@ -2910,7 +3061,7 @@ public class Board {
 	}
 	
 	
-	private void performDmgTriggers(Minion attacker, Minion deffender, AttackType attackType)
+	private void performDmgTriggers(Minion attacker, Minion deffender, AttackType attackType, int dmgdone)
     {
 
         int attackAP = attacker.Ap;
@@ -2919,7 +3070,8 @@ public class Board {
         int attackerAc = attacker.getAc();
 
         //register that the targets got dmg
-        deffender.numberOfDmgTaken++;
+        if(dmgdone>=1)deffender.numberOfDmgTaken++;
+        
         
         if (attackType == AttackType.MELEE)
         {
@@ -2981,24 +3133,29 @@ public class Board {
         }
 
 
+        /*
+         //not needed? (we also dont know the source of the dmg
         //perform unit got dmg triggers for attacker
-        if (attackHP >= 1)
+        if (attackHP >= 1 && attacker.numberOfDmgTaken >= 1)
         {
             for (Minion ench : attacker.attachedCards)
             {
                 
-            	ench.card.cardSim.onMinionGotDmgTrigger(this, attacker);
+            	ench.card.cardSim.onMinionGotDmgTrigger(this, attacker, deffender);
 
             }
         }
         attacker.numberOfDmgTaken=0;
-
+         */
+        
         //perform unit got dmg triggers for deffender
         if (defferHP >= 1)
         {
-            for (Minion ench : deffender.attachedCards)
+        	//enchantments could be deleted after triggering
+        	ArrayList<Minion> temp = new ArrayList<Minion> (deffender.attachedCards);
+            for (Minion ench : temp)
             {
-            	ench.card.cardSim.onMinionGotDmgTrigger(this, deffender);
+            	ench.card.cardSim.onMinionGotDmgTrigger(this, deffender, attacker, dmgdone);
             }
             
         }
@@ -3030,9 +3187,11 @@ public class Board {
         //do onattck unit deals dmg
         if (attackHP >= 1)
         {
-        	for (Minion ench : attacker.attachedCards)
+        	//enchantments could be deleted after triggering
+        	ArrayList<Minion> temp = new ArrayList<Minion> (attacker.attachedCards);
+        	for (Minion ench :temp)
         	{
-        		ench.card.cardSim.onMinionDidDmgTrigger(this, attacker);
+        		ench.card.cardSim.onMinionDidDmgTrigger(this, attacker, deffender);
             }
         }
         
