@@ -11,7 +11,7 @@ public class Minion {
 	public int typeId = 0;
 	public ArrayList<subType> subtypes = new ArrayList<subType>();
 	
-	public int Ap = 0;
+	private int Ap = 0;
 	public int Hp =0;
 	private int Ac =-1;//please dont change this :D
 	public int maxHP=0;
@@ -47,7 +47,7 @@ public class Minion {
 	
 	public int lingerDuration=-1;
 	
-	public ArrayList<Minion> attachedCards = new ArrayList<Minion>();
+	private ArrayList<Minion> attachedCards = new ArrayList<Minion>();
 	public Minion owner=null; //the unit/structure the enchantment where the enchantment is attached
 	
 	public boolean isIdol = false;
@@ -65,10 +65,25 @@ public class Minion {
 	public int frostbeardCounter=0;
 	public int ducalInfCounter=0;
 	public int royalInfCounter=0;
+	public int pillarCounter=0;
 	
 	public int getAc()
 	{
 		return this.Ac;
+	}
+	
+	public void setAttack(int a)
+	{
+		this.Ap = a;
+	}
+	
+	public int getAttack()
+	{
+		for(Minion m : this.attachedCards)
+		{
+			if(m.typeId == 198) return 0;
+		}
+		return Math.max(0, this.Ap);
 	}
 	
 	public void resetAc()
@@ -356,9 +371,22 @@ public class Minion {
 	
 	public void addnewPoison(Board b, Color owner)
 	{
+		//TODO add poison + course cardtypes!
 		
 		Card c = new Card();
+		c.typeId = 5; //5 is a free type!
 		this.addnewEnchantments("BUFF", "Poison", "Unit takes 1 damage at the beginning of owner's turn.", c, b, owner);
+	}
+	
+	public void addnewCurse(Board b, Color owner, int amountt)
+	{
+		int amount = amountt;
+		Card c = new Card();
+		if(amount >=4) amount = 3;
+		if(amount <=0) amount = 1;
+		c.typeId = 5+amount; //6, 7, 8 are free types!
+		this.addnewEnchantments("BUFF", "Curse " + amount, "Physical and poison damage dealt to this unit is increased by "+amount+".", c, b, owner);
+		this.curse+=amount;
 	}
 	
 	
@@ -413,25 +441,14 @@ public class Minion {
 		
 		
 		//remove poison
-		//in c# i would do it this way:
-		/*
-		ArrayList<Minion> attc = new ArrayList<Minion>(this.attachedCards);
-		for(Minion ench : attc)
+		ArrayList<Minion> temp = new ArrayList<Minion>(this.attachedCards);
+		for(Minion e : temp)
 		{
-			if(ench.buffName.equals("Poison"))
+			//100 = rangers bane!
+			if(e.typeId ==5 || e.typeId == 100)//we use the free typeid of 5 to mark poison (faster than string comparison)
 			{
-				this.attachedCards.remove(ench);
+				this.attachedCards.remove(e);
 			}
-		}*/
-		
-		//in java i do it this way :D
-		for (Iterator<Minion> iterator = this.attachedCards.iterator(); iterator.hasNext();) 
-		{
-			Minion string = iterator.next();
-		    if (string.buffName.equals("Poison")) 
-		    {
-		        iterator.remove();
-		    }
 		}
 		
 		//add heal message
@@ -447,16 +464,15 @@ public class Minion {
 	public void turnEndingDebuffing(Board b)
 	{
 		//no status update needed, its done witch AC countdown
-		for (Iterator<Minion> iterator = this.attachedCards.iterator(); iterator.hasNext();) 
+		ArrayList<Minion> temp = new ArrayList<Minion>(this.attachedCards);
+		for(Minion m : temp)
 		{
-			Minion attc = iterator.next();
-			if(attc.card.cardSim.onTurnEndsTrigger(b, attc, b.activePlayerColor))
+			if(m.card.cardSim.onTurnEndsTrigger(b, m, b.activePlayerColor))
 			{
-				iterator.remove();
-				
-				b.addMinionToGrave(attc);
+				this.removeEnchantment(m, false, b);
 			}
 		}
+		
 	}
 	
 	public boolean hasPotionOfResistance(Board b)
@@ -474,5 +490,27 @@ public class Minion {
 		return false;
 	}
 	
+	public void removeEnchantment(Minion e, boolean writeUpdateMessage, Board b)
+	{
+		this.attachedCards.remove(e);
+		//ArrayList<Minion> temp = new ArrayList<Minion>(this.attachedCards);
+		//for(Minion m:temp)
+		e.card.cardSim.onDeathrattle(b, e);
+		
+		if(e.cardID>=0) 
+		{
+			b.addMinionToGrave(e);
+		}
+		if(writeUpdateMessage) 
+		{
+			b.addMessageToBothPlayers(b.getStatusUpdateMessage(this));
+		}
+		e.owner=null;
+		
+	}
 	
+	public ArrayList<Minion> getAttachedCards()//we return a copy, so enchantments could be deleted!
+	{
+		return new ArrayList<Minion>(this.attachedCards);
+	}
 }

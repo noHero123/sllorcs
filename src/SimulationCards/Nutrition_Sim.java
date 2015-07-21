@@ -8,6 +8,7 @@ import BattleStuff.CardDB;
 import BattleStuff.Color;
 import BattleStuff.Minion;
 import BattleStuff.Position;
+import BattleStuff.ResourceName;
 import BattleStuff.subType;
 import BattleStuff.tileSelector;
 
@@ -25,17 +26,10 @@ public class Nutrition_Sim extends Simtemplate {
 		Minion target = b.getMinionOnPosition(targets.get(0));
 		b.destroyMinion(target, playedCard);
 		
-		int[] curress = b.whitecurrentRessources;
-		if(playedCard.position.color == Color.black)
-		{
-			curress= b.blackcurrentRessources;
-		}
-		curress[0]+=target.card.costGrowth;
-		curress[1]+=target.card.costOrder;
-		curress[2]+=target.card.costEnergy;
-		curress[3]+=target.card.costDecay;
-		//send ressourceupdates message
-		b.addMessageToBothPlayers(b.getResourcesUpdateMessage());
+		if(target.card.costGrowth >=0) b.changeCurrentRessource(ResourceName.GROWTH, playedCard.position.color, target.card.costGrowth);
+		if(target.card.costOrder >=0) b.changeCurrentRessource(ResourceName.ORDER, playedCard.position.color, target.card.costOrder);
+		if(target.card.costEnergy >=0) b.changeCurrentRessource(ResourceName.ENERGY, playedCard.position.color, target.card.costEnergy);
+		if(target.card.costDecay >=0) b.changeCurrentRessource(ResourceName.DECAY, playedCard.position.color, target.card.costDecay);
 		
         return;
     }

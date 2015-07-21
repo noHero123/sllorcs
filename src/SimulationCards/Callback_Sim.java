@@ -6,6 +6,7 @@ import BattleStuff.Board;
 import BattleStuff.Color;
 import BattleStuff.Minion;
 import BattleStuff.Position;
+import BattleStuff.ResourceName;
 import BattleStuff.tileSelector;
 
 public class Callback_Sim extends Simtemplate 
@@ -21,13 +22,9 @@ public class Callback_Sim extends Simtemplate
 	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
     {
 		//replenish
-		int[] cure = b.whitecurrentRessources;
-		if(playedCard.position.color == Color.black) cure = b.blackcurrentRessources;
 		Minion target = b.getMinionOnPosition(targets.get(0));
 		int x = target.card.costGrowth + target.card.costOrder + target.card.costEnergy + target.card.costDecay;
-		
-		cure[1]+=x;
-		b.addMessageToBothPlayers(b.getResourcesUpdateMessage());
+		b.changeCurrentRessource(ResourceName.ORDER, playedCard.position.color, x);
 		
 		b.removeMinionToHand(target);
         return;

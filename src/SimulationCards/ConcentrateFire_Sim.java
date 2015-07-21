@@ -34,22 +34,13 @@ public class ConcentrateFire_Sim extends Simtemplate
 			return;
         }
 		//remove enchantment
-		ArrayList<Minion> temp = new ArrayList<Minion>(m.attachedCards);
-		for(Minion e : temp)
-		{
-			if(e == self) 
-			{
-				m.attachedCards.remove(e);
-				break;
-			}
-		}
-		b.addMinionToGrave(self);
-		b.addMessageToBothPlayers(b.getStatusUpdateMessage(m));
+		
+		m.removeEnchantment(self, true, b);
 		
 		//minion attacks a second time
 		Color otherColor = Board.getOpposingColor(m.position.color);
 		Minion[][] defffield = b.getPlayerField(otherColor);
-		b.unitAttacking(m, defffield, m.Ap, m.attackType, DamageType.COMBAT);
+		b.unitAttacking(m, defffield, m.getAttack(), m.attackType, DamageType.COMBAT);
 		
     	return;
     }

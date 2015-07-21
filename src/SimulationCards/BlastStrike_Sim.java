@@ -27,7 +27,7 @@ public class BlastStrike_Sim extends Simtemplate {
         return;
     }
 	
-	public  void onMinionDidDmgTrigger(Board b, Minion triggerEffectMinion, Minion damagedMinion, Minion attacker)
+	public void onMinionDidDmgTrigger(Board b, Minion triggerEffectMinion, Minion damagedMinion, Minion attacker, int dmgdone)
     {
 		
 		ArrayList<Minion> targs = b.getMinionsFromPositions(damagedMinion.position.getNeightbours());

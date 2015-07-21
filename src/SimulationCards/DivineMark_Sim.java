@@ -2,10 +2,12 @@ package SimulationCards;
 
 import java.util.ArrayList;
 
+import BattleStuff.AttackType;
 import BattleStuff.Board;
 import BattleStuff.Card;
 import BattleStuff.CardDB;
 import BattleStuff.Color;
+import BattleStuff.DamageType;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
 import BattleStuff.Position;
@@ -28,7 +30,7 @@ public class DivineMark_Sim extends Simtemplate {
         return;
     }
 	
-	public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker)
+	public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker, AttackType attackType, DamageType dmgtype)
     {
 		//unbuff wolf if a wolf dies
 		if(triggerEffectMinion.owner != null && triggerEffectMinion.owner == diedMinion)

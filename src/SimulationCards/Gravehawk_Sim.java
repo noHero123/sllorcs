@@ -1,6 +1,8 @@
 package SimulationCards;
 
+import BattleStuff.AttackType;
 import BattleStuff.Board;
+import BattleStuff.DamageType;
 import BattleStuff.Minion;
 import BattleStuff.subType;
 
@@ -35,7 +37,7 @@ public class Gravehawk_Sim extends Simtemplate {
         return;
     }
 	
-	public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker)
+	public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker, AttackType attackType, DamageType dmgtype)
     {
 		//unbuff wolf if a wolf dies
 		if(diedMinion.position.color == triggerEffectMinion.position.color && diedMinion.subtypes.contains(subType.Gravelock))

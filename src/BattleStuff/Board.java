@@ -75,6 +75,10 @@ public class Board {
 	
 	Random randomNumberGenerator = new Random();
 	
+	public int whiteQuakeTaxing=0;
+	public int blackQuakeTaxing=0;
+	public int whiteDamningTaxing=0;
+	public int blackDamningTaxing=0;
 	
 	private ArrayList<String> messagesToWhite= new ArrayList<String>();
 	private ArrayList<String> messagesToBlack= new ArrayList<String>();
@@ -194,6 +198,109 @@ public class Board {
 		
 		p.multicolor = (anz >= 2);
 		p.activeRessis = ressis;
+	}
+	
+	public void changeCurrentRessource(ResourceName ressi, Color color, int amount)
+	{
+		if(color == Color.white)
+		{
+			if(ressi == ResourceName.GROWTH)
+			{
+				this.whitecurrentRessources[0]+= amount;
+			}
+			if(ressi == ResourceName.ORDER)
+			{
+				this.whitecurrentRessources[1]+= amount;
+			}
+			if(ressi == ResourceName.ENERGY)
+			{
+				this.whitecurrentRessources[2]+= amount;
+			}
+			if(ressi == ResourceName.DECAY)
+			{
+				this.whitecurrentRessources[3]+= amount;
+			}
+			if(ressi == ResourceName.WILD)
+			{
+				this.whitecurrentRessources[4]+= amount;
+			}
+		}
+		else
+		{
+			if(ressi == ResourceName.GROWTH)
+			{
+				this.blackcurrentRessources[0]+= amount;
+			}
+			if(ressi == ResourceName.ORDER)
+			{
+				this.blackcurrentRessources[1]+= amount;
+			}
+			if(ressi == ResourceName.ENERGY)
+			{
+				this.blackcurrentRessources[2]+= amount;
+			}
+			if(ressi == ResourceName.DECAY)
+			{
+				this.blackcurrentRessources[3]+= amount;
+			}
+			if(ressi == ResourceName.WILD)
+			{
+				this.blackcurrentRessources[4]+= amount;
+			}
+		}
+		
+		this.addMessageToBothPlayers(this.getResourcesUpdateMessage());
+	}
+	
+	public void changeMaxRessource(ResourceName ressi, Color color, int amount)
+	{
+		if(color == Color.white)
+		{
+			if(ressi == ResourceName.GROWTH)
+			{
+				this.whiteRessources[0]+= amount;
+			}
+			if(ressi == ResourceName.ORDER)
+			{
+				this.whiteRessources[1]+= amount;
+			}
+			if(ressi == ResourceName.ENERGY)
+			{
+				this.whiteRessources[2]+= amount;
+			}
+			if(ressi == ResourceName.DECAY)
+			{
+				this.whiteRessources[3]+= amount;
+			}
+			if(ressi == ResourceName.WILD)
+			{
+				this.whiteRessources[4]+= amount;
+			}
+		}
+		else
+		{
+			if(ressi == ResourceName.GROWTH)
+			{
+				this.blackRessources[0]+= amount;
+			}
+			if(ressi == ResourceName.ORDER)
+			{
+				this.blackRessources[1]+= amount;
+			}
+			if(ressi == ResourceName.ENERGY)
+			{
+				this.blackRessources[2]+= amount;
+			}
+			if(ressi == ResourceName.DECAY)
+			{
+				this.blackRessources[3]+= amount;
+			}
+			if(ressi == ResourceName.WILD)
+			{
+				this.blackRessources[4]+= amount;
+			}
+		}
+		this.addMessageToBothPlayers(this.getResourcesUpdateMessage());
 	}
 	
 	public void updatePlayer(Player p)
@@ -377,6 +484,17 @@ public class Board {
 		return this.blackIdols;
 	}
 	
+	public Minion getPlayerIdol(Color col, int index)
+	{
+		ArrayList<Minion> idols = this.whiteIdols;
+		if(col == Color.black) idols = this.blackIdols;
+		for(Minion m:idols)
+		{
+			if(m.position.row == index) return m;
+		}
+		
+		return idols.get(0);
+	}
 	
 	
 	public void loadWhiteCards(ArrayList<Minion> cards)
@@ -508,7 +626,7 @@ public class Board {
 				if(m != null)
 				{
 					String buffs = "";
-					for(Minion mm : m.attachedCards)
+					for(Minion mm : m.getAttachedCards())
 					{
 						if(buffs.equals(""))
 						{
@@ -528,12 +646,12 @@ public class Board {
 					
 					if(s.equals(""))
 					{
-						s = "{\"card\":{\"id\":"+m.cardID+",\"typeId\":" + m.typeId + ",\"tradable\":true,\"isToken\":"+Boolean.toString(m.isToken)+",\"level\":"+m.lvl+"},\"ap\":" + m.Ap + ",\"ac\":"+m.getAc()+",\"hp\":"+m.Hp+",\"position\":\""+ m.position.row +","+ m.position.column +"\"" + buffs + "}";
+						s = "{\"card\":{\"id\":"+m.cardID+",\"typeId\":" + m.typeId + ",\"tradable\":true,\"isToken\":"+Boolean.toString(m.isToken)+",\"level\":"+m.lvl+"},\"ap\":" + m.getAttack() + ",\"ac\":"+m.getAc()+",\"hp\":"+m.Hp+",\"position\":\""+ m.position.row +","+ m.position.column +"\"" + buffs + "}";
 						
 					}
 					else
 					{
-						s += ",{\"card\":{\"id\":"+m.cardID+",\"typeId\":" + m.typeId + ",\"tradable\":true,\"isToken\":"+Boolean.toString(m.isToken)+",\"level\":"+m.lvl+"},\"ap\":" + m.Ap + ",\"ac\":"+m.getAc()+",\"hp\":"+m.Hp+",\"position\":\""+ m.position.row +","+ m.position.column +"\"" + buffs + "}";
+						s += ",{\"card\":{\"id\":"+m.cardID+",\"typeId\":" + m.typeId + ",\"tradable\":true,\"isToken\":"+Boolean.toString(m.isToken)+",\"level\":"+m.lvl+"},\"ap\":" + m.getAttack() + ",\"ac\":"+m.getAc()+",\"hp\":"+m.Hp+",\"position\":\""+ m.position.row +","+ m.position.column +"\"" + buffs + "}";
 						
 					}
 				}
@@ -768,12 +886,11 @@ public class Board {
 				if(m != null)
 				{
 					
-					if(m.getAc() >=1) 
+					if(m.getAc() >=1 && m.card.cardSim.doesCountDown(this, m)) 
 					{
 							m.buffMinionWithoutMessage(0, 0, -1, this);
 							String s = getStatusUpdateMessage(m);
-							this.addMessageToPlayer(Color.white, s);
-							this.addMessageToPlayer(Color.black, s);
+							this.addMessageToBothPlayers(s);
 					}
 				}
 			}
@@ -819,9 +936,9 @@ public class Board {
 		
 		
 		
-		String s="{\"StatsUpdate\":{\"target\":"+m.position.posToString()+",\"hp\":"+ m.Hp +",\"ap\":"+ m.Ap +",\"ac\":"+ m.getAc() +",\"buffs\":[";
+		String s="{\"StatsUpdate\":{\"target\":"+m.position.posToString()+",\"hp\":"+ m.Hp +",\"ap\":"+ m.getAttack() +",\"ac\":"+ m.getAc() +",\"buffs\":[";
 		String buffs="";
-		for(Minion mm : m.attachedCards)
+		for(Minion mm : m.getAttachedCards())
 		{
 			if(buffs.equals(""))
 			{
@@ -933,10 +1050,12 @@ public class Board {
 	{
 		String s ="";
 		
-		ArrayList<Minion> temp = new ArrayList<Minion>(m.attachedCards);
+		ArrayList<Minion> temp = new ArrayList<Minion>(m.getAttachedCards());
+		m.card.cardSim.onUnitIsGoingToAttack(this, m, m);
 		for(Minion e : temp)
 		{
-			e.card.cardSim.onUnitIsGoingToAttack(this, e, m);//TODO bunnys do it after attack done! but concentrate fire not! (maybe we add two types?)
+			//TODO other units on field have such a trigger?
+			e.card.cardSim.onUnitIsGoingToAttack(this, e, m);
 		}
 		
 		if(m.Hp<=0) return; // no attack if died
@@ -950,11 +1069,11 @@ public class Board {
 		}
 		else
 		{
-			unitAttacking(m, defffield, m.Ap, m.attackType, DamageType.COMBAT);
+			unitAttacking(m, defffield, m.getAttack(), m.attackType, DamageType.COMBAT);
 		}
 		//unit is ready
 		
-		temp = new ArrayList<Minion>(m.attachedCards);
+		temp = new ArrayList<Minion>(m.getAttachedCards());
 		for(Minion e : temp)
 		{
 			if(e.typeId == 149) e.card.cardSim.onAttackDone(this, m, e);//only concentrate fire
@@ -1140,12 +1259,11 @@ public class Board {
 			m.card.cardSim.onTurnStartTrigger(this, m, this.activePlayerColor);
 			//tested: scrolls is doing this the same way:
 			//if minion is healed, poisondmg that is performed after healding, is done too!
-			ArrayList<Minion> temp = new ArrayList<Minion> (m.attachedCards); //we may change that list 
-			for(Minion e : temp)
+			for(Minion e : m.getAttachedCards())
 			{
 				e.card.cardSim.onTurnStartTrigger(this, e, this.activePlayerColor);
 				
-				if(e.buffName.equals("Poison") && this.activePlayerColor == m.position.color) //perform poinson dmg on own turn
+				if((e.typeId == 5 || e.typeId == 100) && this.activePlayerColor == m.position.color) //perform poinson dmg on own turn
 				{
 					this.doDmg(m , e, 1, AttackType.UNDEFINED, DamageType.POISON);
 				}
@@ -1181,6 +1299,11 @@ public class Board {
 		//TODO end phase (except of "Init") automatically after some time
 		
 		if(this.GameState == 4) return; //game has ended
+		
+		//NOTE: gamestate is changed from 1 -> 2 and 2->1  AT THE START of the Phase-change, so, if we ask if we are in fight, then gamestate = 1 and not 2.
+		//Gamestate = 0 init
+		//gamestate = 2 main
+		//gamestate = 1 battle
 		
 		int phase = 0;
 		if(phse.equals("PreMain"))phase = 1;
@@ -1434,21 +1557,21 @@ public class Board {
 		
 		int neededWild = 0;
 		
-		if(cressis[0] < card.card.costGrowth )
+		if(cressis[0] < card.card.cardSim.getGrowthCost(this, card) )
 		{
-			neededWild = card.card.costGrowth - cressis[0];
+			neededWild = card.card.cardSim.getGrowthCost(this, card) - cressis[0];
 		}
-		if(cressis[1] < card.card.costOrder )
+		if(cressis[1] < card.card.cardSim.getOrderCost(this, card) )
 		{
-			neededWild = card.card.costOrder - cressis[1];
+			neededWild = card.card.cardSim.getOrderCost(this, card) - cressis[1];
 		}
-		if(cressis[2] < card.card.costEnergy )
+		if(cressis[2] < card.card.cardSim.getEnergyCost(this, card) )
 		{
-			neededWild = card.card.costEnergy - cressis[2];
+			neededWild = card.card.cardSim.getEnergyCost(this, card) - cressis[2];
 		}
-		if(cressis[3] < card.card.costDecay )
+		if(cressis[3] < card.card.cardSim.getDecayCost(this, card) )
 		{
-			neededWild = card.card.costDecay - cressis[3];
+			neededWild = card.card.cardSim.getDecayCost(this, card) - cressis[3];
 		}
 		
 		if(cressis[4] >= neededWild)
@@ -1469,10 +1592,10 @@ public class Board {
 		
 		//remove mana
 		cressis[4]-=neededWild;
-		cressis[0]-=card.card.costGrowth;
-		cressis[1]-=card.card.costOrder;
-		cressis[2]-=card.card.costEnergy;
-		cressis[3]-=card.card.costDecay;
+		cressis[0]-=card.card.cardSim.getGrowthCost(this, card);
+		cressis[1]-=card.card.cardSim.getOrderCost(this, card);
+		cressis[2]-=card.card.cardSim.getEnergyCost(this, card);
+		cressis[3]-=card.card.cardSim.getDecayCost(this, card);
 		for(int ii=0;ii<5;ii++)
 		{
 			cressis[ii] = Math.max(0, cressis[ii]);
@@ -1517,7 +1640,7 @@ public class Board {
 			for(Minion m : this.getAllMinionOfField())
 			{
 				m.card.cardSim.onPlayerPlayASpell(this, m, card);
-				for(Minion e : m.attachedCards)
+				for(Minion e : m.getAttachedCards())
 				{
 					e.card.cardSim.onPlayerPlayASpell(this, e, card);
 				}
@@ -1617,7 +1740,7 @@ public class Board {
 		m.position.column = pos.column;
 		
 		m.setAc(m.card.ac);
-		m.Ap = m.card.ap;
+		m.setAttack(m.card.ap);
 		m.Hp = m.card.hp;
 		m.maxHP = m.Hp;
 		
@@ -1765,21 +1888,21 @@ public class Board {
 		
 		int neededWild = 0;
 		
-		if(cressis[0] < card.card.costGrowth )
+		if(cressis[0] < card.card.cardSim.getGrowthCost(this, card) )
 		{
-			neededWild = card.card.costGrowth - cressis[0];
+			neededWild = card.card.cardSim.getGrowthCost(this, card) - cressis[0];
 		}
-		if(cressis[1] < card.card.costOrder )
+		if(cressis[1] < card.card.cardSim.getOrderCost(this, card) )
 		{
-			neededWild = card.card.costOrder - cressis[1];
+			neededWild = card.card.cardSim.getOrderCost(this, card) - cressis[1];
 		}
-		if(cressis[2] < card.card.costEnergy )
+		if(cressis[2] < card.card.cardSim.getEnergyCost(this, card) )
 		{
-			neededWild = card.card.costEnergy - cressis[2];
+			neededWild = card.card.cardSim.getEnergyCost(this, card) - cressis[2];
 		}
-		if(cressis[3] < card.card.costDecay )
+		if(cressis[3] < card.card.cardSim.getDecayCost(this, card) )
 		{
-			neededWild = card.card.costDecay - cressis[3];
+			neededWild = card.card.cardSim.getDecayCost(this, card) - cressis[3];
 		}
 		
 		if(cressis[4] >= neededWild)
@@ -2016,6 +2139,38 @@ public class Board {
 			return ret;
 		}
 		
+		if(ts == tileSelector.all_units_with_enchantments)
+		{
+			for(int i=0; i<5; i++)
+			{
+				for(int j=0; j<3; j++)
+				{
+					Minion m = this.whiteField[i][j];
+					if(m!=null)
+					{
+						boolean addit = false;
+						for(Minion e: m.getAttachedCards())
+						{
+							if(e.cardID>=0) addit=true;
+						}
+						if(addit) ret.add(new Position(Color.white, i, j));
+					}
+					
+					m = this.blackField[i][j];
+					if(m!=null)
+					{
+						boolean addit = false;
+						for(Minion e: m.getAttachedCards())
+						{
+							if(e.cardID>=0) addit=true;
+						}
+						if(addit) ret.add(new Position(Color.black, i, j));
+					}
+				}
+			}
+			return ret;
+		}
+		
 		if(ts == tileSelector.all_creatures)
 		{
 			for(int i=0; i<5; i++)
@@ -2030,6 +2185,28 @@ public class Board {
 					
 					m = this.blackField[i][j];
 					if(m!=null && (m.card.cardKind == Kind.CREATURE))
+					{
+						ret.add(new Position(Color.black, i, j));
+					}
+				}
+			}
+			return ret;
+		}
+		
+		if(ts == tileSelector.all_creatures_with_hp_less_or_equal_2)
+		{
+			for(int i=0; i<5; i++)
+			{
+				for(int j=0; j<3; j++)
+				{
+					Minion m = this.whiteField[i][j];
+					if(m!=null && (m.card.cardKind == Kind.CREATURE) && m.Hp <=2)
+					{
+						ret.add(new Position(Color.white, i, j));
+					}
+					
+					m = this.blackField[i][j];
+					if(m!=null && (m.card.cardKind == Kind.CREATURE) && m.Hp <=2)
 					{
 						ret.add(new Position(Color.black, i, j));
 					}
@@ -2804,6 +2981,11 @@ public class Board {
 			
 			m.movesThisTurn++;
 			this.unitChangesPlace(unitPos, targ);
+			
+			//TODO trigger these effects also pother and equal spells?
+			
+			
+			
 		}
 		else
 		{
@@ -2822,11 +3004,11 @@ public class Board {
 	}
 	
 	//with switching, minions change place
-	public void unitChangesPlace(Position ofrom, Position oto, Boolean doTrigger, Boolean doMessage)
+	public void unitChangesPlace(Position ofrom, Position oto, Boolean doTrigger, Boolean isMove)
 	{
 		
 		
-		if(doMessage)
+		if(isMove)
 		{
 			String s = "{\"MoveUnit\":{\"from\":"+ofrom.posToString()+",\"to\":"+oto.posToString()+"}}";
 			this.addMessageToBothPlayers(s);
@@ -2852,6 +3034,19 @@ public class Board {
 		
 		this.getPlayerField(to.color)[to.row][to.column] = m;
 		this.getPlayerField(from.color)[from.row][from.column] = otherm;
+		
+		if(isMove)
+		{
+			for(Minion mnn : this.getAllMinionOfField())
+			{
+				mnn.card.cardSim.onMinionMoved(this, mnn, m);
+			}
+			
+			for(Minion e : m.getAttachedCards())
+			{
+				e.card.cardSim.onMinionMoved(this, e, m);
+			}
+		}
 		
 		if(doTrigger)doOnFieldChangedTriggers();
 	}
@@ -2940,6 +3135,7 @@ public class Board {
 	
 	public void doDeathRattles2(Minion attacker, int overdmg, AttackType attacktype, DamageType dmgtype )
 	{
+		
 		int died=0;
         this.graveWhiteChanged=false;
         this.graveBlackChanged=false;
@@ -2949,15 +3145,15 @@ public class Board {
         	
         	if(m.Hp <= 0 && !m.deadTriggersDone)
         	{
-        	
+        		m.deadTriggersDone=true;//only to be save :D
         		for(Minion mnn : allmins)
         		{
         			
-        			mnn.card.cardSim.onMinionDiedTrigger(this, mnn, m, attacker);
+        			mnn.card.cardSim.onMinionDiedTrigger(this, mnn, m, attacker, attacktype, dmgtype);
         			
-        			for(Minion e : m.attachedCards)
+        			for(Minion e : mnn.getAttachedCards())
             		{
-        				e.card.cardSim.onMinionDiedTrigger(this, e, m, attacker);
+        				e.card.cardSim.onMinionDiedTrigger(this, e, m, attacker, attacktype, dmgtype);
             		}
             		
         		}
@@ -2965,12 +3161,12 @@ public class Board {
         		
         		
         		//do triggers for enchantments
-        		for(Minion e : m.attachedCards)
+        		for(Minion e : m.getAttachedCards())
         		{
         			//say enchantment that owner died
         			
-        			e.card.cardSim.onMinionDiedTrigger(this, e, m, attacker);
-        			e.attachedCards.clear();
+        			e.card.cardSim.onMinionDiedTrigger(this, e, m, attacker, attacktype, dmgtype);
+        			e.owner=null;
         			if(e.cardID>=0)
         			{
         				this.getPlayerGrave(e.position.color).add(e);
@@ -2983,13 +3179,14 @@ public class Board {
         					graveBlackChanged=true;
         				}
         			}
+        			m.removeEnchantment(e, false, this);
         		}
-        		m.attachedCards.clear();
+        		//m.attachedCards.clear();
         		
         		
         		this.addMinionToGrave(m);//with triggers of enchantments
         		
-        		m.deadTriggersDone=true;//only to be save :D
+        		
         		
         		m.card.cardSim.onDeathrattle(this, m);
         		m.card.cardSim.onMinionLeavesBattleField(this, m);
@@ -3193,7 +3390,7 @@ public class Board {
 	private void performDmgTriggers(Minion attacker, Minion deffender, AttackType attackType, DamageType damageType , int dmgdone, int newHp)
     {
 
-        int attackAP = attacker.Ap;
+        int attackAP = attacker.getAttack();
         int attackHP = attacker.Hp;
         int defferHP = deffender.Hp;
         int attackerAc = attacker.getAc();
@@ -3217,7 +3414,7 @@ public class Board {
         		performDmg(attacker, deffender, AttackType.MELEE_COUNTER , DamageType.COMBAT, spikydmg);
         	}
         	
-        	for (Minion ench : deffender.attachedCards)
+        	for (Minion ench : deffender.getAttachedCards())
         	{
             
         		spikydmg = ench.card.cardSim.getSpikyDamage(this, ench);
@@ -3255,7 +3452,7 @@ public class Board {
         		attacker.addnewPoison(this, deffender.position.color);
         	}
         	
-        	for (Minion ench : deffender.attachedCards)
+        	for (Minion ench : deffender.getAttachedCards())
         	{
             
         		if(ench.card.cardSim.isPoisonous(this, deffender))
@@ -3286,9 +3483,8 @@ public class Board {
         if (defferHP >= 1)
         {
         	deffender.card.cardSim.onMinionGotDmgTrigger(this, deffender, deffender, dmgdone, attacker);
-        	//enchantments could be deleted after triggering
-        	ArrayList<Minion> temp = new ArrayList<Minion> (deffender.attachedCards);
-            for (Minion ench : temp)
+        	
+            for (Minion ench : deffender.getAttachedCards())
             {
             	ench.card.cardSim.onMinionGotDmgTrigger(this, ench, deffender, dmgdone, attacker);
             }
@@ -3306,7 +3502,7 @@ public class Board {
         		deffender.addnewPoison(this, attacker.position.color);
         	}
         	
-        	for (Minion ench : attacker.attachedCards)
+        	for (Minion ench : attacker.getAttachedCards())
         	{
             
         		if(ench.card.cardSim.isPoisonous(this, deffender))
@@ -3320,14 +3516,14 @@ public class Board {
         
 
         //do onattck unit deals dmg
+        //TODO are all effects triggered, when dmgdone =0?
         if (attackHP >= 1)
         {
-        	attacker.card.cardSim.onMinionDidDmgTrigger(this, attacker, deffender, attacker);
-        	//enchantments could be deleted after triggering
-        	ArrayList<Minion> temp = new ArrayList<Minion> (attacker.attachedCards);
-        	for (Minion ench :temp)
+        	attacker.card.cardSim.onMinionDidDmgTrigger(this, attacker, deffender, attacker, dmgdone);
+
+        	for (Minion ench :attacker.getAttachedCards())
         	{
-        		ench.card.cardSim.onMinionDidDmgTrigger(this, ench, deffender, attacker);
+        		ench.card.cardSim.onMinionDidDmgTrigger(this, ench, deffender, attacker, dmgdone);
             }
         }
         
@@ -3462,12 +3658,10 @@ public class Board {
 			this.getPlayerField(m.position.color)[m.position.row][m.position.column]=null;
 		}
 		
-		for(Minion e : m.attachedCards)
+		for(Minion e : m.getAttachedCards())
 		{
-			e.attachedCards.clear();
 			if(e.cardID>=0)
 			{
-				this.getPlayerGrave(e.position.color).add(e);
 				if(e.position.color == Color.white) 
 				{
 					graveWhiteChanged=true;
@@ -3477,8 +3671,9 @@ public class Board {
 					graveBlackChanged=true;
 				}
 			}
+			m.removeEnchantment(e, false, this);
 		}
-		m.attachedCards.clear();
+		//m.attachedCards.clear();
         
 		m.position.row=-1;
 		m.position.column=-1;

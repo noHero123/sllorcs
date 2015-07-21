@@ -6,6 +6,7 @@ import BattleStuff.Board;
 import BattleStuff.Color;
 import BattleStuff.Minion;
 import BattleStuff.Position;
+import BattleStuff.ResourceName;
 import BattleStuff.tileSelector;
 
 public class Bloodboil_Sim extends Simtemplate 
@@ -21,11 +22,9 @@ public class Bloodboil_Sim extends Simtemplate
 	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
     {
 		//replenish
-		int[] cure = b.whitecurrentRessources;
-		if(playedCard.position.color == Color.black) cure = b.blackcurrentRessources;
 		int x = playedCard.card.costGrowth + playedCard.card.costOrder + playedCard.card.costEnergy + playedCard.card.costDecay;
-		cure[4]+=x;
-		b.addMessageToBothPlayers(b.getResourcesUpdateMessage());
+		b.changeCurrentRessource(ResourceName.WILD, playedCard.position.color, x);
+		
 		
 		Minion target = b.getMinionOnPosition(targets.get(0));
 		target.addCardAsEnchantment("ENCHANTMENT", "Bloodboil", playedCard.card.cardDescription, playedCard, b);

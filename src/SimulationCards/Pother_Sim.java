@@ -29,7 +29,7 @@ public class Pother_Sim extends Simtemplate {
 		Minion m = b.getMinionOnPosition(targets.get(0));
 		if(m != null)
 		{
-			Color opp = Board.getOpposingColor(b.activePlayerColor);
+			Color opp = m.position.color;
 			Minion[][] enemyb = b.getPlayerField(opp);
 			//move unit to random tile
 			ArrayList<Position> nbrs  = m.position.getNeightbours();

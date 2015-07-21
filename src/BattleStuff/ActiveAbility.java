@@ -148,11 +148,23 @@ public class ActiveAbility {
 			return false;
 		}
 		
-		if(this.id == activeAbilitys.SacrificeSelf)
+		if(this.id == activeAbilitys.SacrificeAttack)
 		{
 			if(m.getAc() == 0 && poses.size()>=1) return true;
 			return false;
 		}
+		
+		if(this.id == activeAbilitys.SacrificeSelf)
+		{
+			if(m.getAc() == 0) return true;
+			return false;
+		}
+		if(this.id == activeAbilitys.CursemongerAbility)
+		{
+			if(m.getAc() == 0 && poses.size()>=1) return true;
+			return false;
+		}
+		
 		return isp;
 	}
 	
@@ -183,10 +195,19 @@ public class ActiveAbility {
 		{
 			return false;
 		}
-		if(this.id == activeAbilitys.SacrificeSelf)
+		if(this.id == activeAbilitys.SacrificeAttack)
 		{
 			return true;
 		}
+		if(this.id == activeAbilitys.SacrificeSelf)
+		{
+			return false;
+		}
+		if(this.id == activeAbilitys.CursemongerAbility)
+		{
+			return true;
+		}
+		
 		return false;
 	}
 	
@@ -250,7 +271,21 @@ public class ActiveAbility {
 			return isp;
 		}
 		
+		if(this.id == activeAbilitys.SacrificeAttack)
+		{
+			for(Minion mm : b.getAllMinionOfField())
+			{
+				isp.add(new Position(mm.position));
+			}
+			return isp;
+		}
+		
 		if(this.id == activeAbilitys.SacrificeSelf)
+		{
+			return isp;
+		}
+		
+		if(this.id == activeAbilitys.CursemongerAbility)
 		{
 			for(Minion mm : b.getAllMinionOfField())
 			{

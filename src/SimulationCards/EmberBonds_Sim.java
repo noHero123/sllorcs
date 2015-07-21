@@ -29,6 +29,7 @@ public class EmberBonds_Sim extends Simtemplate
 	
 	public  void onUnitIsGoingToAttack(Board b, Minion triggerEffectMinion, Minion attacker )
     {
+		if(triggerEffectMinion.owner!=attacker) return;
 		b.doDmg(attacker, triggerEffectMinion, 3, AttackType.UNDEFINED, DamageType.MAGICAL);
         return;
     }

@@ -7,6 +7,8 @@ public enum tileSelector {//used for getting tiles for cardinfo-msg
 	all, //select all tiles (like decimation)
 	all_units, //targets all units: creatures + structures
 	all_units_with_ac, //target all units with ac >=0 (all units that count down) used in thought trap
+	all_units_with_enchantments, //target all units with ac >=0 (all units that count down) used in thought trap
+	all_creatures_with_hp_less_or_equal_2, 
 	all_creatures, //target all creatures
 	all_structures, // all structures
 	all_free, // all free tiles

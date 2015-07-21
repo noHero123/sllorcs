@@ -4,6 +4,7 @@ import BattleStuff.Board;
 import BattleStuff.Color;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
+import BattleStuff.ResourceName;
 import BattleStuff.subType;
 
 public class LawMemorial_Sim extends Simtemplate {
@@ -19,17 +20,7 @@ public class LawMemorial_Sim extends Simtemplate {
     {
 
 		b.destroyMinion(m, m);
-		int[] curE = b.whitecurrentRessources;
-		int[] maxE = b.whiteRessources;
-		if(m.position.color == Color.black) 
-		{
-			curE = b.blackcurrentRessources;
-			maxE = b.blackRessources;
-		}
-		
-		//curE[1] +=1;//raises only maxRessources...
-		maxE[1] +=1;
-		b.addMessageToBothPlayers(b.getResourcesUpdateMessage());
+		b.changeMaxRessource(ResourceName.ORDER, m.position.color, 1);
     	return;
     }
 	

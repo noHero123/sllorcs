@@ -39,7 +39,7 @@ public class PotionOfResistance_Sim extends Simtemplate
 		if(triggerEffectMinion.lingerDuration ==0)
 		{
 			//remove!
-			triggerEffectMinion.owner.attachedCards.remove(triggerEffectMinion);
+			triggerEffectMinion.owner.removeEnchantment(triggerEffectMinion, false, b);
 		}
 		else
 		{

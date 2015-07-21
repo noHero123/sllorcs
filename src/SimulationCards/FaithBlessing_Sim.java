@@ -26,7 +26,7 @@ public class FaithBlessing_Sim extends Simtemplate
 		Minion target = b.getMinionOnPosition(targets.get(0));
 		
 		b.doDmg(target, playedCard, 2, AttackType.UNDEFINED, DamageType.MAGICAL);
-		b.doDmg(b.getPlayerIdols(oppcol).get(target.position.row), playedCard, 2, AttackType.UNDEFINED, DamageType.MAGICAL);
+		b.doDmg(b.getPlayerIdol(oppcol,target.position.row), playedCard, 2, AttackType.UNDEFINED, DamageType.MAGICAL);
 		b.getPlayerIdols(playedCard.position.color).get(target.position.row).healMinion(2, b);
         return;
     }

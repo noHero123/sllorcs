@@ -9,6 +9,7 @@ import BattleStuff.Color;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
 import BattleStuff.Position;
+import BattleStuff.ResourceName;
 import BattleStuff.subType;
 
 public class TribalMemorial_Sim extends Simtemplate {
@@ -23,16 +24,7 @@ public class TribalMemorial_Sim extends Simtemplate {
     {
 		b.destroyMinion(triggerEffectMinion, triggerEffectMinion);
 		
-		int[] curE = b.whitecurrentRessources;
-		int[] maxE = b.whiteRessources;
-		if(triggerEffectMinion.position.color == Color.black) 
-		{
-			curE = b.blackcurrentRessources;
-			maxE = b.blackRessources;
-		}
-		
-		//curE[0] +=1;//raises only maxRessources...
-		maxE[0] +=1;
+		b.changeMaxRessource(ResourceName.GROWTH, triggerEffectMinion.position.color, 1);
 		
 		//dont need a ressource update message, because this costs 2 energy-> is send in activeability.payenergy
 		

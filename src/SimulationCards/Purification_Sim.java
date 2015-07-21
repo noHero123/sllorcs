@@ -22,12 +22,10 @@ public class Purification_Sim extends Simtemplate
 
 		Minion target = b.getMinionOnPosition(targets.get(0));
 		ArrayList<Minion> grave = b.getPlayerGrave(target.position.color);
-		for(Minion m : target.attachedCards)
+		for(Minion m : target.getAttachedCards())
 		{
-			m.card.cardSim.onDeathrattle(b, m);
-			if(m.cardID>=0)grave.add(m);
+			m.owner.removeEnchantment(m, false, b);
 		}
-		target.attachedCards.clear();
 
         return;
     }

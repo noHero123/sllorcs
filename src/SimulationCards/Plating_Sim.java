@@ -32,9 +32,7 @@ public class Plating_Sim extends Simtemplate
 		if(!damagedMinion.imuneToNextDmg)
 		{
 			//remove effect
-			damagedMinion.attachedCards.remove(triggerEffectMinion);
-			b.addMessageToBothPlayers(b.getStatusUpdateMessage(damagedMinion));
-			b.addMinionToGrave(triggerEffectMinion);
+			damagedMinion.removeEnchantment(triggerEffectMinion, true, b);
 		}
         return;
     }

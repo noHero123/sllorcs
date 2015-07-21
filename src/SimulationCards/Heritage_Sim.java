@@ -2,8 +2,10 @@ package SimulationCards;
 
 import java.util.ArrayList;
 
+import BattleStuff.AttackType;
 import BattleStuff.Board;
 import BattleStuff.Color;
+import BattleStuff.DamageType;
 import BattleStuff.Minion;
 import BattleStuff.Position;
 import BattleStuff.tileSelector;
@@ -25,7 +27,7 @@ public class Heritage_Sim extends Simtemplate
         return;
     }
 	
-	public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker)
+	public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker, AttackType attackType, DamageType dmgtype)
     {
 		if(diedMinion.position.color == triggerEffectMinion.owner.position.color)
 		{

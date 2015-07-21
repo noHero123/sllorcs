@@ -21,6 +21,13 @@ public class Quake_Sim extends Simtemplate {
 		return tileSelector.None;
 	}
 	
+	public int getGrowthCost(Board b ,Minion m)
+    {
+		int tax = b.whiteQuakeTaxing;
+		if(m.position.color == Color.black) tax = b.blackQuakeTaxing;
+    	return m.card.costGrowth + tax;
+    }
+	
 	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
     {
 		
@@ -33,7 +40,14 @@ public class Quake_Sim extends Simtemplate {
 		}
 		
 		b.doDmg(all, playedCard, -100, AttackType.UNDEFINED, DamageType.MAGICAL);//dmg=-100 => aoedmg :D
-		
+		if(playedCard.position.color == Color.white)
+		{
+			b.whiteQuakeTaxing+=2;
+		}
+		else
+		{
+			b.blackQuakeTaxing+=2;
+		}
         return;
     }
 	

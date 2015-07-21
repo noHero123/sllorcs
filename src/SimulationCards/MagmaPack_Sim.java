@@ -21,7 +21,7 @@ public class MagmaPack_Sim extends Simtemplate
 	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
-		int abuff = target.Ap;
+		int abuff = target.getAttack();
 		target.buffMinionWithoutMessage(abuff, 0, 0, b);
 		target.addCardAsEnchantment("ENCHANTMENT", "Magma Pack", playedCard.card.cardDescription, playedCard, b);
         return;

@@ -3,6 +3,7 @@ package SimulationCards;
 import BattleStuff.Board;
 import BattleStuff.Color;
 import BattleStuff.Minion;
+import BattleStuff.ResourceName;
 import BattleStuff.subType;
 
 public class WoodlandMemorial_Sim extends Simtemplate {
@@ -12,11 +13,8 @@ public class WoodlandMemorial_Sim extends Simtemplate {
     {
 		if(triggerEffectMinion.position.color != spell.position.color)  return;
 		
-		int[] curE = b.whiteRessources;
-		if(triggerEffectMinion.position.color == Color.black) curE = b.blackRessources;
+		b.changeCurrentRessource(ResourceName.GROWTH, triggerEffectMinion.position.color, 1);
 		
-		curE[1] +=1;
-		b.addMessageToBothPlayers(b.getResourcesUpdateMessage());
 		b.destroyMinion(triggerEffectMinion, triggerEffectMinion);
         return;
     }

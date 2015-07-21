@@ -12,7 +12,7 @@ public class Bunny_Sim extends Simtemplate {
 	
 	public  boolean doesAttack(Board b, Minion m)
     {
-		if(m.Ap == 0)
+		if(m.getAttack() == 0)
         {
 			return false;
         }
@@ -22,7 +22,7 @@ public class Bunny_Sim extends Simtemplate {
 	
 	public void onAttackDone(Board b , Minion m, Minion self)
     {
-		if(m.Ap != 0 || m!=self)
+		if(m.getAttack() != 0 || m!=self)
         {
 			return;
         }

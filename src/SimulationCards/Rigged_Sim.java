@@ -19,7 +19,7 @@ public class Rigged_Sim extends Simtemplate {
 		return tileSelector.all_structures;
 	}
 	
-	 public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker)
+	public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker, AttackType attackType, DamageType dmgtype)
 	    {
 		 	if(triggerEffectMinion.owner != null && triggerEffectMinion.owner == diedMinion)
 		 	{
@@ -34,7 +34,7 @@ public class Rigged_Sim extends Simtemplate {
 		 				targets.add(m);
 		 			}
 		 		}
-		 		Minion idol =b.getPlayerIdols(oppcol).get(diedMinion.position.row);
+		 		Minion idol =b.getPlayerIdol(oppcol, diedMinion.position.row);
 		 		idol.aoeDmgToDo=1;
 		 		targets.add(idol);
 		 		b.doDmg(all, triggerEffectMinion, -100, AttackType.UNDEFINED, DamageType.MAGICAL);//dmg=-100 => aoedmg :D

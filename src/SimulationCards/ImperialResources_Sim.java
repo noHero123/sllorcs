@@ -9,6 +9,7 @@ import BattleStuff.DamageType;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
 import BattleStuff.Position;
+import BattleStuff.ResourceName;
 import BattleStuff.subType;
 import BattleStuff.tileSelector;
 
@@ -34,16 +35,7 @@ public class ImperialResources_Sim extends Simtemplate {
 			m.healMinion(1, b);
 		}
 		
-		int[] maxE = b.whiteRessources;
-		
-		if(playedCard.position.color == Color.black) 
-		{
-			maxE = b.blackRessources;
-		}
-		
-		//curE[1] +=1;//raises only maxRessources...
-		maxE[1] +=1;
-		b.addMessageToBothPlayers(b.getResourcesUpdateMessage());
+		b.changeMaxRessource(ResourceName.ORDER, playedCard.position.color, 1);
 		
 		
         return;

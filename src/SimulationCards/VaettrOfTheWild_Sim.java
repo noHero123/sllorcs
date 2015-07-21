@@ -3,6 +3,7 @@ package SimulationCards;
 import BattleStuff.Board;
 import BattleStuff.Color;
 import BattleStuff.Minion;
+import BattleStuff.ResourceName;
 import BattleStuff.subType;
 
 public class VaettrOfTheWild_Sim extends Simtemplate {
@@ -11,35 +12,18 @@ public class VaettrOfTheWild_Sim extends Simtemplate {
 
 	public  void getBattlecryEffect(Board b, Minion own, Minion target)
     {
-		int[] curress = b.whiteRessources;
-		if(own.position.color == Color.black)
-		{
-			curress= b.blackRessources;
-		}
-		curress[0]+=1;//growth +1
-		//send ressourceupdates message
-		b.addMessageToBothPlayers(b.getResourcesUpdateMessage());
+		b.changeMaxRessource(ResourceName.GROWTH, own.position.color, 1);
         return;
     }
 	
 	
 	public void onMinionLeavesBattleField(Board b, Minion auraendminion)
 	{
-		int[] curress = b.whiteRessources;
-		if(auraendminion.position.color == Color.black)
-		{
-			curress= b.blackRessources;
-		}
-		curress[0]-=1;//growth +1
+		b.changeMaxRessource(ResourceName.GROWTH, auraendminion.position.color, -1);
 		//send ressourceupdates message
 		if(auraendminion.turnsInplay>=1)
 		{
-			//reduce current
-			curress = b.whitecurrentRessources;
-			if(auraendminion.position.color == Color.black)
-			{
-				curress= b.blackcurrentRessources;
-			}
+			b.changeCurrentRessource(ResourceName.GROWTH, auraendminion.position.color, -1);
 		}
 		b.addMessageToBothPlayers(b.getResourcesUpdateMessage());
 	}

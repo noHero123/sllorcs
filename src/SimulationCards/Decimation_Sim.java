@@ -37,7 +37,7 @@ public class Decimation_Sim extends Simtemplate {
 			}
 		}
 		
-		Minion idol = b.getPlayerIdols(Board.getOpposingColor(playedCard.position.color)).get(row);
+		Minion idol = b.getPlayerIdol(Board.getOpposingColor(playedCard.position.color),row);
 		idol.aoeDmgToDo=2;
 		all.add(idol);
 		

@@ -13,7 +13,7 @@ import BattleStuff.tileSelector;
 public class Flip_Sim extends Simtemplate
 {
 	
-	//"id":36,"name":"Flip","description":"Move target opponent unit to another tile on the same side."
+	//"id":36,"name":"Flip","description":"Move target opponent unit to another tile on the same side." note: its a teleport!
 	public tileSelector getTileSelectorForFirstSelection()
 	{
 		return tileSelector.opp_units;
@@ -27,8 +27,10 @@ public class Flip_Sim extends Simtemplate
 	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
+		String s = "{\"TeleportUnits\":{\"units\":[{\"from\":"+targets.get(0)+",\"to\":"+targets.get(1)+"}]}}";
+		b.addMessageToBothPlayers(s);
+		b.unitChangesPlace(target.position, targets.get(1), true, false);
 		
-		b.unitChangesPlace(target.position, targets.get(1));
         
         return;
     }

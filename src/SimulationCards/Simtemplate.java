@@ -2,9 +2,11 @@ package SimulationCards;
 
 import java.util.ArrayList;
 
+import BattleStuff.AttackType;
 import BattleStuff.Board;
 import BattleStuff.Card;
 import BattleStuff.Color;
+import BattleStuff.DamageType;
 import BattleStuff.Minion;
 import BattleStuff.Position;
 import BattleStuff.tileSelector;
@@ -13,7 +15,25 @@ public class Simtemplate {
 	//#############
 	//the basis class for all simulation-stuff
 	
+	public int getGrowthCost(Board b ,Minion m)
+    {
+    	return m.card.costGrowth;
+    }
 	
+	public int getOrderCost(Board b ,Minion m)
+    {
+    	return m.card.costOrder;
+    }
+	
+	public int getEnergyCost(Board b ,Minion m)
+    {
+    	return m.card.costEnergy;
+    }
+	
+	public int getDecayCost(Board b ,Minion m)
+    {
+    	return m.card.costDecay;
+    }
 
 	//only used for Spells and enchantments... units + structures automatically select all free tiles of your side
 	public tileSelector getTileSelectorForFirstSelection()
@@ -49,6 +69,12 @@ public class Simtemplate {
     {
         return;
     }
+    
+    
+    public  void onMinionMoved(Board b, Minion triggerEffectMinion, Minion movedMinion)
+    {
+        return;
+    }
 
     //NOT CALLED on Metamorphosis
     //TODO call this if minion died, or replayed to hand, or destroyed (same as died?)
@@ -71,6 +97,11 @@ public class Simtemplate {
     
     //return false if unit doesnt attack, (like automaton)
     public  boolean doesAttack(Board b, Minion m)
+    {
+        return true;
+    }
+    
+    public  boolean doesCountDown(Board b, Minion m)
     {
         return true;
     }
@@ -160,7 +191,7 @@ public class Simtemplate {
     }
     
     //unit did dmg trigger (like arthritis)
-    public  void onMinionDidDmgTrigger(Board b, Minion triggerEffectMinion, Minion damagedMinion, Minion attacker)
+    public  void onMinionDidDmgTrigger(Board b, Minion triggerEffectMinion, Minion damagedMinion, Minion attacker, int dmgdone)
     {
         return;
     }
@@ -190,7 +221,7 @@ public class Simtemplate {
     
     // a minion died (not itself) // unstable too
 
-    public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker)
+    public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker, AttackType attackType, DamageType dmgtype)
     {
         return;
     }
@@ -259,6 +290,8 @@ public class Simtemplate {
     
     public static Simtemplate intToSimtemplate(int id)//only called once per card on carddbcreation
     {
+    	
+    	
     	//order set 1 and 2
     	if(id == 15) return new CrownOfStrength_Sim();
     	if(id == 19) return new Metempsychosis_Sim();
@@ -412,6 +445,58 @@ public class Simtemplate {
     	if(id == 117) return new GodHand_Sim();
     	if(id == 156) return new VaettrOfTheWild_Sim();
     	
+    	//decay set 1 and 2
+    	if(id == 59) return new Lifestealer_Sim();
+    	if(id == 69) return new BitterRoot_Sim();
+    	if(id == 102) return new MireCurse_Sim();
+    	if(id == 131) return new TetheredRecruit_Sim();
+    	if(id == 137) return new ReturnToNature_Sim();
+    	if(id == 159) return new Unbind_Sim();
+    	if(id == 162) return new LoyalDarkling_Sim();
+    	if(id == 164) return new MireShambler_Sim();
+    	if(id == 165) return new MangyRat_Sim();
+    	if(id == 168) return new Blightbearer_Sim();
+    	if(id == 169) return new PuppetSoldier_Sim();
+    	if(id == 170) return new PillarOfDisease_Sim();
+    	if(id == 171) return new Animovore_Sim();
+    	if(id == 172) return new Harvester_Sim();
+    	if(id == 174) return new SoulScrounger_Sim();
+    	
+    	if(id == 176) return new Arthritis_Sim();
+    	if(id == 177) return new RestlessBones_Sim();
+    	if(id == 180) return new DamningCurse_Sim();
+    	if(id == 181) return new Languid_Sim();
+    	if(id == 182) return new EnergySiphon_Sim();
+    	if(id == 184) return new SearingShackles_Sim();
+    	if(id == 185) return new MiasmaWell_Sim();
+    	if(id == 190) return new SoulSteal_Sim();
+    	if(id == 191) return new Regeniture_Sim();
+    	if(id == 194) return new OblivionSeeker_Sim();
+    	if(id == 195) return new IlmireRotEater_Sim();
+    	if(id == 197) return new ScavengerConstruct_Sim();
+    	if(id == 198) return new Atrophy_Sim();
+    	if(id == 199) return new ClusterHex_Sim();
+    	if(id == 202) return new HexMarks_Sim();
+    	
+    	//decay set 3
+    	if(id == 3) return new InfectedGravelock_Sim();
+    	if(id == 161) return new VisceraSage_Sim();
+    	if(id == 163) return new Husk_Sim();
+    	if(id == 166) return new IlmireWitchDoctor_Sim();
+    	if(id == 173) return new TotemOfSuffering_Sim();
+    	if(id == 175) return new GrislyGraft_Sim();
+    	if(id == 179) return new ShroudOfUnlife_Sim();
+    	if(id == 183) return new BrainLice_Sim();
+    	if(id == 186) return new PillarOfFatigue_Sim();
+    	if(id == 187) return new InfectiousBlight_Sim();
+    	if(id == 188) return new Necrogeddon_Sim();
+    	if(id == 192) return new DrainingMist_Sim();
+    	if(id == 196) return new IlmireHunter_Sim();
+    	if(id == 200) return new Cursemonger_Sim();
+    	if(id == 201) return new Pestis_Sim();
+    	
+    	//decay set 4
+    	if(id == 239) return new WickedBeing_Sim();
     	
     	return new Simtemplate();
     }

@@ -2,8 +2,10 @@ package SimulationCards;
 
 import java.util.ArrayList;
 
+import BattleStuff.AttackType;
 import BattleStuff.Board;
 import BattleStuff.Color;
+import BattleStuff.DamageType;
 import BattleStuff.Minion;
 import BattleStuff.Position;
 import BattleStuff.subType;
@@ -44,7 +46,7 @@ public class MetalHeart_Sim extends Simtemplate {
 			{
 				if(mnn == target) continue;
 				
-				for(Minion e : mnn.attachedCards)
+				for(Minion e : mnn.getAttachedCards())
 				{
 					if(e.typeId == 151) e.card.cardSim.onMinionIsSummoned(b, e, target);
 				}
@@ -66,9 +68,9 @@ public class MetalHeart_Sim extends Simtemplate {
 		{
 			if(mnn == m.owner) continue;
 			
-			for(Minion e : mnn.attachedCards)
+			for(Minion e : mnn.getAttachedCards())
 			{
-				if(e.typeId == 151) e.card.cardSim.onMinionDiedTrigger(b, e, m.owner, e);
+				if(e.typeId == 151) e.card.cardSim.onMinionDiedTrigger(b, e, m.owner, e, AttackType.UNDEFINED, DamageType.PHYSICAL);
 			}
 		}
 		
@@ -97,7 +99,7 @@ public class MetalHeart_Sim extends Simtemplate {
         return;
     }
 	
-	public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker)
+	public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker, AttackType attackType, DamageType dmgtype)
     {
 		//unbuff wolf if a wolf dies
 		if(diedMinion.position.color == triggerEffectMinion.position.color && diedMinion.subtypes.contains(subType.Automaton))
