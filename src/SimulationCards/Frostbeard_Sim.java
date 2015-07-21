@@ -20,12 +20,33 @@ public class Frostbeard_Sim extends Simtemplate {
 			{
 				mnn.buffMinionWithoutMessage(2, 0, 0, b);
 				mnn.addnewEnchantments("BUFF", "Frostbeard", m.card.cardDescription, m.card, b, m.position.color);
+				mnn.frostbeardCounter = 1;
 			}
 		}
 		
         return;
     }
 	
+	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, Color turnEndColor)
+    {
+		if(turnEndColor != triggerEffectMinion.owner.position.color) return false;
+		
+		if(triggerEffectMinion.owner.frostbeardCounter == 0)
+		{
+			triggerEffectMinion.owner.buffMinionWithoutMessage(-2, 0, 0, b);
+			return true;//buff is removed, so we return true
+		}
+		else
+		{
+			triggerEffectMinion.owner.frostbeardCounter-=1;
+			return false;
+		}
+    }
 	
+	public Boolean isEffect(Minion m)
+    {
+		if(m.owner!=null) return true;
+        return false;
+    }
 	
 }

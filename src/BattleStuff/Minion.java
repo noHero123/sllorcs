@@ -58,7 +58,13 @@ public class Minion {
 	public int currentAttackPlus = 0; // for kinfolk jarl 
 	public int turnsInplay=0;
 	public int aoeDmgToDo=0;
+	public int desperationBuffs=0;
 	public boolean imuneToNextDmg=false;
+	public boolean addToHandAfterDead = true;
+	
+	public int frostbeardCounter=0;
+	public int ducalInfCounter=0;
+	public int royalInfCounter=0;
 	
 	public int getAc()
 	{
@@ -86,6 +92,7 @@ public class Minion {
 		this.maxAc = this.Ac;
 		this.maxHP = this.Hp;
 		this.isToken =false;
+		if(cid<=-1) this.isToken=true;
 		this.position.color = playercol;
 		//this.color = playercol;
 		
@@ -100,8 +107,9 @@ public class Minion {
 		{
 			this.subtypes.add(s);
 		}
-		
-		
+		frostbeardCounter=0;
+		ducalInfCounter=0;
+		royalInfCounter=0;
 	}
 	
 	public Minion getMinionToken()
@@ -122,6 +130,7 @@ public class Minion {
 		this.position.color = col;
 		this.isIdol=true;
 		this.position.row = pos;
+		this.position.column = 4;
 	}
 	
 	public Minion (String type, String name, String description, Card c, Color ownercolor)
@@ -145,6 +154,52 @@ public class Minion {
 		return s;
 	}*/
 	
+	public void setDefaultValues(Board b)
+	{
+		this.armor = this.card.cardSim.getArmor(b, this);
+		this.isRelentless = this.card.cardSim.isRelentless(b, this);
+	}
+	
+	public void reset()
+	{
+		this.Ap = this.card.ap;
+		this.Hp = this.card.hp;
+		this.Ac = this.card.ac;
+		this.maxAc = this.Ac;
+		this.maxHP = this.Hp;
+		this.isToken =false;
+		if(this.cardID<=-1) this.isToken=true;
+		//this.color = playercol;
+	
+		this.buffName="";
+		this.buffDescription="";
+		this.bufftype="";
+		this.attackType = this.card.getAttackType();
+		this.subtypes.clear();
+		for(subType s : this.card.subtypes)
+		{
+			this.subtypes.add(s);
+		}
+		this.moveChanges=0;
+		this.armor=0;
+		this.isRelentless=false;
+		
+		numberOfDmgTaken=0;
+		deadTriggersDone=false;
+		currentAttackPlus = 0; // for kinfolk jarl 
+		turnsInplay=0;
+		aoeDmgToDo=0;
+		desperationBuffs=0;
+		imuneToNextDmg=false;
+		addToHandAfterDead = true;
+		this.attachedCards.clear();
+		this.owner = null;
+		frostbeardCounter=0;
+		ducalInfCounter=0;
+		royalInfCounter=0;
+	}
+	
+	
 	public boolean canMove()
 	{
 		/*Boolean containss=false;
@@ -158,6 +213,18 @@ public class Minion {
 		return this.movesThisTurn < this.basicMove + this.tempMove + this.moveChanges;
 	}
 	
+	public boolean isRelentless(Board b)
+	{
+		boolean rel =  this.isRelentless || this.card.cardSim.isRelentless(b, this);
+		
+		for(Minion e: this.attachedCards)
+		{
+			rel = rel || e.card.cardSim.isRelentless(b, e);
+		}
+		
+		return rel;
+	}
+	
 	public ArrayList<Minion> getTargets(Minion[][] enemyField, ArrayList<Position> posis, ArrayList<Minion> idols)
 	{
 		ArrayList<Minion> targets = new ArrayList<Minion>();
@@ -168,13 +235,15 @@ public class Minion {
 				int currentattack = this.Ap;
 				for(Position posi : posis)
 				{
-					Minion m = enemyField[posi.row][posi.column];
-					if(m!=null && m.Hp>=1)
+					if(posi.row>=0 && posi.row <=4 && posi.column>=0 && posi.column <=2)
 					{
-						targets.add(m);
-						
-						 currentattack = currentattack / 2;
-						if(currentattack == 0) return targets;
+						Minion m = enemyField[posi.row][posi.column];
+						if(m!=null && m.Hp>=1)
+						{
+							targets.add(m);
+							currentattack = currentattack / 2;
+							if(currentattack == 0) return targets;
+						}
 					}
 				}
 				
@@ -184,11 +253,14 @@ public class Minion {
 			
 			for(Position posi : posis)
 			{
-				Minion m = enemyField[posi.row][posi.column];
-				if(m!=null && m.Hp>=1)
+				if(posi.row>=0 && posi.row <=4 && posi.column>=0 && posi.column <=2)
 				{
-					targets.add(m);
-					return targets;
+					Minion m = enemyField[posi.row][posi.column];
+					if(m!=null && m.Hp>=1)
+					{
+						targets.add(m);
+						return targets;
+					}
 				}
 			}
 			
@@ -203,10 +275,13 @@ public class Minion {
 			
 			for(Position posi : posis)
 			{
-				Minion m = enemyField[posi.row][posi.column];
-				if(m!=null && m.Hp>=1)
+				if(posi.row>=0 && posi.row <=4 && posi.column>=0 && posi.column <=2)
 				{
-					targets.add(m);
+					Minion m = enemyField[posi.row][posi.column];
+					if(m!=null && m.Hp>=1)
+					{
+						targets.add(m);
+					}
 				}
 			}
 			return targets;
@@ -237,7 +312,19 @@ public class Minion {
 		
 		String s = "{\"EnchantUnit\":{\"target\":{\"color\":\""+Board.colorToString(this.position.color)+"\",\"position\":\""+this.position.row+","+this.position.column+"\"},\"enchantTags\":[]}}";
 		b.addMessageToBothPlayers(s);
-		b.addMessageToBothPlayers(b.getStatusUpdateMessage(this));
+		
+		if(this.Hp <=0 )
+		{
+			
+			s= "{\"RemoveUnit\":{\"tile\":"+this.position.posToString()+",\"removalType\":\"DESTROY\"}}";
+			b.addMessageToBothPlayers(s);
+			b.doDeathRattles2(this, 0, AttackType.UNDEFINED, DamageType.TERMINAL);
+			
+		}
+		else
+		{
+			b.addMessageToBothPlayers(b.getStatusUpdateMessage(this));
+		}
 	}
 	
 	public void addnewEnchantments(String type, String name, String description, Card c, Board b, Color owner)
@@ -250,8 +337,21 @@ public class Minion {
 		this.attachedCards.add(buff);
 		
 		String s = "{\"EnchantUnit\":{\"target\":{\"color\":\""+Board.colorToString(this.position.color)+"\",\"position\":\""+this.position.row+","+this.position.column+"\"},\"enchantTags\":[]}}";
+		
+		
 		b.addMessageToBothPlayers(s);
-		b.addMessageToBothPlayers(b.getStatusUpdateMessage(this));
+		
+		if(this.Hp <=0 )
+		{
+			
+			s= "{\"RemoveUnit\":{\"tile\":"+this.position.posToString()+",\"removalType\":\"DESTROY\"}}";
+			b.addMessageToBothPlayers(s);
+			b.doDeathRattles2(this, 0, AttackType.UNDEFINED, DamageType.TERMINAL);
+		}
+		else
+		{
+			b.addMessageToBothPlayers(b.getStatusUpdateMessage(this));
+		}
 	}
 	
 	public void addnewPoison(Board b, Color owner)
@@ -284,9 +384,20 @@ public class Minion {
 		if(this.Ac >=0 && this.maxAc >=1) this.Ac +=ACbuff;
 		if(this.Ac<=0 && this.maxAc >=1) this.Ac=0;
 		
-		b.addMessageToBothPlayers(b.getStatusUpdateMessage(this));
+		if(this.Hp <=0 )
+		{
+			
+			String s= "{\"RemoveUnit\":{\"tile\":"+this.position.posToString()+",\"removalType\":\"DESTROY\"}}";
+			b.addMessageToBothPlayers(s);
+			b.addMinionToGrave(this);
+		}
+		else
+		{
+			b.addMessageToBothPlayers(b.getStatusUpdateMessage(this));
+			if(this.Ac==0 && oldAc>=1) this.card.cardSim.onCountdownReachesZero(b, this);
+		}
 		
-		if(this.Ac==0 && oldAc>=1) this.card.cardSim.onCountdownReachesZero(b, this);
+		
 	}
 	
 	

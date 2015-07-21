@@ -32,6 +32,11 @@ public class CrimsonBull_Sim extends Simtemplate {
         return;
     }
 	
+	public Boolean isEffect(Minion m)
+    {
+		if(m.owner!=null) return true;
+        return false;
+    }
 	
 	
 	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, Color turnEndColor)

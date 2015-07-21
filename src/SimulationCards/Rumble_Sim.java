@@ -55,7 +55,7 @@ public class Rumble_Sim extends Simtemplate {
 					if(freetiles.size() == 0) continue;
 					
 					int randomint = b.getRandomNumber(0, freetiles.size() - 1);
-					b.unitChangesPlace(m.position, freetiles.get(randomint), false);		
+					b.unitChangesPlace(m.position, freetiles.get(randomint), false, true);		
 					
 				}
 				

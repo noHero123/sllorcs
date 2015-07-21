@@ -19,6 +19,12 @@ public class EssenceFeast_Sim extends Simtemplate {
 		return tileSelector.None;
 	}
 	
+	public Boolean isEffect(Minion m)
+    {
+		if(m.owner!=null) return true;
+        return false;
+    }
+	
 	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
     {
 		for(Minion m : b.getPlayerIdols(playedCard.position.color))

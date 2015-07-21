@@ -13,8 +13,9 @@ public class CopperAutomaton_Sim extends Simtemplate {
 	
 	public void onAttackDone(Board b , Minion m, Minion self)
     {
-		if(m.Ap != 0 || m!=self)
+		if(m.getAc() != 0 || m!=self)
         {
+			//System.out.println("ap " + m.getAc() + " " );
 			return;
         }
 		

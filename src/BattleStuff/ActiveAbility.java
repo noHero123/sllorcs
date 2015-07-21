@@ -131,6 +131,28 @@ public class ActiveAbility {
 			if(m.getAc() == 0 && poses.size()>=1) return true;
 			return false;
 		}
+		if(this.id == activeAbilitys.GrowthRegenerateAbility)
+		{
+			int[] curE = b.whitecurrentRessources;
+			if(m.position.color == Color.black) 
+			{
+				curE = b.blackcurrentRessources;
+			}
+			if(curE[0] >= 1 && m.Hp < m.maxHP) return true;
+			return false;
+		}
+		
+		if(this.id == activeAbilitys.DrawScrollAbility)
+		{
+			if(m.getAc() == 0) return true;
+			return false;
+		}
+		
+		if(this.id == activeAbilitys.SacrificeSelf)
+		{
+			if(m.getAc() == 0 && poses.size()>=1) return true;
+			return false;
+		}
 		return isp;
 	}
 	
@@ -153,7 +175,18 @@ public class ActiveAbility {
 		{
 			return true;
 		}
-		
+		if(this.id == activeAbilitys.GrowthRegenerateAbility)
+		{
+			return false;
+		}
+		if(this.id == activeAbilitys.DrawScrollAbility)
+		{
+			return false;
+		}
+		if(this.id == activeAbilitys.SacrificeSelf)
+		{
+			return true;
+		}
 		return false;
 	}
 	
@@ -203,6 +236,25 @@ public class ActiveAbility {
 				{
 					isp.add(new Position(pp.position));
 				}
+			}
+			return isp;
+		}
+		
+		if(this.id == activeAbilitys.GrowthRegenerateAbility)
+		{
+			return isp;
+		}
+		
+		if(this.id == activeAbilitys.DrawScrollAbility)
+		{
+			return isp;
+		}
+		
+		if(this.id == activeAbilitys.SacrificeSelf)
+		{
+			for(Minion mm : b.getAllMinionOfField())
+			{
+				isp.add(new Position(mm.position));
 			}
 			return isp;
 		}

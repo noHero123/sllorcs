@@ -31,7 +31,7 @@ public class IllthornSeed_Sim extends Simtemplate {
         return;
     }
 	
-	public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion)
+	public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker)
     {
 		//unbuff wolf if a wolf dies
 		if(triggerEffectMinion.owner != null && triggerEffectMinion.owner == diedMinion)
@@ -39,7 +39,8 @@ public class IllthornSeed_Sim extends Simtemplate {
 			//summon illthorn
 			Card c = CardDB.getInstance().cardId2Card.get(115);
 			Minion ill = new Minion(c, -1, diedMinion.position.color);
-			b.summonUnitOnPosition(new Position(diedMinion.position), ill);
+			b.summonList.add(b.new SummonItem(ill, diedMinion.position));
+			//b.summonUnitOnPosition(new Position(diedMinion.position), ill);
 		}
 			
         return;

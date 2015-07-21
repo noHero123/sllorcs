@@ -16,7 +16,7 @@ public class MetalHeart_Sim extends Simtemplate {
 	{
 		return tileSelector.all_creatures;
 	}
-	
+	//TODO are the other subtypes are deleted?
 	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
@@ -68,7 +68,7 @@ public class MetalHeart_Sim extends Simtemplate {
 			
 			for(Minion e : mnn.attachedCards)
 			{
-				if(e.typeId == 151) e.card.cardSim.onMinionDiedTrigger(b, e, m.owner);
+				if(e.typeId == 151) e.card.cardSim.onMinionDiedTrigger(b, e, m.owner, e);
 			}
 		}
 		
@@ -97,7 +97,7 @@ public class MetalHeart_Sim extends Simtemplate {
         return;
     }
 	
-	public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion)
+	public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker)
     {
 		//unbuff wolf if a wolf dies
 		if(diedMinion.position.color == triggerEffectMinion.position.color && diedMinion.subtypes.contains(subType.Automaton))

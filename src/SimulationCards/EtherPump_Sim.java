@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
+import BattleStuff.Color;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
 import BattleStuff.subType;
@@ -19,10 +20,15 @@ public class EtherPump_Sim extends Simtemplate {
 	public  void doSpecialAttack(Board b, Minion own)
     {
 		//special attack message is added automatically! dont have to do it here
+		Color oppcol = Board.getOpposingColor(own.position.color);
+		ArrayList<Minion> all = new ArrayList<Minion>(b.getPlayerFieldList(oppcol));
 		
-		ArrayList<Minion> all = new ArrayList<Minion>(b.getAllMinionOfField());
+		for(Minion m : all)
+		{
+			m.aoeDmgToDo=1;
+		}
 		
-		b.doDmg(all, own, 1, AttackType.UNDEFINED, DamageType.PHYSICAL);
+		b.doDmg(all, own, -100, AttackType.UNDEFINED, DamageType.PHYSICAL);
 		
         return;
     }

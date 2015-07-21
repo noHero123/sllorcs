@@ -27,7 +27,7 @@ public class Plating_Sim extends Simtemplate
         return;
     }
 	
-	public  void onMinionGotDmgTrigger(Board b, Minion triggerEffectMinion, Minion damagedMinion, int dmg)
+	public  void onMinionGotDmgTrigger(Board b, Minion triggerEffectMinion, Minion damagedMinion, int dmg, Minion attacker)
     {
 		if(!damagedMinion.imuneToNextDmg)
 		{

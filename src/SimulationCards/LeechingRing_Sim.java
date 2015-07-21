@@ -25,8 +25,10 @@ public class LeechingRing_Sim extends Simtemplate {
         return;
     }
 	
-	public  void onMinionDidDmgTrigger(Board b, Minion triggerEffectMinion, Minion damagedMinion)
+	public  void onMinionDidDmgTrigger(Board b, Minion triggerEffectMinion, Minion damagedMinion, Minion attacker)
     {
+		if(attacker != triggerEffectMinion.owner) return;
+		
 		triggerEffectMinion.healMinion(triggerEffectMinion.Ap, b);
         return;
     }

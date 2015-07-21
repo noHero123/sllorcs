@@ -816,6 +816,9 @@ public class Board {
 		}
 		
 		//{"StatsUpdate":{"target":{"color":"white","position":"2,1"},"hp":2,"ap":5,"ac":2,"buffs":[{"name":"Death Cap Berserk","description":"When Death Cap Berserk comes into play, and at the beginning of its turns, enchanted creature's Countdown is decreased by 2 and it is dealt 1 [magic damage].","type":"ENCHANTMENT"}]}}
+		
+		
+		
 		String s="{\"StatsUpdate\":{\"target\":"+m.position.posToString()+",\"hp\":"+ m.Hp +",\"ap\":"+ m.Ap +",\"ac\":"+ m.getAc() +",\"buffs\":[";
 		String buffs="";
 		for(Minion mm : m.attachedCards)
@@ -977,14 +980,17 @@ public class Board {
 		String s = "";
 		
 		ArrayList<Position> posis = Board.getAttackPositions(m);
-		if(m.card.cardSim.hasSpecialAttackTarget())
-		{
-			posis = m.card.cardSim.getSpecialAttackTarget(this, m);
-		}
+		
 		Color opcol = Board.getOpposingColor(m.position.color);
 		ArrayList<Minion> idols = this.getPlayerIdols(opcol);
 		ArrayList<Minion> targets = m.getTargets(defffield, posis, idols);
 
+		if(m.card.cardSim.hasSpecialAttackTarget())
+		{
+			posis = m.card.cardSim.getSpecialAttackTarget(this, m);
+			targets = this.getMinionsFromPositions(posis);
+		}
+		
 		
 		int relentlessAttackvalue = 0;
 		boolean idol=false;
@@ -1001,10 +1007,27 @@ public class Board {
 			{
 				//hellspiters area is undefined, but he does also an unitattacktile message!
 				//UnitAttackTile or UnitAttackIdol
-				s = getUnitAttackMessage(m,targets);
+				//minions like may only attack a tile (like that energy-strutcture)-> they have no minion to target
+				if(targets.size()>=1)
+				{
+					posis.clear();
+					for(Minion minpos : targets)
+					{
+						posis.add(minpos.position);
+					}
+					s = getUnitAttackMessage(m,posis);
+				}
+				else
+				{
+					s = getUnitAttackMessage(m,posis);
+				}
 				this.addMessageToBothPlayers(s);
 			}
 			
+			for(Minion tt : targets )
+			{
+				System.out.println("targets: " + tt.position.posToString());
+			}
 	
 			//unit attacks (and attacks again if relentless):
 
@@ -1018,11 +1041,8 @@ public class Board {
 			
 			if(idol) relentlessAttackvalue=0;
 			
-			boolean relentless = m.isRelentless || m.card.cardSim.isRelentless(this, m);
-			for(Minion e: m.attachedCards)
-			{
-				relentless = relentless || e.card.cardSim.isRelentless(this, e);
-			}
+			boolean relentless = m.isRelentless(this);
+			
 			
 			if(relentless && relentlessAttackvalue >=1 && m.Hp>=1 )
 			{
@@ -1104,7 +1124,7 @@ public class Board {
 			}
 		}
 		
-		doDeathRattles();
+		//doDeathRattles();
 		
 		
 	}
@@ -1132,7 +1152,8 @@ public class Board {
 				
 			}
 		}
-		this.doDeathRattles();
+		
+		//this.doDeathRattles();
 		
 		
 	}
@@ -1148,7 +1169,8 @@ public class Board {
 			//delete turn-buffs and stuff
 			m.turnEndingDebuffing(this);
 		}
-		this.doDeathRattles();
+		
+		//this.doDeathRattles();
 		
 	}
 	
@@ -1488,9 +1510,37 @@ public class Board {
 			card.card.cardSim.onCardPlay(this, this.activePlayerColor, positions, card);
 		}
 
+		if(card.cardType == Kind.SPELL )
+		{
+			this.addMinionToGrave(card);
+			//trigger effects
+			for(Minion m : this.getAllMinionOfField())
+			{
+				m.card.cardSim.onPlayerPlayASpell(this, m, card);
+				for(Minion e : m.attachedCards)
+				{
+					e.card.cardSim.onPlayerPlayASpell(this, e, card);
+				}
+			}
+			
+		}
+		
+		if(card.cardType == Kind.SPELL || card.cardType == Kind.ENCHANTMENT) //woodland memorial need this effect!
+		{
+			for(Minion m : this.getAllMinionOfField())
+			{
+				m.card.cardSim.onPlayerPlayASpellOrEnchantment(this, m, card);
+				/*for(Minion e : m.attachedCards)
+				{
+					e.card.cardSim.onPlayerPlayASpell(this, e, card);
+				}*/
+			}
+			
+		}
+		
 		//TODO do trigger onCardPlayedTrigger and stuff
 		
-		this.doDeathRattles();
+		//this.doDeathRattles();
 		
 		s=this.getCardStackUpdate(this.activePlayerColor);//TODO we may can delete this, if the last message on both stacks is a cardstack update?
 		this.addMessageToBothPlayers(s);
@@ -1547,6 +1597,13 @@ public class Board {
 	
 	public void summonUnitOnPosition(Position pos, Minion m)
 	{
+		summonUnitOnPosition( pos, m, true);
+	}
+	
+	
+	public void summonUnitOnPosition(Position pos, Minion m, Boolean dotriggers)
+	{
+		m.reset();
 		Minion before = this.getPlayerField(pos.color)[pos.row][pos.column];
 		
 		if(before != null && before.Hp>=1) 
@@ -1576,17 +1633,23 @@ public class Board {
 		this.addMessageToBothPlayers(s);
 		
 		//do battlecry effect (of for scrolls: do the effects of the card :D)
+		m.setDefaultValues(this);
 		m.card.cardSim.getBattlecryEffect(this, m, null);
 		
 		//apply new effects to new minion
-		for(Minion mins : this.getAllMinionOfField())
+		if(dotriggers)
 		{
-			mins.card.cardSim.onMinionIsSummoned(this, mins, m);
+			for(Minion mins : this.getAllMinionOfField())
+			{
+				mins.card.cardSim.onMinionIsSummoned(this, mins, m);
+			}
 		}
 		
 		//TODO add effects of rules-updates-scrolls and enchantments? (are there such enchantments?)
 		
 		//TODO add status updates if minion was changed? (should be done in the summon-triggers)
+		
+		
 		
 		//add minion to battlefield!
 		this.getPlayerField(m.position.color)[m.position.row][m.position.column] = m;
@@ -2444,7 +2507,7 @@ public class Board {
 			this.deepFirstSearch(p1, markCol);
 			
 			ArrayList<Position>blubb = new ArrayList<Position>(this.dfsSolutionList); //we can take the elements of dfsSol.list, they are created with new
-			
+			retval.add(blubb);
 		}
 		
 		
@@ -2498,6 +2561,8 @@ public class Board {
 				Position p = new Position(col, rowdi, i);
 				posMoves.add(p);
 			}
+			Position p = new Position(col, rowdi, 4);
+			posMoves.add(p);
 		}
 		
 		if(area == targetArea.RADIUS_4)
@@ -2736,8 +2801,7 @@ public class Board {
 		if(ability.equals("Move"))
 		{
 			Position targ = poses.get(0);
-			s = "{\"MoveUnit\":{\"from\":"+unitPos.posToString()+",\"to\":"+targ.posToString()+"}}";
-			this.addMessageToBothPlayers(s);
+			
 			m.movesThisTurn++;
 			this.unitChangesPlace(unitPos, targ);
 		}
@@ -2758,8 +2822,16 @@ public class Board {
 	}
 	
 	//with switching, minions change place
-	public void unitChangesPlace(Position ofrom, Position oto, Boolean doTrigger)
+	public void unitChangesPlace(Position ofrom, Position oto, Boolean doTrigger, Boolean doMessage)
 	{
+		
+		
+		if(doMessage)
+		{
+			String s = "{\"MoveUnit\":{\"from\":"+ofrom.posToString()+",\"to\":"+oto.posToString()+"}}";
+			this.addMessageToBothPlayers(s);
+		}
+		
 		Position from  = new Position(ofrom);
 		Position to  = new Position(oto);
 		
@@ -2786,7 +2858,7 @@ public class Board {
 	
 	public void unitChangesPlace(Position from, Position to)
 	{
-		unitChangesPlace( from,  to, true);
+		unitChangesPlace( from,  to, true, true);
 	}
 	
 	public void doOnFieldChangedTriggers()
@@ -2805,14 +2877,17 @@ public class Board {
 		public Minion attacker;
 		public Minion deffender;
 		public AttackType attackType;
+		public DamageType damageType;
 		public int dmgdone;
+		public int newhp;
 		
-		public DmgRegisterUnit(Minion a, Minion d, AttackType att, int dmgd)
+		public DmgRegisterUnit(Minion a, Minion d, AttackType att, DamageType dt, int dmgd, int hp)
 		{
 			this.attacker=a;
 			this.deffender =d;
 			this.attackType=att;
 			this.dmgdone = dmgd;
+			this.newhp = hp;
 		}
 	}
 	
@@ -2836,30 +2911,34 @@ public class Board {
         {
         	DmgRegisterUnit pair = this.dmgregister.get(0);
             this.dmgregister.remove(0);
-            performDmgTriggers(pair.attacker, pair.deffender, pair.attackType, pair.dmgdone);
+            performDmgTriggers(pair.attacker, pair.deffender, pair.attackType, pair.damageType, pair.dmgdone, pair.newhp);
         }
         
         
         //TODO diedtriggers + remove minion
         
-        ArrayList<Minion> allmins = this.getAllMinionOfField();
-        for(Minion m : allmins)
-        {
-        	
-        	if(m.Hp <= 0 && !m.deadTriggersDone)
-        	{
-        		for(Minion mnn : allmins)
-        		{
-        			mnn.card.cardSim.onMinionDiedTrigger(this, mnn, m);//only onMinionDiedTriggers of other minions or illthornseed would spawn instantly in fight
-        		}
-        	}
-        }
+        doDeathRattles2(attacker, overdmg, attackType, damageType);
         
         
         return overdmg;
 	}
 	
-	public void doDeathRattles()
+	
+	public class SummonItem
+	{
+		public Minion minion;
+		public Position pos;
+		
+		public SummonItem(Minion a, Position p)
+		{
+			this.minion=a;
+			this.pos = p;
+		}
+	}
+	
+	public ArrayList<SummonItem> summonList = new ArrayList<SummonItem>(); 
+	
+	public void doDeathRattles2(Minion attacker, int overdmg, AttackType attacktype, DamageType dmgtype )
 	{
 		int died=0;
         this.graveWhiteChanged=false;
@@ -2870,18 +2949,71 @@ public class Board {
         	
         	if(m.Hp <= 0 && !m.deadTriggersDone)
         	{
+        	
+        		for(Minion mnn : allmins)
+        		{
+        			
+        			mnn.card.cardSim.onMinionDiedTrigger(this, mnn, m, attacker);
+        			
+        			for(Minion e : m.attachedCards)
+            		{
+        				e.card.cardSim.onMinionDiedTrigger(this, e, m, attacker);
+            		}
+            		
+        		}
         		
-        		this.addMinionToGrave(m);
+        		
+        		
+        		//do triggers for enchantments
+        		for(Minion e : m.attachedCards)
+        		{
+        			//say enchantment that owner died
+        			
+        			e.card.cardSim.onMinionDiedTrigger(this, e, m, attacker);
+        			e.attachedCards.clear();
+        			if(e.cardID>=0)
+        			{
+        				this.getPlayerGrave(e.position.color).add(e);
+        				if(e.position.color == Color.white) 
+        				{
+        					graveWhiteChanged=true;
+        				}
+        				else
+        				{
+        					graveBlackChanged=true;
+        				}
+        			}
+        		}
+        		m.attachedCards.clear();
+        		
+        		
+        		this.addMinionToGrave(m);//with triggers of enchantments
+        		
         		m.deadTriggersDone=true;//only to be save :D
         		
         		m.card.cardSim.onDeathrattle(this, m);
         		m.card.cardSim.onMinionLeavesBattleField(this, m);
         		
         		died++;
+        	
         	}
         }
         
         doOnFieldChangedTriggers();
+        
+        //TODO consider conenctrate fire for summon items!
+        
+        //summon units
+        if(!attacker.isRelentless(this) || overdmg == 0 || attacktype !=AttackType.MELEE || attacker.Hp <=0 || dmgtype != DamageType.COMBAT) //dont do spawn a minion if a relentless minion attacks and he can further attack!
+		{
+        	//do onDestroy Triggers
+        	for(SummonItem si : this.summonList)
+        	{
+        		this.summonUnitOnPosition(si.pos, si.minion);
+        	}
+        	this.summonList.clear();
+		}
+
         
         if(died>=1)
         {
@@ -2908,39 +3040,30 @@ public class Board {
 			m.card.cardSim.onDeathrattle(this, m);
 		}
 		
-		for(Minion mnn : m.attachedCards)
+		if(m.addToHandAfterDead)
 		{
-			//say enchantment that owner died
-			mnn.card.cardSim.onMinionDiedTrigger(this, mnn, m);
-			mnn.attachedCards.clear();
-			if(mnn.cardID>=0)
+			this.getPlayerHand(m.position.color).add(m);
+			this.addMessageToPlayer(m.position.color, this.getHandUpdateMessage(m.position.color));
+		}
+		else
+		{
+			this.getPlayerGrave(m.position.color).add(m);
+			if(m.position.color == Color.white) 
 			{
-				this.getPlayerGrave(mnn.position.color).add(mnn);
-				if(mnn.position.color == Color.white) 
-				{
-					graveWhiteChanged=true;
-				}
-				else
-				{
-					graveBlackChanged=true;
-				}
+				graveWhiteChanged=true;
+			}
+			else
+			{
+				graveBlackChanged=true;
 			}
 		}
-		m.attachedCards.clear();
-		this.getPlayerGrave(m.position.color).add(m);
 		m.deadTriggersDone=true;//only to be save :D
+		m.addToHandAfterDead=false;//only to be save :D
 		
 		//remove from field
 		//this.getPlayerField(m.color)[m.row][m.column]=null;
 		
-		if(m.position.color == Color.white) 
-		{
-			graveWhiteChanged=true;
-		}
-		else
-		{
-			graveBlackChanged=true;
-		}
+		
 		
 		//TODO perform on fieldchanged trigger?
 		
@@ -3028,7 +3151,7 @@ public class Board {
 			
 			this.getDmgUnitMessage(attacker, target, dmgdone, realdmgDone, attackType, damageType, iskill);
 			
-			this.dmgregister.add(new DmgRegisterUnit(attacker, target, attackType, dmgdone));
+			this.dmgregister.add(new DmgRegisterUnit(attacker, target, attackType, damageType, dmgdone, newHPDefender));
 			
 		}
 		
@@ -3041,6 +3164,12 @@ public class Board {
 				s= this.getStatusUpdateMessage(target);
 				this.addMessageToBothPlayers(s);
 			}
+			
+			if(target.isIdol )
+			{
+				overAttack2=0;
+			}
+			
 		}
 		
 		
@@ -3061,7 +3190,7 @@ public class Board {
 	}
 	
 	
-	private void performDmgTriggers(Minion attacker, Minion deffender, AttackType attackType, int dmgdone)
+	private void performDmgTriggers(Minion attacker, Minion deffender, AttackType attackType, DamageType damageType , int dmgdone, int newHp)
     {
 
         int attackAP = attacker.Ap;
@@ -3075,8 +3204,13 @@ public class Board {
         
         if (attackType == AttackType.MELEE)
         {
-        	//perform spiky-dmg from all sources (minion himself, enchantments + linger spells)
+        	//perform proximityDMG
+        	if(newHp <=0 && deffender.cardID == 90)
+        	{
+        		performDmg(attacker, deffender, AttackType.UNDEFINED , DamageType.COMBAT, 4);
+        	}
         	
+        	//perform spiky-dmg from all sources (minion himself, enchantments + linger spells)
         	int spikydmg = deffender.card.cardSim.getSpikyDamage(this, deffender);
         	if(spikydmg>=1)
         	{
@@ -3151,11 +3285,12 @@ public class Board {
         //perform unit got dmg triggers for deffender
         if (defferHP >= 1)
         {
+        	deffender.card.cardSim.onMinionGotDmgTrigger(this, deffender, deffender, dmgdone, attacker);
         	//enchantments could be deleted after triggering
         	ArrayList<Minion> temp = new ArrayList<Minion> (deffender.attachedCards);
             for (Minion ench : temp)
             {
-            	ench.card.cardSim.onMinionGotDmgTrigger(this, deffender, attacker, dmgdone);
+            	ench.card.cardSim.onMinionGotDmgTrigger(this, ench, deffender, dmgdone, attacker);
             }
             
         }
@@ -3187,11 +3322,12 @@ public class Board {
         //do onattck unit deals dmg
         if (attackHP >= 1)
         {
+        	attacker.card.cardSim.onMinionDidDmgTrigger(this, attacker, deffender, attacker);
         	//enchantments could be deleted after triggering
         	ArrayList<Minion> temp = new ArrayList<Minion> (attacker.attachedCards);
         	for (Minion ench :temp)
         	{
-        		ench.card.cardSim.onMinionDidDmgTrigger(this, attacker, deffender);
+        		ench.card.cardSim.onMinionDidDmgTrigger(this, ench, deffender, attacker);
             }
         }
         
@@ -3202,7 +3338,7 @@ public class Board {
     }
 
 	
-	private String getUnitAttackMessage(Minion m, ArrayList<Minion> targetMins)
+	private String getUnitAttackMessage(Minion m, ArrayList<Position> target)
 	{
 		//{"UnitAttackIdol":{"attacker":{"color":"white","position":"1,1"},"idol":1}},
 		//OR
@@ -3211,13 +3347,11 @@ public class Board {
 		String source=this.getSource(m);
 		String targets = "";
 		
-		Minion tar = targetMins.get(0);
-		int tarCol = tar.position.column;
-		if(tar.isIdol) tarCol = 4;
-		for(Minion mm : targetMins)
+		Position tar = target.get(0);
+		int tarCol = tar.column;
+		for(Position mm : target)
 		{
-			int tarColt = mm.position.column;
-			if(mm.isIdol) tarColt = 4;
+			int tarColt = mm.column;
 			
 			if(tarColt > tarCol)
 			{
@@ -3228,15 +3362,15 @@ public class Board {
 		
 		String ret = "";
 		
-		if(tar.isIdol)
+		if(tar.column == 4)
 		{
 			//{"UnitAttackIdol":{"attacker":{"color":"white","position":"1,1"},"idol":1}},
-			ret = "{\"UnitAttackIdol\":{\"attacker\":"+m.position.posToString()+",\"idol\":" + tar.position.row + "}}";
+			ret = "{\"UnitAttackIdol\":{\"attacker\":"+m.position.posToString()+",\"idol\":" + tar.row + "}}";
 		}
 		else
 		{
 			//{"UnitAttackTile":{"source":{"color":"white","position":"1,1"},"target":{"color":"black","position":"1,2"}}},
-			ret ="{\"UnitAttackTile\":{" + source + ",\"target\":"+tar.position.posToString()+"}}"; 
+			ret ="{\"UnitAttackTile\":{" + source + ",\"target\":"+tar.posToString()+"}}"; 
 		}
 		
 		return ret;
@@ -3313,6 +3447,48 @@ public class Board {
 		}
 		
 		return s;
+	}
+	
+	public void removeMinionToHand(Minion m)
+	{
+		
+		this.graveWhiteChanged=false;
+        this.graveBlackChanged=false;
+		
+		String s = "{\"UnsummonUnit\":{\"target\":"+m.position.posToString()+"}}";
+		this.addMessageToBothPlayers(s);
+		if(m.position.row >=0 && m.position.column >=0)
+		{
+			this.getPlayerField(m.position.color)[m.position.row][m.position.column]=null;
+		}
+		
+		for(Minion e : m.attachedCards)
+		{
+			e.attachedCards.clear();
+			if(e.cardID>=0)
+			{
+				this.getPlayerGrave(e.position.color).add(e);
+				if(e.position.color == Color.white) 
+				{
+					graveWhiteChanged=true;
+				}
+				else
+				{
+					graveBlackChanged=true;
+				}
+			}
+		}
+		m.attachedCards.clear();
+        
+		m.position.row=-1;
+		m.position.column=-1;
+		
+        doOnFieldChangedTriggers();
+        this.getPlayerHand(m.position.color).add(m);
+        this.addMessageToPlayer(m.position.color, this.getHandUpdateMessage(m.position.color));
+        if(graveWhiteChanged) this.addMessageToBothPlayers(this.getCardStackUpdate(Color.white));
+    	if(graveBlackChanged) this.addMessageToBothPlayers(this.getCardStackUpdate(Color.black));
+        
 	}
 	
 	public void destroyMinion(Minion m, Minion source)

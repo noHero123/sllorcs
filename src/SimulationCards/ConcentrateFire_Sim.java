@@ -25,6 +25,7 @@ public class ConcentrateFire_Sim extends Simtemplate
         return;
     }
 	
+	
 	public void onAttackDone(Board b , Minion m, Minion self)
     {
 		//do annother attack!
