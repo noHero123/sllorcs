@@ -7,7 +7,7 @@ import BattleStuff.Card;
 import BattleStuff.CardDB;
 import BattleStuff.Minion;
 import BattleStuff.Position;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class KnightScholar_Sim extends Simtemplate {
 	//"id":119,"name":"Knight Scholar","description":"When Knight Scholar's Countdown is 0, you may reset its Countdown to draw 1 scroll."
@@ -17,7 +17,7 @@ public class KnightScholar_Sim extends Simtemplate {
 		
 		
 		b.drawCards(triggerEffectMinion.position.color, 1);
-		triggerEffectMinion.buffMinion(0, 0, triggerEffectMinion.maxAc, b);
+		triggerEffectMinion.resetAcWithMessage(b);
 		
         return;
     }

@@ -7,7 +7,7 @@ import BattleStuff.Board;
 import BattleStuff.Color;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class EtherPump_Sim extends Simtemplate {
 	//"id":82,"name":"Ether Pump","description":"When Ether Pump attacks, opponent's units are dealt 1 [physical damage]."

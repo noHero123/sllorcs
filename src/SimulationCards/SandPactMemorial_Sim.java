@@ -4,7 +4,7 @@ import BattleStuff.Board;
 import BattleStuff.Color;
 import BattleStuff.Minion;
 import BattleStuff.ResourceName;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class SandPactMemorial_Sim extends Simtemplate {
 	//"id":112,"name":"Sand Pact Memorial","description":"When Sand Pact Memorial comes into play, increase [current] Energy by 5."

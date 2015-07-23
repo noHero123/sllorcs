@@ -5,7 +5,7 @@ import BattleStuff.Board;
 import BattleStuff.DamageType;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class ScavengerConstruct_Sim extends Simtemplate {
 	//"id":197,"name":"Scavenger Construct","description":"When an adjacent unit is destroyed, Scavenger Construct gets +2 Health."

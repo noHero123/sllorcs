@@ -7,7 +7,7 @@ import BattleStuff.Card;
 import BattleStuff.CardDB;
 import BattleStuff.Minion;
 import BattleStuff.Position;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class GravelockOutcast_Sim extends Simtemplate {
 	//"id":130,"name":"Gravelock Outcast","description":"Pay 1 Growth to fully [heal] Gravelock Outcast."

@@ -7,7 +7,7 @@ import BattleStuff.CardDB;
 import BattleStuff.DamageType;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 import BattleStuff.Board.SummonItem;
 
 public class IlmireWitchDoctor_Sim extends Simtemplate {

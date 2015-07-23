@@ -8,6 +8,7 @@ import BattleStuff.Color;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
 import BattleStuff.Position;
+import BattleStuff.TargetAreaGroup;
 import BattleStuff.tileSelector;
 
 public class ThunderSurge_Sim extends Simtemplate
@@ -19,11 +20,15 @@ public class ThunderSurge_Sim extends Simtemplate
 		return tileSelector.all_units;
 	}
 	
+	public TargetAreaGroup getTargetAreaGroup()
+	{
+		return TargetAreaGroup.all_units;
+	}
 	
 	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
     {
-		ArrayList<ArrayList<Position>> sequentials = b.getSequentialPositions(Color.white);
-		sequentials.addAll(b.getSequentialPositions(Color.black));
+		ArrayList<ArrayList<Position>> sequentials = b.getSequentialPositions(Color.white, this.getTargetAreaGroup());
+		sequentials.addAll(b.getSequentialPositions(Color.black,this.getTargetAreaGroup()));
 		
 		Position selected = targets.get(0);
 		System.out.println(selected.posToString());

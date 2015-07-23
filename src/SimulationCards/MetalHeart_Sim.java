@@ -8,7 +8,7 @@ import BattleStuff.Color;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
 import BattleStuff.Position;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
 public class MetalHeart_Sim extends Simtemplate {
@@ -26,65 +26,28 @@ public class MetalHeart_Sim extends Simtemplate {
 		int buffs = 0;
 		for(Minion m : b.getPlayerFieldList(target.position.color))
 		{
-			if(m.subtypes.contains(subType.Automaton))
+			if(target.position.isEqual(m.position)) continue;
+			
+			if(m.getSubTypes().contains(SubType.Automaton))
 			{
 				buffs++;
 			}
 		}
 		if(buffs>=1) target.buffMinionWithoutMessage(buffs, 0, 0, b);
-		boolean triggerOtherMetalHeart = false;
-		if(!target.subtypes.contains(subType.Automaton))
-		{
-			triggerOtherMetalHeart=true;
-		}
-		target.subtypes.add(subType.Automaton);
-		target.addCardAsEnchantment("ENCHANTMENT", "Bear Paw", playedCard.card.cardDescription, playedCard, b);
 		
-		if(triggerOtherMetalHeart)
-		{
-			for(Minion mnn: b.getPlayerFieldList(target.position.color))
-			{
-				if(mnn == target) continue;
-				
-				for(Minion e : mnn.getAttachedCards())
-				{
-					if(e.typeId == 151) e.card.cardSim.onMinionIsSummoned(b, e, target);
-				}
-			}
-		}
+		
+		
+		target.addSubtype(SubType.Automaton,b);
+		target.addCardAsEnchantment("ENCHANTMENT", "Metal Heart", playedCard.card.cardDescription, playedCard, b);
+	
         return;
     }
 	
 	// TODO we do a special onDeathrattle only for enchantments in addMinionToGrave!
-	public  void onDeathrattle(Board b, Minion m)
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
     {
 		//remove attack of others metelhearted minions
-		if(m.owner.card.subtypes.contains(subType.Automaton)) 
-		{
-			return; // dont have to debuff minions
-		}
-		
-		for(Minion mnn: b.getPlayerFieldList(m.owner.position.color))
-		{
-			if(mnn == m.owner) continue;
-			
-			for(Minion e : mnn.getAttachedCards())
-			{
-				if(e.typeId == 151) e.card.cardSim.onMinionDiedTrigger(b, e, m.owner, e, AttackType.UNDEFINED, DamageType.PHYSICAL);
-			}
-		}
-		
-		//delete subtype
-
-        for ( int i = 0;  i < m.subtypes.size(); i++)
-        {
-        	subType tempName = m.subtypes.get(i);
-            if(tempName.equals(subType.Automaton))
-            {
-            	 m.subtypes.remove(i);
-            	 //break;
-            }
-        }
+		m.removeSubtype(SubType.Automaton,b);
 		
         return;
     }
@@ -92,7 +55,7 @@ public class MetalHeart_Sim extends Simtemplate {
 	
 	public  void onMinionIsSummoned(Board b, Minion triggerEffectMinion, Minion summonedMinion)
     {
-		if(summonedMinion.position.color == triggerEffectMinion.position.color && summonedMinion.subtypes.contains(subType.Automaton))
+		if(summonedMinion.position.color == triggerEffectMinion.position.color && summonedMinion.getSubTypes().contains(SubType.Automaton))
 		{
 			triggerEffectMinion.owner.buffMinion(1, 0, 0, b);
 		}
@@ -102,11 +65,36 @@ public class MetalHeart_Sim extends Simtemplate {
 	public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker, AttackType attackType, DamageType dmgtype)
     {
 		//unbuff wolf if a wolf dies
-		if(diedMinion.position.color == triggerEffectMinion.position.color && diedMinion.subtypes.contains(subType.Automaton))
+		if(diedMinion.position.color == triggerEffectMinion.position.color && diedMinion.getSubTypes().contains(SubType.Automaton))
 		{
 			triggerEffectMinion.owner.buffMinion(-1, 0, 0, b);
 		}
         return;
     }
+	
+	 public void onSubTypeAdded(Board b, Minion triggerEffectMinion, Minion m, SubType subt )
+	 {
+		 
+		 if(triggerEffectMinion.owner == m) return;
+		 
+		 if(triggerEffectMinion.owner.position.color == m.position.color  && subt == SubType.Automaton)
+		 {
+			 triggerEffectMinion.owner.buffMinion(1, 0, 0, b);
+		 }
+		 return;
+	 }
+	
+	 public void onSubTypeDeleted(Board b, Minion triggerEffectMinion, Minion m, SubType subt )
+	 {
+		 if(triggerEffectMinion.owner == m) return;
+		 
+		 if(triggerEffectMinion.owner.position.color == m.position.color && subt == SubType.Automaton)
+		 {
+			 triggerEffectMinion.owner.buffMinion(-1, 0, 0, b);
+		 }
+		 return;
+	 }
+	
+	
 	
 }

@@ -2,7 +2,7 @@ package SimulationCards;
 
 import BattleStuff.Board;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class IronOgre_Sim extends Simtemplate {
 	//"id":39,"name":"Iron Ogre","description":"" + relentless + armor1

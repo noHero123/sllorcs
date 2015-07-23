@@ -9,7 +9,7 @@ import BattleStuff.DamageType;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
 import BattleStuff.Position;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
 public class Desperation_Sim extends Simtemplate {

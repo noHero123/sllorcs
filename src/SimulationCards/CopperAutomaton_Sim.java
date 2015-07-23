@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import BattleStuff.Board;
 import BattleStuff.Minion;
 import BattleStuff.Position;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class CopperAutomaton_Sim extends Simtemplate {
 	//"id":66,"name":"Copper Automaton","description":"Copper Automaton is destroyed after attacking."

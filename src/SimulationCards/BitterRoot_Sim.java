@@ -2,7 +2,7 @@ package SimulationCards;
 
 import BattleStuff.Board;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class BitterRoot_Sim extends Simtemplate {
 	//"id":69,"name":"Bitter Root","description":"" poisonous

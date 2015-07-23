@@ -4,7 +4,7 @@ import BattleStuff.Board;
 import BattleStuff.Color;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class HonorableGeneral_Sim extends Simtemplate {
 	//"id":74,"name":"Honorable General","description":"When Honorable General's Countdown becomes 0, adjacent units have their Countdown decreased by 2."
@@ -21,7 +21,7 @@ public class HonorableGeneral_Sim extends Simtemplate {
     {
 		for( Minion mnn : b.getMinionsFromPositions(m.position.getNeightbours()) )
 		{
-			if(m.getAc()>=0)
+			if(mnn.getAc()>=0)
 			{
 				mnn.buffMinionWithoutMessage(0, 0, -2, b);
 			}

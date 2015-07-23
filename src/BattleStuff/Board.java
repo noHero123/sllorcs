@@ -83,6 +83,8 @@ public class Board {
 	private ArrayList<String> messagesToWhite= new ArrayList<String>();
 	private ArrayList<String> messagesToBlack= new ArrayList<String>();
 	
+	public int drawCorrodePossible = 0;
+	
 	public synchronized int initPlayer(Player p) 
 	{
 		int rdyplayers = 0;
@@ -911,10 +913,7 @@ public class Board {
 					if(m.getAc() <=0 && m.maxAc>0) 
 					{
 							
-							m.resetAc();
-							String s = getStatusUpdateMessage(m);
-							this.addMessageToPlayer(Color.white, s);
-							this.addMessageToPlayer(Color.black, s);
+							m.resetAcWithMessage(this);
 					}
 					
 				}
@@ -1102,7 +1101,7 @@ public class Board {
 		
 		Color opcol = Board.getOpposingColor(m.position.color);
 		ArrayList<Minion> idols = this.getPlayerIdols(opcol);
-		ArrayList<Minion> targets = m.getTargets(defffield, posis, idols);
+		ArrayList<Minion> targets = m.getTargets(defffield, posis, idols, this);
 
 		if(m.card.cardSim.hasSpecialAttackTarget())
 		{
@@ -1228,6 +1227,18 @@ public class Board {
 		Minion[][] attackfield = this.getPlayerField(col);
 		Minion[][] defffield = this.getPlayerField(otherColor);
 		
+		for(Minion m : this.getPlayerFieldList(col))
+		{
+			if(m != null && m.getAc() == 0 && m.Hp>=1)
+			{
+			
+				//minion is ready to attack
+				this.unitAttackStarting(m, defffield);
+				
+			}
+		}
+		
+		/*
 		for(int i=0; i<5; i++)
 		{
 			for(int j=0; j<3; j++)
@@ -1241,7 +1252,7 @@ public class Board {
 					
 				}
 			}
-		}
+		}*/
 		
 		//doDeathRattles();
 		
@@ -1465,6 +1476,7 @@ public class Board {
 		this.currentPlayer = this.getPlayer(this.activePlayerColor);
 		Color oppc = this.getOpposingColor(this.activePlayerColor);
 		this.opponentPlayer = this.getPlayer(oppc);
+		this.drawCorrodePossible = 0;
 	}
 
 	//return minion on specific position (null if not existing)
@@ -1524,7 +1536,7 @@ public class Board {
 			tileSelector fts= card.card.cardSim.getTileSelectorForFirstSelection(); 
 			if(fts!=tileSelector.None)
 			{
-				allowedPosses.addAll(getallLegalTargets(fts, card.position.color));
+				allowedPosses.addAll(getallLegalTargets(fts, card.position.color, card));
 			}
 			
 		}
@@ -1588,6 +1600,7 @@ public class Board {
 		
 		
 		//remove card from hand
+		System.out.println("remove card from hand " + Board.colorToString(card.position.color));
 		this.currentHand.remove(card);
 		
 		//remove mana
@@ -1635,6 +1648,7 @@ public class Board {
 
 		if(card.cardType == Kind.SPELL )
 		{
+			System.out.println("add to grave");
 			this.addMinionToGrave(card);
 			//trigger effects
 			for(Minion m : this.getAllMinionOfField())
@@ -1948,7 +1962,7 @@ public class Board {
 			tileSelector fts= card.card.cardSim.getTileSelectorForFirstSelection(); 
 			if(fts!=tileSelector.None)
 			{
-				ArrayList<Position> tiles1 = getallLegalTargets(fts, card.position.color);
+				ArrayList<Position> tiles1 = getallLegalTargets(fts, card.position.color, card);
 				
 				String ts1="";
 				for(Position pos : tiles1)
@@ -1961,7 +1975,7 @@ public class Board {
 				tileSelector sts = card.card.cardSim.getTileSelectorForSecondSelection();
 				if(sts!=tileSelector.None)
 				{
-					ArrayList<Position> tiles2 = getallLegalTargets(sts, card.position.color);
+					ArrayList<Position> tiles2 = getallLegalTargets(sts, card.position.color, card);
 					String ts2="";
 					for(Position pos : tiles2)
 					{
@@ -1982,7 +1996,7 @@ public class Board {
 			{
 				//TODO get all sequentials!
 				
-				ArrayList<ArrayList<Position>> sequentials = getSequentialPositions(Color.white);
+				ArrayList<ArrayList<Position>> sequentials = getSequentialPositions(Color.white, card.card.cardSim.getTargetAreaGroup());
 				for(ArrayList<Position> sequals : sequentials)
 				{
 					String sequal = "";
@@ -1997,7 +2011,7 @@ public class Board {
 				}
 				
 				sequentials.clear();
-				sequentials = getSequentialPositions(Color.black);
+				sequentials = getSequentialPositions(Color.black, card.card.cardSim.getTargetAreaGroup());
 				for(ArrayList<Position> sequals : sequentials)
 				{
 					String sequal = "";
@@ -2028,7 +2042,7 @@ public class Board {
 		
 	}
 	
-	private ArrayList<Position> getallLegalTargets(tileSelector ts, Color ownColor)
+	private ArrayList<Position> getallLegalTargets(tileSelector ts, Color ownColor, Minion card)
 	{
 		ArrayList<Position> ret = new ArrayList<Position>();
 		
@@ -2060,13 +2074,20 @@ public class Board {
 					Minion m = this.whiteField[i][j];
 					if(m!=null )
 					{
-						ret.add(new Position(Color.white, i, j));
+						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
+						{
+							ret.add(new Position(Color.white, i, j));	
+						}
+
 					}
 					
 					m = this.blackField[i][j];
 					if(m!=null )
 					{
-						ret.add(new Position(Color.black, i, j));
+						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
+						{
+							ret.add(new Position(Color.black, i, j));
+						}
 					}
 				}
 			}
@@ -2082,13 +2103,19 @@ public class Board {
 					Minion m = this.whiteField[i][j];
 					if(m!=null && m.attackType == AttackType.MELEE )
 					{
+						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
+						{
 						ret.add(new Position(Color.white, i, j));
+						}
 					}
 					
 					m = this.blackField[i][j];
 					if(m!=null && m.attackType == AttackType.MELEE )
 					{
+						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
+						{
 						ret.add(new Position(Color.black, i, j));
+						}
 					}
 				}
 			}
@@ -2104,13 +2131,19 @@ public class Board {
 					Minion m = this.whiteField[i][j];
 					if(m!=null && (m.attackType == AttackType.RANGED || m.attackType == AttackType.BALLISTIC) )
 					{
+						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
+						{
 						ret.add(new Position(Color.white, i, j));
+						}
 					}
 					
 					m = this.blackField[i][j];
 					if(m!=null && (m.attackType == AttackType.RANGED || m.attackType == AttackType.BALLISTIC) )
 					{
+						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
+						{
 						ret.add(new Position(Color.black, i, j));
+						}
 					}
 				}
 			}
@@ -2126,13 +2159,19 @@ public class Board {
 					Minion m = this.whiteField[i][j];
 					if(m!=null && m.maxAc>=1 )
 					{
+						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
+						{
 						ret.add(new Position(Color.white, i, j));
+						}
 					}
 					
 					m = this.blackField[i][j];
 					if(m!=null && m.maxAc>=1 )
 					{
+						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
+						{
 						ret.add(new Position(Color.black, i, j));
+						}
 					}
 				}
 			}
@@ -2153,7 +2192,13 @@ public class Board {
 						{
 							if(e.cardID>=0) addit=true;
 						}
-						if(addit) ret.add(new Position(Color.white, i, j));
+						if(addit) 
+						{
+							if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
+							{
+								ret.add(new Position(Color.white, i, j));
+							}
+						}
 					}
 					
 					m = this.blackField[i][j];
@@ -2164,7 +2209,13 @@ public class Board {
 						{
 							if(e.cardID>=0) addit=true;
 						}
-						if(addit) ret.add(new Position(Color.black, i, j));
+						if(addit) 
+						{
+							if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
+							{
+								ret.add(new Position(Color.black, i, j));
+							}
+						}
 					}
 				}
 			}
@@ -2180,13 +2231,19 @@ public class Board {
 					Minion m = this.whiteField[i][j];
 					if(m!=null && (m.card.cardKind == Kind.CREATURE))
 					{
+						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
+						{
 						ret.add(new Position(Color.white, i, j));
+						}
 					}
 					
 					m = this.blackField[i][j];
 					if(m!=null && (m.card.cardKind == Kind.CREATURE))
 					{
+						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
+						{
 						ret.add(new Position(Color.black, i, j));
+						}
 					}
 				}
 			}
@@ -2202,13 +2259,19 @@ public class Board {
 					Minion m = this.whiteField[i][j];
 					if(m!=null && (m.card.cardKind == Kind.CREATURE) && m.Hp <=2)
 					{
+						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
+						{
 						ret.add(new Position(Color.white, i, j));
+						}
 					}
 					
 					m = this.blackField[i][j];
 					if(m!=null && (m.card.cardKind == Kind.CREATURE) && m.Hp <=2)
 					{
+						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
+						{
 						ret.add(new Position(Color.black, i, j));
+						}
 					}
 				}
 			}
@@ -2224,13 +2287,19 @@ public class Board {
 					Minion m = this.whiteField[i][j];
 					if(m!=null && (m.card.cardKind == Kind.STRUCTURE))
 					{
+						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
+						{
 						ret.add(new Position(Color.white, i, j));
+						}
 					}
 					
 					m = this.blackField[i][j];
 					if(m!=null && (m.card.cardKind == Kind.STRUCTURE))
 					{
+						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
+						{
 						ret.add(new Position(Color.black, i, j));
+						}
 					}
 				}
 			}
@@ -2285,7 +2354,10 @@ public class Board {
 					Minion m = field[i][j];
 					if(m!=null )
 					{
+						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
+						{
 						ret.add(new Position(oppCol, i, j));
+						}
 					}
 					
 				}
@@ -2302,7 +2374,10 @@ public class Board {
 					Minion m = field[i][j];
 					if(m!=null && (m.card.cardKind == Kind.CREATURE))
 					{
+						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
+						{
 						ret.add(new Position(oppCol, i, j));
+						}
 					}
 				}
 			}
@@ -2318,7 +2393,10 @@ public class Board {
 					Minion m = field[i][j];
 					if(m!=null && (m.card.cardKind == Kind.STRUCTURE))
 					{
+						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
+						{
 						ret.add(new Position(oppCol, i, j));
+						}
 					}
 					
 				}
@@ -2629,6 +2707,24 @@ public class Board {
 	}
 	
 	
+	public  ArrayList<Position> getFreePositionsFromPosition(ArrayList<Position> tiles)
+	{
+		ArrayList<Position> posMoves = new ArrayList<Position>();
+		
+		for(Position p : tiles)
+		{
+			Minion m = this.whiteField[p.row][p.column];
+			if(p.color == Color.black) m = this.blackField[p.row][p.column];
+				
+				if(m == null )
+				{
+					posMoves.add(new Position(p));
+				}
+		}
+		
+		return posMoves;
+	}
+	
 	public  ArrayList<Position> getFreePositions(Color col)
 	{
 		ArrayList<Position> posMoves = new ArrayList<Position>();
@@ -2654,9 +2750,11 @@ public class Board {
 	ArrayList<Position> dfsList= new ArrayList<Position>();//shared variable for DFS
 	ArrayList<Position> dfsSolutionList= new ArrayList<Position>();
 	
-	public  ArrayList<ArrayList<Position>> getSequentialPositions(Color col)
+	public  ArrayList<ArrayList<Position>> getSequentialPositions(Color col, TargetAreaGroup tag)
 	{
 		this.dfsList.clear();
+		
+		if(tag==TargetAreaGroup.own_creatures && col != this.activePlayerColor) return new ArrayList<ArrayList<Position>>();
 		
 		Color markCol = Board.getOpposingColor(col);
 		Minion[][] side = this.getPlayerField(col);
@@ -2668,7 +2766,10 @@ public class Board {
 				Minion m = side[i][j];
 				if(m != null )
 				{
-					this.dfsList.add(new Position(col, i, j));
+					if(tag==TargetAreaGroup.own_creatures && m.cardType == Kind.CREATURE) this.dfsList.add(new Position(col, i, j));
+					
+					if(tag==TargetAreaGroup.all_units) this.dfsList.add(new Position(col, i, j));
+					
 				}
 			}
 		}
@@ -2681,7 +2782,7 @@ public class Board {
 			if(p1.color == markCol) continue;
 			this.dfsSolutionList.clear();
 			
-			this.deepFirstSearch(p1, markCol);
+			this.deepFirstSearch(p1, markCol, tag);
 			
 			ArrayList<Position>blubb = new ArrayList<Position>(this.dfsSolutionList); //we can take the elements of dfsSol.list, they are created with new
 			retval.add(blubb);
@@ -2691,7 +2792,7 @@ public class Board {
 		return retval;
 	}
 	
-	private void deepFirstSearch(Position p, Color markCol)
+	private void deepFirstSearch(Position p, Color markCol, TargetAreaGroup tag)
 	{
 		//add to sol.list + mark!
 		this.dfsSolutionList.add(new Position(p));
@@ -2712,7 +2813,7 @@ public class Board {
 			
 			if(isNeightbour)//we use colorigno, cause we use color as marker :D
 			{
-				this.deepFirstSearch(p1, markCol);
+				this.deepFirstSearch(p1, markCol, tag);
 			}
 			
 		}
@@ -2891,7 +2992,11 @@ public class Board {
 		
 		String hasEnoughResources = Boolean.toString(ressis);
 		String isPlayable = Boolean.toString(playable);
-		s = "{\"unitPosition\":"+posi.posToString()+",\"abilityId\":\""+ability+"\",\"hasEnoughResources\":"+hasEnoughResources+",\"isPlayable\":"+isPlayable+",\"data\":{\"selectableTiles\":{\"tileSets\":[[" + tilesets +"]]},\"targetArea\":\"UNDEFINED\"},\"msg\":\"AbilityInfo\"}";
+		if(!tilesets.equals(""))
+		{
+			tilesets = "["+tilesets+"]";
+		}
+		s = "{\"unitPosition\":"+posi.posToString()+",\"abilityId\":\""+ability+"\",\"hasEnoughResources\":"+hasEnoughResources+",\"isPlayable\":"+isPlayable+",\"data\":{\"selectableTiles\":{\"tileSets\":[" + tilesets +"]},\"targetArea\":\"UNDEFINED\"},\"msg\":\"AbilityInfo\"}";
 
 		//{\"color\":\"white\",\"position\":\"1,1\"},...
 		
@@ -3148,7 +3253,8 @@ public class Board {
         		m.deadTriggersDone=true;//only to be save :D
         		for(Minion mnn : allmins)
         		{
-        			
+        			if(mnn.Hp <= 0) continue; //only the living effects are triggered
+        				
         			mnn.card.cardSim.onMinionDiedTrigger(this, mnn, m, attacker, attacktype, dmgtype);
         			
         			for(Minion e : mnn.getAttachedCards())
@@ -3188,7 +3294,7 @@ public class Board {
         		
         		
         		
-        		m.card.cardSim.onDeathrattle(this, m);
+        		m.card.cardSim.onDeathrattle(this, m, attacker, attacktype, dmgtype);
         		m.card.cardSim.onMinionLeavesBattleField(this, m);
         		
         		died++;
@@ -3232,10 +3338,11 @@ public class Board {
 			this.getPlayerField(m.position.color)[m.position.row][m.position.column]=null;
 		}
 		
-		if(m.cardType == Kind.ENCHANTMENT)//special deathrattle for enchantments!
+		//done in remove enchantments
+		/*if(m.cardType == Kind.ENCHANTMENT)//special deathrattle for enchantments!
 		{
-			m.card.cardSim.onDeathrattle(this, m);
-		}
+			m.card.cardSim.onDeathrattle(this, m, m, AttackType.UNDEFINED, DamageType.TERMINAL);
+		}*/
 		
 		if(m.addToHandAfterDead)
 		{
@@ -3519,11 +3626,11 @@ public class Board {
         //TODO are all effects triggered, when dmgdone =0?
         if (attackHP >= 1)
         {
-        	attacker.card.cardSim.onMinionDidDmgTrigger(this, attacker, deffender, attacker, dmgdone);
+        	attacker.card.cardSim.onMinionDidDmgTrigger(this, attacker, deffender, attacker, dmgdone, attackType, damageType);
 
         	for (Minion ench :attacker.getAttachedCards())
         	{
-        		ench.card.cardSim.onMinionDidDmgTrigger(this, ench, deffender, attacker, dmgdone);
+        		ench.card.cardSim.onMinionDidDmgTrigger(this, ench, deffender, attacker, dmgdone, attackType, damageType);
             }
         }
         
@@ -3596,6 +3703,22 @@ public class Board {
 			//{"RemoveUnit":{"tile":{"color":"black","position":"2,0"},"removalType":"DESTROY"}},
 			//{"TerminateUnit":{"targetTile":{"color":"black","position":"2,0"},"amount":7,"hp":-1,"attackType":"MELEE","damageType":"COMBAT","sourceCard":{"id":-1,"typeId":38,"tradable":true,"isToken":true,"level":0}}},
 			
+			
+			if(dmgt == DamageType.TERMINAL)
+			{
+				//no damageunit message, and terminal + remove are swapped (or client will have a null-pointer exception)
+				
+				s= "{\"TerminateUnit\":{\"targetTile\":"+defender.position.posToString()+",\"amount\":" + realdmgdone; //this time realdmg
+				s+= ",\"hp\":" + defender.Hp + ",\"attackType\":\""+Board.attackTypeToString(att)+"\",\"damageType\":\""+Board.damageTypeToString(dmgt)+"\",\"sourceCard\":{\"id\":" + attacker.cardID ;
+				s+= ",\"typeId\":38,\"tradable\":true,\"isToken\":"+Boolean.toString(attacker.isToken)+",\"level\":"+attacker.lvl+"}}}";
+				this.addMessageToBothPlayers(s);
+				
+				s="{\"RemoveUnit\":{\"tile\":"+defender.position.posToString()+",\"removalType\":\"DESTROY\"}}"; //removalType destroy, because it was dmg
+				this.addMessageToBothPlayers(s);
+				
+				return;
+			}
+
 			s= "{\"DamageUnit\":{\"targetTile\":"+defender.position.posToString()+",\"amount\":" + dmgdone;
 			s+= ",\"hp\":" + defender.Hp + ",\"kill\":"+ Boolean.toString(kill) +",\"attackType\":\""+Board.attackTypeToString(att)+"\",\"damageType\":\""+Board.damageTypeToString(dmgt)+"\",\"sourceCard\":{\"id\":" + attacker.cardID ;
 			s+= ",\"typeId\":38,\"tradable\":true,\"isToken\":"+Boolean.toString(attacker.isToken)+",\"level\":"+attacker.lvl+"}}}";
@@ -3681,6 +3804,54 @@ public class Board {
         doOnFieldChangedTriggers();
         this.getPlayerHand(m.position.color).add(m);
         this.addMessageToPlayer(m.position.color, this.getHandUpdateMessage(m.position.color));
+        if(graveWhiteChanged) this.addMessageToBothPlayers(this.getCardStackUpdate(Color.white));
+    	if(graveBlackChanged) this.addMessageToBothPlayers(this.getCardStackUpdate(Color.black));
+        
+	}
+	
+	public void addMinionFromFieldToDeck(Minion m)
+	{
+		
+		this.graveWhiteChanged=false;
+        this.graveBlackChanged=false;
+		
+		String s = "{\"UnsummonUnit\":{\"target\":"+m.position.posToString()+"}}";
+		this.addMessageToBothPlayers(s);
+		if(m.position.row >=0 && m.position.column >=0)
+		{
+			this.getPlayerField(m.position.color)[m.position.row][m.position.column]=null;
+		}
+		
+		for(Minion e : m.getAttachedCards())
+		{
+			if(e.cardID>=0)
+			{
+				if(e.position.color == Color.white) 
+				{
+					graveWhiteChanged=true;
+				}
+				else
+				{
+					graveBlackChanged=true;
+				}
+			}
+			m.removeEnchantment(e, false, this);
+		}
+		//m.attachedCards.clear();
+        
+		m.position.row=-1;
+		m.position.column=-1;
+		
+        doOnFieldChangedTriggers();
+        this.getPlayerDeck(m.position.color).add(0, m);
+        if(m.position.color == Color.white) 
+        {
+        	graveWhiteChanged=true;
+        }
+        else
+        {
+        	graveBlackChanged=false;
+        }
         if(graveWhiteChanged) this.addMessageToBothPlayers(this.getCardStackUpdate(Color.white));
     	if(graveBlackChanged) this.addMessageToBothPlayers(this.getCardStackUpdate(Color.black));
         

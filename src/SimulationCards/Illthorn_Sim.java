@@ -2,7 +2,7 @@ package SimulationCards;
 
 import BattleStuff.Board;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class Illthorn_Sim extends Simtemplate {
 	//"id":115,"name":"Illthorn","description":""   spiky 1

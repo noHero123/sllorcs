@@ -4,7 +4,7 @@ import BattleStuff.Board;
 import BattleStuff.Color;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class DruidBurialGround_Sim extends Simtemplate {
 	//"id":33,"name":"Druid Burial Ground","description":"At the beginning of your turn, adjacent units are [healed] by 1."

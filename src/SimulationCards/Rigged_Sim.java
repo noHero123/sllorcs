@@ -7,7 +7,7 @@ import BattleStuff.Board;
 import BattleStuff.Color;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
 public class Rigged_Sim extends Simtemplate {

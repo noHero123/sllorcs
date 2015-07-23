@@ -4,7 +4,7 @@ import BattleStuff.Board;
 import BattleStuff.Color;
 import BattleStuff.Minion;
 import BattleStuff.Position;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class KinfolkJarl_Sim extends Simtemplate {
 	//"id":42,"name":"Kinfolk Jarl","description":"Kinfolk Jarl has +1 Attack for each adjacent creature."

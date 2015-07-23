@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import BattleStuff.Board;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class MiasmaWell_Sim extends Simtemplate {
 	//"id":185,"name":"Miasma Well","description":"When Miasma Well's Countdown becomes 0, a random opponent creature becomes poisoned."

@@ -10,7 +10,7 @@ import BattleStuff.Color;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
 import BattleStuff.Position;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
 public class Pestis_Sim extends Simtemplate {
@@ -20,13 +20,14 @@ public class Pestis_Sim extends Simtemplate {
 		return tileSelector.all_units;
 	}
 	
+	//TODO test buff a rat  with it
 	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
 		int buff =0;
 		for(Minion m : b.getPlayerFieldList(target.position.color))
 		{
-			if(m.subtypes.contains(subType.Rat)) buff++;
+			if(m.getSubTypes().contains(SubType.Rat)) buff++;
 		}
 		target.buffMinionWithoutMessage(buff, 0, 0, b);//status update is done in add card as enchantment
 		target.addCardAsEnchantment("ENCHANTMENT", "Pestis", playedCard.card.cardDescription, playedCard, b);
@@ -36,7 +37,7 @@ public class Pestis_Sim extends Simtemplate {
 	
 	public  void onMinionIsSummoned(Board b, Minion triggerEffectMinion, Minion summonedMinion)
     {
-		if(summonedMinion.position.color == triggerEffectMinion.position.color && summonedMinion.subtypes.contains(subType.Rat))
+		if(summonedMinion.position.color == triggerEffectMinion.owner.position.color && summonedMinion.getSubTypes().contains(SubType.Rat))
 		{
 			triggerEffectMinion.owner.buffMinion(1, 0, 0, b);
 		}
@@ -62,11 +63,30 @@ public class Pestis_Sim extends Simtemplate {
 			return;
 		}
 		
-		if(diedMinion.position.color == triggerEffectMinion.owner.position.color && diedMinion.subtypes.contains(subType.Rat))
+		if(diedMinion.position.color == triggerEffectMinion.owner.position.color && diedMinion.getSubTypes().contains(SubType.Rat))
 		{
 			triggerEffectMinion.owner.buffMinion(-1, 0, 0, b);
 		}
         return;
     }
+	
+	
+	 public void onSubTypeAdded(Board b, Minion triggerEffectMinion, Minion m, SubType subt )
+	 {
+		 if(triggerEffectMinion.owner.position.color == m.position.color && subt == SubType.Rat)
+		 {
+			 triggerEffectMinion.owner.buffMinion(1, 0, 0, b);
+		 }
+		 return;
+	 }
+	
+	 public void onSubTypeDeleted(Board b, Minion triggerEffectMinion, Minion m, SubType subt )
+	 {
+		 if(triggerEffectMinion.owner.position.color == m.position.color && subt == SubType.Rat)
+		 {
+			 triggerEffectMinion.owner.buffMinion(-1, 0, 0, b);
+		 }
+		 return;
+	 }
 	
 }

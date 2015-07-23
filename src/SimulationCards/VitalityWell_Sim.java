@@ -3,7 +3,7 @@ package SimulationCards;
 import BattleStuff.Board;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class VitalityWell_Sim extends Simtemplate {
 	//"id":63,"name":"Vitality Well","description":"When Vitality Well's Countdown becomes 0, units you control are [healed] by 1."

@@ -2,11 +2,13 @@ package SimulationCards;
 
 import java.util.ArrayList;
 
+import BattleStuff.AttackType;
 import BattleStuff.Board;
 import BattleStuff.Color;
+import BattleStuff.DamageType;
 import BattleStuff.Minion;
 import BattleStuff.Position;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
 public class CrownOfStrength_Sim extends Simtemplate {
@@ -23,41 +25,16 @@ public class CrownOfStrength_Sim extends Simtemplate {
 
 		target.buffMinionWithoutMessage(1, 2, 0, b);
 
-		boolean triggerOtherMetalHeart = false;
-		if(!target.subtypes.contains(subType.Automaton))
-		{
-			triggerOtherMetalHeart=true;
-		}
-		if(triggerOtherMetalHeart)
-		{
-			//TODO add lingereffects to the new knight minion!
-		}
-		target.subtypes.add(subType.Knight);
+		target.addSubtype(SubType.Knight, b);
 		target.addCardAsEnchantment("ENCHANTMENT", "Crown of Strength", playedCard.card.cardDescription, playedCard, b);
         return;
     }
 	
 	// TODO we do a special onDeathrattle only for enchantments in addMinionToGrave!
-	public  void onDeathrattle(Board b, Minion m)
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
     {
 		//remove attack of others metelhearted minions
-		if(m.owner.card.subtypes.contains(subType.Knight)) 
-		{
-			return; // dont have to debuff minions
-		}
-		
-		//delete subtype
-
-        for ( int i = 0;  i < m.subtypes.size(); i++)
-        {
-        	subType tempName = m.subtypes.get(i);
-            if(tempName.equals(subType.Knight))
-            {
-            	 m.subtypes.remove(i);
-            	 //break;
-            }
-        }
-		
+		m.removeSubtype(SubType.Knight, b);
         return;
     }
 	

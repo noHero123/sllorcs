@@ -4,7 +4,7 @@ import BattleStuff.Board;
 import BattleStuff.Color;
 import BattleStuff.Minion;
 import BattleStuff.ResourceName;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class WoodlandMemorial_Sim extends Simtemplate {
 	//"id":111,"name":"Woodland Memorial","description":"When you play a spell or enchantment, Woodland Memorial is destroyed. Increase Growth by 1."

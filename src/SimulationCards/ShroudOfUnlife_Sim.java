@@ -10,7 +10,7 @@ import BattleStuff.Color;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
 import BattleStuff.Position;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 import BattleStuff.Board.SummonItem;
 
@@ -26,22 +26,15 @@ public class ShroudOfUnlife_Sim extends Simtemplate {
 	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
-		
-		boolean triggerOtherMetalHeart = false;
-		if(!target.subtypes.contains(subType.Undead))
-		{
-			triggerOtherMetalHeart=true;
-		}
-		target.subtypes.add(subType.Undead);
+	
+		target.addSubtype(SubType.Undead, b);
 		target.addCardAsEnchantment("ENCHANTMENT", "Shroud of Unlife", "", playedCard, b);
-		
-		//TODO trigger sanctuary of the lost! (if triggerOtherMetalHeart)
-		
         return;
     }
 	
 	public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker, AttackType attackType, DamageType dmgtype)
     {
+		diedMinion.removeSubtype(SubType.Undead, b);
 		
 		if(diedMinion == triggerEffectMinion.owner)
 		{

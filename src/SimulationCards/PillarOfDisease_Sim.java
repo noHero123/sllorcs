@@ -2,7 +2,7 @@ package SimulationCards;
 
 import BattleStuff.Board;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class PillarOfDisease_Sim extends Simtemplate {
 	//"id":170,"name":"Pillar of Disease","description":"Opponent units on the same row have -1 Attack."
@@ -47,14 +47,15 @@ public class PillarOfDisease_Sim extends Simtemplate {
 	
 	public void onFieldChanged(Board b, Minion triggerEffectMinion)
     {
-		Minion[][] field = b.getPlayerField(triggerEffectMinion.position.color);
+		Minion[][] field = b.getPlayerField(Board.getOpposingColor(triggerEffectMinion.position.color));
+		Minion[][] ownfield = b.getPlayerField(triggerEffectMinion.position.color);
 		
 		for(int i=0; i<5; i++)
 		{
 			int royalcount = 0;
 			for(int j=0; j<3; j++)
 			{
-				if(field[i][j]!=null && field[i][j].typeId == 170)
+				if(ownfield[i][j]!=null && ownfield[i][j].typeId == 170)
 				{
 					royalcount++;
 				}
@@ -64,7 +65,6 @@ public class PillarOfDisease_Sim extends Simtemplate {
 			{
 				int change = 0;
 				if(field[i][j]==null) continue;
-				
 				int diff = royalcount - field[i][j].pillarCounter;
 				
 				if(diff > 0)

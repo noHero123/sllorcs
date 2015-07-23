@@ -10,7 +10,7 @@ import BattleStuff.Kind;
 import BattleStuff.Minion;
 import BattleStuff.Position;
 import BattleStuff.ResourceName;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
 public class ImperialResources_Sim extends Simtemplate {

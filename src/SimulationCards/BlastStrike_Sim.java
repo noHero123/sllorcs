@@ -8,7 +8,7 @@ import BattleStuff.Color;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
 import BattleStuff.Position;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
 public class BlastStrike_Sim extends Simtemplate {
@@ -27,7 +27,7 @@ public class BlastStrike_Sim extends Simtemplate {
         return;
     }
 	
-	public void onMinionDidDmgTrigger(Board b, Minion triggerEffectMinion, Minion damagedMinion, Minion attacker, int dmgdone)
+	public void onMinionDidDmgTrigger(Board b, Minion triggerEffectMinion, Minion damagedMinion, Minion attacker, int dmgdone, AttackType attackType, DamageType dmgtype)
     {
 		
 		ArrayList<Minion> targs = b.getMinionsFromPositions(damagedMinion.position.getNeightbours());

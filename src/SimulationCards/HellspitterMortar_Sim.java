@@ -6,7 +6,7 @@ import BattleStuff.Board;
 import BattleStuff.Color;
 import BattleStuff.Minion;
 import BattleStuff.Position;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class HellspitterMortar_Sim extends Simtemplate {
 	//"id":118,"name":"Hellspitter Mortar","description":"Attacks a randomly selected tile on opponent's board."

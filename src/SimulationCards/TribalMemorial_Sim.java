@@ -10,7 +10,7 @@ import BattleStuff.Kind;
 import BattleStuff.Minion;
 import BattleStuff.Position;
 import BattleStuff.ResourceName;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class TribalMemorial_Sim extends Simtemplate {
 	//"id":110,"name":"Tribal Memorial","description":"Pay 2 Energy to destroy Tribal Memorial and increase Growth by 1."

@@ -215,7 +215,17 @@ public class MyLittleDatabase {
 		 deck1 = "{\"deck\":\"DecaySet3\",\"author\":\"Mojang\",\"types\":[3,161,163,166,173,175,179,183,186,187,188,192,196,200,201]}";
 		 toadd.add(deck1);
 		 
-		 //deck1 = "{\"deck\":\"testing\",\"author\":\"Mojang\",\"types\":[126,126,121,121]}";
+		 deck1 = "{\"deck\":\"GrowthSet4\",\"author\":\"Mojang\",\"types\":[135,203,208,211,212,213,214,215,216,217,218,219,221,222,257]}";
+		 toadd.add(deck1);
+		 deck1 = "{\"deck\":\"OrderSet4\",\"author\":\"Mojang\",\"types\":[134,178,206,209,228,229,230,231,232,234,237,238,240,254]}";
+		 toadd.add(deck1);
+		 deck1 = "{\"deck\":\"EnergySet4\",\"author\":\"Mojang\",\"types\":[133,204,205,207,210,223,224,225,226,227,235,236,241,256,258]}";
+		 toadd.add(deck1);
+		 deck1 = "{\"deck\":\"DecaySet4\",\"author\":\"Mojang\",\"types\":[239,242,243,244,245,246,247,248,249,250,251,252,253,255,259]}";
+		 toadd.add(deck1);
+		 
+		 //test area targeting!
+		 //deck1 = "{\"deck\":\"testing\",\"author\":\"Mojang\",\"types\":[25,246,244,244,245]}";
 		 //toadd.add(deck1);
 		 
 		 //deck1 = "{\"deck\":\"Order Starter\",\"author\":\"ueHero\",\"types\":[95,125,125,48,237,237,237,123,95,128,92,92,121,48,122,50,126,126,127,127,86,126,157,125,71,74,73,71,86,128,36,37,64,15,20,311,57,234,105,105,232,311,50,101,51,51,55,54,99,15]}";

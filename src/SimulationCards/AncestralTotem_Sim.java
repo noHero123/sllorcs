@@ -3,7 +3,7 @@ package SimulationCards;
 import BattleStuff.Board;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class AncestralTotem_Sim extends Simtemplate {
 	//"id":65,"name":"Ancestral Totem","description":"Creatures you control have +1 Attack."

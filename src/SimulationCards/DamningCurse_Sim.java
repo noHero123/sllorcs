@@ -9,7 +9,7 @@ import BattleStuff.DamageType;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
 import BattleStuff.Position;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
 public class DamningCurse_Sim extends Simtemplate {
@@ -45,6 +45,10 @@ public class DamningCurse_Sim extends Simtemplate {
 		{
 			b.blackDamningTaxing+=1;
 		}
+		
+		int cost = this.getDecayCost(b, playedCard);
+		String s ="{\"CostUpdate\":{\"profileId\":"+b.getPlayer(player).profileId+",\"costs\":[{\"cardTypeId\":180,\"cost\":"+cost+"}]}}";
+		b.addMessageToBothPlayers(s);
         return;
     }
 	

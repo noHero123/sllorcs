@@ -7,7 +7,7 @@ import BattleStuff.Card;
 import BattleStuff.CardDB;
 import BattleStuff.Minion;
 import BattleStuff.Position;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class ProximityCharge_Sim extends Simtemplate {
 	//"id":90,"name":"Proximity Charge","description":"When destroyed in [melee combat], attacking unit is dealt 4 [physical damage]. When Proximity Charge comes into play, a copy is summoned adjacent to it."

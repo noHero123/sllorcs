@@ -9,7 +9,7 @@ import BattleStuff.Color;
 import BattleStuff.Minion;
 import BattleStuff.Position;
 import BattleStuff.ResourceName;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
 public class Nutrition_Sim extends Simtemplate {

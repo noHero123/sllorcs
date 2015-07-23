@@ -5,7 +5,7 @@ import BattleStuff.Board;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
 import BattleStuff.Position;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class Wildling_Sim extends Simtemplate {
 	//"id":154,"name":"Wildling","description":"When a creature comes into play adjacent to Wildling, Wildling is dealt 1 [pure damage] and gets +1 Attack."

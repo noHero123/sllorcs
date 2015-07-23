@@ -2,7 +2,7 @@ package SimulationCards;
 
 import BattleStuff.Board;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class Mangonel_Sim extends Simtemplate {
 	//"id":155,"name":"Mangonel","description":"When Mangonel comes into play, your Mangonels' Countdowns are\\nset to the lowest of any you control."

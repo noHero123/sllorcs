@@ -5,7 +5,7 @@ import BattleStuff.Color;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
 import BattleStuff.ResourceName;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class LawMemorial_Sim extends Simtemplate {
 	//"id":108,"name":"Law Memorial","description":"When Law Memorial's Countdown becomes 0, it's destroyed and Order is increased by 1."

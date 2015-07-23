@@ -8,7 +8,7 @@ import BattleStuff.Color;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
 import BattleStuff.Position;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
 public class IlmireHunter_Sim extends Simtemplate {
@@ -16,9 +16,9 @@ public class IlmireHunter_Sim extends Simtemplate {
 	
 	
 	
-	public void onMinionDidDmgTrigger(Board b, Minion triggerEffectMinion, Minion damagedMinion, Minion attacker, int dmgdone)
+	public void onMinionDidDmgTrigger(Board b, Minion triggerEffectMinion, Minion damagedMinion, Minion attacker, int dmgdone, AttackType attackType, DamageType dmgtype)
     {
-		if(attacker != triggerEffectMinion.owner || dmgdone <=0) return;
+		if(attacker != triggerEffectMinion || dmgdone <=0) return;
 		b.destroyMinion(damagedMinion, triggerEffectMinion);
 		
         return;

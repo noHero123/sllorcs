@@ -9,7 +9,7 @@ import BattleStuff.DamageType;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
 import BattleStuff.Position;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
 public class Quake_Sim extends Simtemplate {
@@ -48,6 +48,10 @@ public class Quake_Sim extends Simtemplate {
 		{
 			b.blackQuakeTaxing+=2;
 		}
+		
+		int cost = this.getGrowthCost(b, playedCard);
+		String s ="{\"CostUpdate\":{\"profileId\":"+b.getPlayer(player).profileId+",\"costs\":[{\"cardTypeId\":34,\"cost\":"+cost+"}]}}";
+		b.addMessageToBothPlayers(s);
         return;
     }
 	

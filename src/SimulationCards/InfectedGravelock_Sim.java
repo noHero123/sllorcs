@@ -2,7 +2,7 @@ package SimulationCards;
 
 import BattleStuff.Board;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class InfectedGravelock_Sim extends Simtemplate {
 	//"id":3,"name":"Infected Gravelock","description":"Infected Gravelock has [Move] 0." //poisonous

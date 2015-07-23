@@ -7,7 +7,7 @@ import BattleStuff.Color;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
 import BattleStuff.Position;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
 public class EssenceFeast_Sim extends Simtemplate {
@@ -34,7 +34,7 @@ public class EssenceFeast_Sim extends Simtemplate {
 		
 		for(Minion m : b.getPlayerFieldList(playedCard.position.color))
 		{
-			if(m.getAc()>=0 && m.subtypes.contains(subType.Beast))
+			if(m.getAc()>=0 && m.getSubTypes().contains(SubType.Beast))
 			{
 				m.buffMinionWithoutMessage(2, 0, 0, b);
 				m.addnewEnchantments("BUFF", "Essence Feast", playedCard.card.cardDescription, playedCard.card, b, playedCard.position.color);
@@ -47,7 +47,7 @@ public class EssenceFeast_Sim extends Simtemplate {
 		for(int i=0; i<deck.size(); i++)
 		{
 			Minion m= deck.get(i);
-			if(m.subtypes.contains(subType.Beast))
+			if(m.getSubTypes().contains(SubType.Beast))
 			{
 				found=true;
 				b.currentHand.add(m);
@@ -65,7 +65,7 @@ public class EssenceFeast_Sim extends Simtemplate {
 			for(int i=0; i<deck.size(); i++)
 			{
 				Minion m= deck.get(i);
-				if(m.subtypes.contains(subType.Beast))
+				if(m.getSubTypes().contains(SubType.Beast))
 				{	
 					found=true;
 					b.currentHand.add(m);

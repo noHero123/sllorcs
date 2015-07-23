@@ -5,13 +5,13 @@ import BattleStuff.Board;
 import BattleStuff.Color;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class Blightbearer_Sim extends Simtemplate {
 	//"id":168,"name":"Blightbearer","description":"Blightbearer takes 1 [poison damage] before attacking. When Blightbearer is destroyed, all creatures on the same row become [poisoned]."
 
 	
-	public  void onDeathrattle(Board b, Minion m)
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
     {
 		
 		int row = m.position.row;

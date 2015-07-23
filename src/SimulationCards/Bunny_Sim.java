@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import BattleStuff.Board;
 import BattleStuff.Minion;
 import BattleStuff.Position;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class Bunny_Sim extends Simtemplate {
 	//id":129,"name":"Bunny","description":"If Bunny's Attack is 0, it will summon another Bunny in an adjacent tile instead of attacking.

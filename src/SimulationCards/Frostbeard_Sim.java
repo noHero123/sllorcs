@@ -1,15 +1,17 @@
 package SimulationCards;
 
+import BattleStuff.AttackType;
 import BattleStuff.Board;
 import BattleStuff.Color;
+import BattleStuff.DamageType;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class Frostbeard_Sim extends Simtemplate {
 	//id":91,"name":"Frostbeard","description":"When Frostbeard is destroyed during your opponent's turn, units you control get +2 Attack until end of your next turn."
 
 	
-	public  void onDeathrattle(Board b, Minion m)
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
     {
 		
 		if(b.activePlayerColor == m.position.color) return; //opponent turn!
@@ -29,6 +31,7 @@ public class Frostbeard_Sim extends Simtemplate {
 	
 	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, Color turnEndColor)
     {
+		if(triggerEffectMinion.owner==null) return false;//its the minion, not the effect!
 		if(turnEndColor != triggerEffectMinion.owner.position.color) return false;
 		
 		if(triggerEffectMinion.owner.frostbeardCounter == 0)

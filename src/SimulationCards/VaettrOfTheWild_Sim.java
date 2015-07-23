@@ -4,7 +4,7 @@ import BattleStuff.Board;
 import BattleStuff.Color;
 import BattleStuff.Minion;
 import BattleStuff.ResourceName;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class VaettrOfTheWild_Sim extends Simtemplate {
 	//"id":156,"name":"Vaettr of the Wild","description":"While Vaettr of the Wild is in play, Growth is increased by 1."

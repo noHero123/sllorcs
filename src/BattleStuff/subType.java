@@ -1,6 +1,6 @@
 package BattleStuff;
 
-public enum subType{
+public enum SubType{
 NONE,
 Gravelock,
 Human,

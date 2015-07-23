@@ -59,48 +59,48 @@ public class CardDB {
             int  costGrowth = ct.getInt("costGrowth");
             int costEnergy = ct.getInt("costEnergy");
             
-            ArrayList<subType> subtypes = new ArrayList<subType>();
+            ArrayList<SubType> subTypes = new ArrayList<SubType>();
             JSONArray su = ct.getJSONArray("subTypes");
             for (int ii = 0; ii < su.length(); ii++)
             {
                 String subs = su.getString(ii);
-                subType sub = subType.NONE;
+                SubType sub = SubType.NONE;
                 
-                if(subs.equals("Gravelock")) {sub = subType.Gravelock;}
-                if(subs.equals("Human")) {sub = subType.Human;}
-                if(subs.equals("Kinfolk")) {sub = subType.Kinfolk;}
-                if(subs.equals("Artillery")) {sub = subType.Artillery;}
-                if(subs.equals("Destruction")) {sub = subType.Destruction;}
-                if(subs.equals("Wall")) {sub = subType.Wall;}
-                if(subs.equals("Displacement")) {sub = subType.Displacement;}
-                if(subs.equals("Beast")) {sub = subType.Beast;}
-                if(subs.equals("Wolf")) {sub = subType.Wolf;}
-                if(subs.equals("Elder")) {sub = subType.Elder;}
-                if(subs.equals("Totem")) {sub = subType.Totem;}
-                if(subs.equals("Knight")) {sub = subType.Knight;}
-                if(subs.equals("Automaton")) {sub = subType.Automaton;}
-                if(subs.equals("Tribesman")) {sub = subType.Tribesman;}
-                if(subs.equals("Memorial")) {sub = subType.Memorial;}
-                if(subs.equals("Soldier")) {sub = subType.Soldier;}
-                if(subs.equals("Bunny")) {sub = subType.Bunny;}
-                if(subs.equals("Vaettr")) {sub = subType.Vaettr;}
-                if(subs.equals("Mystic")) {sub = subType.Mystic;}
-                if(subs.equals("Undead")) {sub = subType.Undead;}
-                if(subs.equals("Masked")) {sub = subType.Masked;}
-                if(subs.equals("Rat")) {sub = subType.Rat;}
-                if(subs.equals("Forge")) {sub = subType.Forge;}
-                if(subs.equals("Lingering")) {sub = subType.Lingering;}
-                if(subs.equals("Reaver")) {sub = subType.Reaver;}
-                if(subs.equals("Rebel")) {sub = subType.Rebel;}
-                if(subs.equals("Bear")) {sub = subType.Bear;}
-                if(subs.equals("Anima")) {sub = subType.Anima;}
-                if(subs.equals("Warrior")) {sub = subType.Warrior;}
-                if(subs.equals("Warden")) {sub = subType.Warden;}
-                if(subs.equals("Mercenary")) {sub = subType.Mercenary;}
-                if(subs.equals("Cat")) {sub = subType.Cat;}
+                if(subs.equals("Gravelock")) {sub = SubType.Gravelock;}
+                if(subs.equals("Human")) {sub = SubType.Human;}
+                if(subs.equals("Kinfolk")) {sub = SubType.Kinfolk;}
+                if(subs.equals("Artillery")) {sub = SubType.Artillery;}
+                if(subs.equals("Destruction")) {sub = SubType.Destruction;}
+                if(subs.equals("Wall")) {sub = SubType.Wall;}
+                if(subs.equals("Displacement")) {sub = SubType.Displacement;}
+                if(subs.equals("Beast")) {sub = SubType.Beast;}
+                if(subs.equals("Wolf")) {sub = SubType.Wolf;}
+                if(subs.equals("Elder")) {sub = SubType.Elder;}
+                if(subs.equals("Totem")) {sub = SubType.Totem;}
+                if(subs.equals("Knight")) {sub = SubType.Knight;}
+                if(subs.equals("Automaton")) {sub = SubType.Automaton;}
+                if(subs.equals("Tribesman")) {sub = SubType.Tribesman;}
+                if(subs.equals("Memorial")) {sub = SubType.Memorial;}
+                if(subs.equals("Soldier")) {sub = SubType.Soldier;}
+                if(subs.equals("Bunny")) {sub = SubType.Bunny;}
+                if(subs.equals("Vaettr")) {sub = SubType.Vaettr;}
+                if(subs.equals("Mystic")) {sub = SubType.Mystic;}
+                if(subs.equals("Undead")) {sub = SubType.Undead;}
+                if(subs.equals("Masked")) {sub = SubType.Masked;}
+                if(subs.equals("Rat")) {sub = SubType.Rat;}
+                if(subs.equals("Forge")) {sub = SubType.Forge;}
+                if(subs.equals("Lingering")) {sub = SubType.Lingering;}
+                if(subs.equals("Reaver")) {sub = SubType.Reaver;}
+                if(subs.equals("Rebel")) {sub = SubType.Rebel;}
+                if(subs.equals("Bear")) {sub = SubType.Bear;}
+                if(subs.equals("Anima")) {sub = SubType.Anima;}
+                if(subs.equals("Warrior")) {sub = SubType.Warrior;}
+                if(subs.equals("Warden")) {sub = SubType.Warden;}
+                if(subs.equals("Mercenary")) {sub = SubType.Mercenary;}
+                if(subs.equals("Cat")) {sub = SubType.Cat;}
 
                 
-                subtypes.add(sub);
+                subTypes.add(sub);
             }
             
             ArrayList<ActiveAbility> abilitys = new ArrayList<ActiveAbility>();
@@ -163,7 +163,7 @@ public class CardDB {
             
             ncard.abilitys = abilitys;
             ncard.passiveAbilitys = passivs;
-            ncard.subtypes = subtypes;
+            ncard.subtypes = subTypes;
             
             ncard.trgtAreaString = area;
             

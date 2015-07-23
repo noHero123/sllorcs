@@ -4,7 +4,7 @@ import BattleStuff.Board;
 import BattleStuff.Color;
 import BattleStuff.Minion;
 import BattleStuff.ResourceName;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class StonePactMemorial_Sim extends Simtemplate {
 	//"id":113,"name":"Stone Pact Memorial","description":"When Stone Pact Memorial comes into play, increase Order by 1."

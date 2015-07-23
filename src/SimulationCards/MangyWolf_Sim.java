@@ -2,7 +2,7 @@ package SimulationCards;
 
 import BattleStuff.Board;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class MangyWolf_Sim extends Simtemplate {
 	//"id":44,"name":"Mangy Wolf","description":"When Mangy Wolf comes into play, other Wolf creatures you control have their Countdown decreased by 1."
@@ -10,7 +10,7 @@ public class MangyWolf_Sim extends Simtemplate {
     {
 		for(Minion m : b.getPlayerFieldList(own.position.color))
 		{
-			if(m.subtypes.contains(subType.Wolf))
+			if(m.getSubTypes().contains(SubType.Wolf))
 			{
 				m.buffMinion(0, 0, -1, b);
 			}

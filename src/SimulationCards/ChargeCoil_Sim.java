@@ -7,7 +7,7 @@ import BattleStuff.Board;
 import BattleStuff.Color;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class ChargeCoil_Sim extends Simtemplate {
 	//"id":160,"name":"Charge Coil","description":"When Charge Coil attacks, a random opponent unit is dealt 1 [physical damage]."

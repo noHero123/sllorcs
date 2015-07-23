@@ -2,7 +2,7 @@ package SimulationCards;
 
 import BattleStuff.Board;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class UselessContraption_Sim extends Simtemplate {
 	//id":98,"name":"Useless Contraption","description":""

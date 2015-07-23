@@ -4,7 +4,7 @@ import BattleStuff.Board;
 import BattleStuff.Color;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class RoyalVanguard_Sim extends Simtemplate {
 	//"id":54,"name":"Royal Vanguard","description":"When Royal Vanguard's Countdown becomes 0, adjacent units get +2 Attack until end of turn."

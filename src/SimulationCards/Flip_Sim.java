@@ -27,7 +27,7 @@ public class Flip_Sim extends Simtemplate
 	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
-		String s = "{\"TeleportUnits\":{\"units\":[{\"from\":"+targets.get(0)+",\"to\":"+targets.get(1)+"}]}}";
+		String s = "{\"TeleportUnits\":{\"units\":[{\"from\":"+targets.get(0).posToString()+",\"to\":"+targets.get(1).posToString()+"}]}}";
 		b.addMessageToBothPlayers(s);
 		b.unitChangesPlace(target.position, targets.get(1), true, false);
 		

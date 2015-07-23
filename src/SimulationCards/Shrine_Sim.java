@@ -2,7 +2,7 @@ package SimulationCards;
 
 import BattleStuff.Board;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class Shrine_Sim extends Simtemplate {
 	//"id":51,"name":"Shrine","description":"Other units you control have +1 Health."

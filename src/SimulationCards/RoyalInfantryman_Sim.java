@@ -2,7 +2,7 @@ package SimulationCards;
 
 import BattleStuff.Board;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class RoyalInfantryman_Sim extends Simtemplate {
 	//"id":126,"name":"Royal Infantryman","description":"Other creatures you control on the same row have +1 Health."

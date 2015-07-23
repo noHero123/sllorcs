@@ -2,7 +2,7 @@ package SimulationCards;
 
 import BattleStuff.Board;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class GravelockRaider_Sim extends Simtemplate {
 	//"id":2,"name":"Gravelock Raider","description":"" (relentless)

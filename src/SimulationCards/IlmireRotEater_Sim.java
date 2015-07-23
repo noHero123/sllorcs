@@ -5,7 +5,7 @@ import BattleStuff.Board;
 import BattleStuff.DamageType;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class IlmireRotEater_Sim extends Simtemplate {
 	//"id":195,"name":"Ilmire Rot Eater","description":"When a creature adjacent to Ilmire Rot Eater is destroyed, Ilmire Rot Eater gets +1 Attack and +1 Health."

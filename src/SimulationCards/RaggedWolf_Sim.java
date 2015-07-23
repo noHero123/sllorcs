@@ -2,7 +2,7 @@ package SimulationCards;
 
 import BattleStuff.Board;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class RaggedWolf_Sim extends Simtemplate {
 	//id":49,"name":"Ragged Wolf","description":""

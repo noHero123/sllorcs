@@ -9,7 +9,7 @@ public class Minion {
 	public Kind cardType = Kind.NONE;
 	public long cardID = -1;
 	public int typeId = 0;
-	public ArrayList<subType> subtypes = new ArrayList<subType>();
+	private ArrayList<SubType> subtypes = new ArrayList<SubType>();
 	
 	private int Ap = 0;
 	public int Hp =0;
@@ -60,12 +60,14 @@ public class Minion {
 	public int aoeDmgToDo=0;
 	public int desperationBuffs=0;
 	public boolean imuneToNextDmg=false;
-	public boolean addToHandAfterDead = true;
+	public boolean addToHandAfterDead = false;
 	
+	//TODO calculate attack/HP life? like getAP() -> loop through enchantments/buffs other minions and calculate the current attack?
 	public int frostbeardCounter=0;
 	public int ducalInfCounter=0;
 	public int royalInfCounter=0;
 	public int pillarCounter=0;
+	public int monstroCounter =0;
 	
 	public int getAc()
 	{
@@ -89,6 +91,18 @@ public class Minion {
 	public void resetAc()
 	{
 		this.Ac = this.maxAc;
+	}
+	
+	public void resetAcWithMessage(Board b)
+	{
+		int oldAc = this.Ac;
+		this.Ac = this.maxAc;
+		
+		if(oldAc != this.Ac )
+		{
+			
+			b.addMessageToBothPlayers(b.getStatusUpdateMessage(this));
+		}
 	}
 	
 	public void setAc(int v)
@@ -118,13 +132,15 @@ public class Minion {
 		this.bufftype="";
 		this.attackType = c.getAttackType();
 		this.subtypes.clear();
-		for(subType s : c.subtypes)
+		for(SubType s : c.subtypes)
 		{
 			this.subtypes.add(s);
 		}
 		frostbeardCounter=0;
 		ducalInfCounter=0;
 		royalInfCounter=0;
+		monstroCounter =0;
+		this.aoeDmgToDo=0;
 	}
 	
 	public Minion getMinionToken()
@@ -146,6 +162,7 @@ public class Minion {
 		this.isIdol=true;
 		this.position.row = pos;
 		this.position.column = 4;
+		this.aoeDmgToDo=0;
 	}
 	
 	public Minion (String type, String name, String description, Card c, Color ownercolor)
@@ -157,6 +174,7 @@ public class Minion {
 		this.typeId = c.typeId;
 		this.position.color = ownercolor;
 		this.isToken=true;
+		this.aoeDmgToDo=0;
 	}
 	
 	/*public String getStatusUpdate()
@@ -191,7 +209,7 @@ public class Minion {
 		this.bufftype="";
 		this.attackType = this.card.getAttackType();
 		this.subtypes.clear();
-		for(subType s : this.card.subtypes)
+		for(SubType s : this.card.subtypes)
 		{
 			this.subtypes.add(s);
 		}
@@ -206,12 +224,13 @@ public class Minion {
 		aoeDmgToDo=0;
 		desperationBuffs=0;
 		imuneToNextDmg=false;
-		addToHandAfterDead = true;
+		addToHandAfterDead = false;
 		this.attachedCards.clear();
 		this.owner = null;
 		frostbeardCounter=0;
 		ducalInfCounter=0;
 		royalInfCounter=0;
+		monstroCounter =0;
 	}
 	
 	
@@ -240,12 +259,36 @@ public class Minion {
 		return rel;
 	}
 	
-	public ArrayList<Minion> getTargets(Minion[][] enemyField, ArrayList<Position> posis, ArrayList<Minion> idols)
+	public boolean hasWard(Board b)
+	{
+		boolean rel =  this.card.cardSim.hasWard(b, this);
+		
+		for(Minion e: this.attachedCards)
+		{
+			rel = rel || e.card.cardSim.hasWard(b, e);
+		}
+		
+		return rel;
+	}
+	
+	public boolean hasPiercing(Board b)
+	{
+		boolean rel =  this.card.cardSim.hasPiercing(b, this);
+		
+		for(Minion e: this.attachedCards)
+		{
+			rel = rel || e.card.cardSim.hasPiercing(b, e);
+		}
+		
+		return rel;
+	}
+	
+	public ArrayList<Minion> getTargets(Minion[][] enemyField, ArrayList<Position> posis, ArrayList<Minion> idols, Board b)
 	{
 		ArrayList<Minion> targets = new ArrayList<Minion>();
 		if(this.card.trgtArea == targetArea.FORWARD)
 		{
-			if(this.hasPiercing) 
+			if(this.hasPiercing(b)) 
 			{
 				int currentattack = this.Ap;
 				for(Position posi : posis)
@@ -308,11 +351,11 @@ public class Minion {
 	}
 	
 	
-	public ArrayList<Minion> getTargets(Minion[][] enemyField , ArrayList<Minion> idols)
+	public ArrayList<Minion> getTargets(Minion[][] enemyField , ArrayList<Minion> idols, Board b)
 	{
 		ArrayList<Position> posis = Board.getAttackPositions(this);
 		
-		return getTargets(enemyField, posis, idols);
+		return getTargets(enemyField, posis, idols, b);
 	}
 	
 	public void addCardAsEnchantment(String type, String bname, String description, Minion card, Board b)
@@ -495,7 +538,7 @@ public class Minion {
 		this.attachedCards.remove(e);
 		//ArrayList<Minion> temp = new ArrayList<Minion>(this.attachedCards);
 		//for(Minion m:temp)
-		e.card.cardSim.onDeathrattle(b, e);
+		e.card.cardSim.onDeathrattle(b, e, e, AttackType.UNDEFINED, DamageType.TERMINAL);
 		
 		if(e.cardID>=0) 
 		{
@@ -513,4 +556,67 @@ public class Minion {
 	{
 		return new ArrayList<Minion>(this.attachedCards);
 	}
+
+	public ArrayList<SubType> getSubTypes()//we return a copy, so enchantments could be deleted!
+	{
+		return new ArrayList<SubType>(this.subtypes);
+	}
+	
+	//subtype added is called!
+	//TODO trigger LingerSpells
+	public void addSubtype(SubType sub, Board b)
+	{
+		boolean dotrigger = true;
+		if(this.subtypes.contains(sub)) dotrigger = false;
+		this.subtypes.add(sub);
+		
+		if(dotrigger)
+		{
+			for(Minion m : b.getAllMinionOfField())
+			{
+				m.card.cardSim.onSubTypeAdded(b, m, m, sub);
+				for(Minion e : m.getAttachedCards())
+				{
+					e.card.cardSim.onSubTypeAdded(b, e, m, sub);
+				}
+			}
+		}
+		
+	}
+	
+	//dont trigger if another subtype is there!
+	public void removeSubtype(SubType sub, Board b)
+	{
+		if(!this.subtypes.contains(sub)) return;//ERROR minion doesnt has this subtype
+		
+		boolean dotrigger = true;
+		//delete last matching subtype:
+		int i = -1;
+		int j = 0;
+		for(SubType su : this.subtypes)
+		{
+			if(su == sub) i=j;
+			j++;
+		}
+		
+		this.subtypes.remove(i);
+		
+		//after removing the subtype it still has this subtype... subtypes doesnt change
+		if(this.subtypes.contains(sub)) dotrigger = false;
+		
+		if(dotrigger)
+		{
+			for(Minion m : b.getAllMinionOfField())
+			{
+				m.card.cardSim.onSubTypeDeleted(b, m, m, sub);
+				for(Minion e : m.getAttachedCards())
+				{
+					e.card.cardSim.onSubTypeDeleted(b, e, m, sub);
+				}
+			}
+		}
+		
+	}
+
+
 }

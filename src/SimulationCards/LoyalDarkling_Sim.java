@@ -12,7 +12,7 @@ import BattleStuff.Kind;
 import BattleStuff.Minion;
 import BattleStuff.Position;
 import BattleStuff.ResourceName;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class LoyalDarkling_Sim extends Simtemplate {
 	//"id":162,"name":"Loyal Darkling","description":"When Countdown is 0, you may sacrifice Loyal Darkling."
@@ -21,16 +21,12 @@ public class LoyalDarkling_Sim extends Simtemplate {
 	public  void onAbilityIsActivated(Board b, Minion triggerEffectMinion, ArrayList<Position> targets )
     {
 		b.destroyMinion(triggerEffectMinion, triggerEffectMinion);
-		
-		b.changeMaxRessource(ResourceName.GROWTH, triggerEffectMinion.position.color, 1);
-		
-		//dont need a ressource update message, because this costs 2 energy-> is send in activeability.payenergy
-		
+
     	return;
 		
     }
 	
-	public  void onDeathrattle(Board b, Minion m)
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
     {
 		
 		Minion target = b.getPlayerIdol(Board.getOpposingColor(m.position.color), m.position.row);

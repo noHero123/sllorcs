@@ -4,7 +4,7 @@ import BattleStuff.AttackType;
 import BattleStuff.Board;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class Harvester_Sim extends Simtemplate {
 	//"id":172,"name":"Harvester","description":"Does not count down. When a creature is destroyed, Harvester's Countdown is decreased by 1."

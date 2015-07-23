@@ -9,6 +9,8 @@ import BattleStuff.Color;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
 import BattleStuff.Position;
+import BattleStuff.SubType;
+import BattleStuff.TargetAreaGroup;
 import BattleStuff.tileSelector;
 
 public class Simtemplate {
@@ -47,6 +49,11 @@ public class Simtemplate {
 	public tileSelector getTileSelectorForSecondSelection()
 	{
 		return tileSelector.None;
+	}
+	
+	public TargetAreaGroup getTargetAreaGroup()
+	{
+		return TargetAreaGroup.None;
 	}
 	
 	//spell is played
@@ -152,6 +159,26 @@ public class Simtemplate {
     	return 0;
     }
     
+    public boolean hasWard(Board b ,Minion m)
+    {
+    	return false;
+    }
+    
+    public boolean hasPiercing(Board b ,Minion m)
+    {
+    	return false;
+    }
+    
+    public void onSubTypeAdded(Board b, Minion triggerEffectMinion, Minion m, SubType subt )
+    {
+    	return;
+    }
+    
+    public void onSubTypeDeleted(Board b, Minion triggerEffectMinion, Minion m, SubType subt )
+    {
+    	return;
+    }
+    
     //triggered AFTER a spell was played (like resonance (for resonance please check if its your turn))
     //for ressonance.. the unit counts.. not the owner of the spell!!!
     public void onPlayerPlayASpell(Board b ,Minion triggerEffectMinion, Minion spell)
@@ -191,7 +218,7 @@ public class Simtemplate {
     }
     
     //unit did dmg trigger (like arthritis)
-    public  void onMinionDidDmgTrigger(Board b, Minion triggerEffectMinion, Minion damagedMinion, Minion attacker, int dmgdone)
+    public  void onMinionDidDmgTrigger(Board b, Minion triggerEffectMinion, Minion damagedMinion, Minion attacker, int dmgdone, AttackType attackType, DamageType dmgtype)
     {
         return;
     }
@@ -214,12 +241,12 @@ public class Simtemplate {
     }
     
     //minion died (only itself)
-    public  void onDeathrattle(Board b, Minion m)
+    public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
     {
         return;
     }
     
-    // a minion died (not itself) // unstable too
+    // a minion died (not itself) // unstable too, only triggered, when minion with trigger effect is allive!
 
     public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker, AttackType attackType, DamageType dmgtype)
     {
@@ -495,8 +522,77 @@ public class Simtemplate {
     	if(id == 200) return new Cursemonger_Sim();
     	if(id == 201) return new Pestis_Sim();
     	
+    	
+    	//growth set 4
+    	if(id == 135) return new Erode_Sim();
+    	if(id == 203) return new Noaidi_Sim();
+    	if(id == 208) return new StagHeart_Sim();
+    	if(id == 211) return new Crone_Sim();
+    	if(id == 212) return new Breaker_Sim();
+    	if(id == 213) return new OakBlood_Sim();
+    	if(id == 214) return new Breaker_Sim();
+    	if(id == 215) return new RatKing_Sim();
+    	if(id == 216) return new Appurtenance_Sim();
+    	if(id == 217) return new Berserker_Sim();
+    	if(id == 218) return new SisterOfTheBear_Sim();
+    	if(id == 219) return new KinfolkRanger_Sim();
+    	if(id == 221) return new Owl_Sim();
+    	if(id == 222) return new SisterOfTheOwl_Sim();
+    	if(id == 257) return new Untainted_Sim();
+    	
+    	
     	//decay set 4
     	if(id == 239) return new WickedBeing_Sim();
+    	if(id == 242) return new Ripper_Sim();
+    	if(id == 243) return new UnforeseenOnslaught_Sim();
+    	if(id == 244) return new IlmireTribesman_Sim();
+    	if(id == 245) return new PestDissimulator_Sim();
+    	if(id == 246) return new MonstrousBrood_Sim();
+    	if(id == 247) return new Monstrosity_Sim();
+    	if(id == 248) return new Fungify_Sim();
+    	if(id == 249) return new IreAndBile_Sim();
+    	if(id == 250) return new SickeningFumes_Sim();
+    	if(id == 251) return new UneasyAlliance_Sim();
+    	if(id == 252) return new BloodlineTaint_Sim();
+    	if(id == 253) return new Watcher_Sim();
+    	if(id == 255) return new EagerScryer_Sim();
+    	if(id == 259) return new BeetleStone_Sim();
+    	
+    	//energy set 4
+    	if(id == 133) return new Darkstrike_Sim();
+    	if(id == 204) return new SolemnGiant_Sim();
+    	if(id == 205) return new DustRunner_Sim();
+    	if(id == 207) return new AutomataForge_Sim();
+    	if(id == 210) return new MetalWonder_Sim();
+    	if(id == 223) return new StormRunner_Sim();
+    	if(id == 224) return new StateMachine_Sim();
+    	if(id == 225) return new Supercharged_Sim();
+    	if(id == 226) return new MachineChant_Sim();
+    	if(id == 227) return new ScoutAutomaton_Sim();
+    	if(id == 235) return new Machinated_Sim();
+    	if(id == 236) return new Corrode_Sim();
+    	if(id == 241) return new SiegeCracker_Sim();
+    	if(id == 256) return new Cannonetta_Sim();
+    	if(id == 258) return new MachineDivinator_Sim();
+    	
+    	//order set 4
+    	if(id == 134) return new Efficiency_Sim();
+    	if(id == 178) return new TempoTheft_Sim();
+    	if(id == 206) return new WingsShield_Sim();
+    	if(id == 209) return new FaithDuty_Sim();
+    	if(id == 228) return new Magnetizer_Sim();
+    	if(id == 229) return new MysticAltar_Sim();
+    	if(id == 230) return new Redeploy_Sim();
+    	if(id == 231) return new CallersBane_Sim();
+    	if(id == 232) return new AgingKnight_Sim();
+    	if(id == 233) return new RoyalBanner_Sim();
+    	if(id == 234) return new Fleetness_Sim();
+    	if(id == 237) return new WingsSoldier_Sim();
+    	if(id == 238) return new VigorExtraction_Sim();
+    	if(id == 240) return new RefinedStrategy_Sim();
+    	if(id == 254) return new WingsCaptain_Sim();
+    	
+    	
     	
     	return new Simtemplate();
     }

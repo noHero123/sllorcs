@@ -45,19 +45,71 @@ public class ActiveAbility {
 	public void payEnergy(Board b, Minion m)
 	{
 		int summe= this.costGrowth+this.costOrder+this.costEnergy+this.costDecay+this.costSpecial;
+		if(m.typeId == 207) summe = 3;
+		if(m.typeId == 204) summe = 2;
+		if(m.typeId == 812) summe = 3;
 		if(summe==0)return;
 		
+		int neededWild = 0;
 		//better:
-		int[] curE = b.whitecurrentRessources;
-		if(m.position.color == Color.black) 
+		int[] cressis = b.blackcurrentRessources;
+		if(m.position.color == Color.white) 
 		{
-			curE = b.blackcurrentRessources;
+			cressis= b.whitecurrentRessources;
 		}
-		curE[0] -= this.costGrowth;
-		curE[1] -= this.costOrder;
-		curE[2] -= this.costEnergy;
-		curE[3] -= this.costDecay;
-		curE[4] -= this.costSpecial;
+		
+		int cost = this.costGrowth;
+		if(cressis[0] < cost )
+		{
+			neededWild = cost - cressis[0];
+			
+		}
+		cressis[0]-=cost;
+		
+		cost = this.costOrder;
+		if(cressis[1] < cost)
+		{
+			neededWild = cost - cressis[1];
+			
+		}
+		cressis[1]-=cost;
+		
+		cost = this.costEnergy;
+		if(m.typeId == 207)
+		{
+			cost =  3;
+		}
+		if(m.typeId == 204)
+		{
+			cost =  2;
+		}
+		if(m.typeId == 812)
+		{
+			cost =  3;
+		}
+		if(cressis[2] < cost )
+		{
+			neededWild = cost - cressis[2];
+			
+		}
+		cressis[2]-=cost;
+		
+		cost = this.costDecay;
+		if(cressis[3] < cost )
+		{
+			neededWild = cost - cressis[3];
+			
+		}
+		cressis[3]-=cost;
+		
+		neededWild += this.costSpecial;
+		
+		cressis[4]-=neededWild;
+		
+		for(int ii=0;ii<5;ii++)
+		{
+			cressis[ii] = Math.max(0, cressis[ii]);
+		}
 		
 		b.addMessageToBothPlayers(b.getResourcesUpdateMessage());
 		return;
@@ -66,47 +118,67 @@ public class ActiveAbility {
 	public Boolean hasEnoughRessis(Board b, Minion m)
 	{
 		Boolean isp = true;
-		
+		Boolean hasEnoughResources=false;
 		//better:
-		int[] curE = b.whitecurrentRessources;
-		if(m.position.color == Color.black) 
+		int[] cressis = b.blackcurrentRessources;
+		if(m.position.color == Color.white) 
 		{
-			curE = b.blackcurrentRessources;
-		}
-		if(curE[0] < this.costGrowth) isp=false;
-		if(curE[1] < this.costOrder) isp=false;
-		if(curE[2] < this.costEnergy) isp=false;
-		if(curE[3] < this.costDecay) isp=false;
-		if(curE[4] < this.costSpecial) isp=false;
-		
-		return isp;
-		//old
-		/*
-		isp = false;
-		
-		if(this.id == activeAbilitys.Move)
-		{
-			return true;
-		}
-		if(this.id == activeAbilitys.SummonWolf)
-		{
-			return true;
+			cressis= b.whitecurrentRessources;
 		}
 		
-		if(this.id == activeAbilitys.TribalMemorialAbility)
+		int neededWild = 0;
+		
+		int cost = this.costGrowth;
+		if(cressis[0] < cost )
 		{
-			//pay 2 energy
-			int[] curE = b.whitecurrentRessources;
-			if(m.position.color == Color.black) 
-			{
-				curE = b.blackcurrentRessources;
-			}
-			if(curE[2] >= 2) return true;
-			
+			neededWild = cost - cressis[0];
+		}
+		
+		cost = this.costOrder;
+		if(cressis[1] < cost)
+		{
+			neededWild = cost - cressis[1];
+		}
+		
+		cost = this.costEnergy;
+		if(m.typeId == 207)
+		{
+			cost =  3;
+		}
+		if(m.typeId == 204)
+		{
+			cost =  2;
+		}
+		if(m.typeId == 812)
+		{
+			cost =  3;
+		}
+		if(cressis[2] < cost )
+		{
+			neededWild = cost - cressis[2];
+		}
+		
+		cost = this.costDecay;
+		if(cressis[3] < cost )
+		{
+			neededWild = cost - cressis[3];
+		}
+		
+		neededWild += this.costSpecial;
+		
+		if(cressis[4] >= neededWild)
+		{
+			hasEnoughResources=true;
+		}
+		
+		if(!hasEnoughResources) 
+		{
+			//TODO error
 			return false;
 		}
-		*/
-		//return isp;
+		
+		return true;
+
 	}
 	
 	
@@ -165,6 +237,28 @@ public class ActiveAbility {
 			return false;
 		}
 		
+		if(this.id == activeAbilitys.Flying)
+		{
+			if(m.canMove() && poses.size()>=1) return true;
+			return false;
+		}
+		
+		if(this.id == activeAbilitys.EnergyCountdownAbility)
+		{
+			if(m.getAc()>=1) return true;
+			return false;
+		}
+		
+		if(this.id == activeAbilitys.MysticAltar)
+		{
+			if(m.getAc() == 0 && poses.size()>=1)
+			{
+				return true;
+			}
+			return false;
+		}
+		
+		
 		return isp;
 	}
 	
@@ -207,6 +301,18 @@ public class ActiveAbility {
 		{
 			return true;
 		}
+		if(this.id == activeAbilitys.Flying)
+		{
+			return true;
+		}
+		if(this.id == activeAbilitys.EnergyCountdownAbility)
+		{
+			return false;
+		}
+		if(this.id == activeAbilitys.MysticAltar)
+		{
+			return true;
+		}
 		
 		return false;
 	}
@@ -221,6 +327,8 @@ public class ActiveAbility {
 			isp.addAll(b.getMovePositions(m.position.color, m.position.row, m.position.column));
 			return isp;
 		}
+		
+		
 		
 		if(this.id == activeAbilitys.SummonWolf)
 		{
@@ -290,6 +398,30 @@ public class ActiveAbility {
 			for(Minion mm : b.getAllMinionOfField())
 			{
 				isp.add(new Position(mm.position));
+			}
+			return isp;
+		}
+		
+		if(this.id == activeAbilitys.Flying)
+		{
+			isp.addAll(b.getFreePositions(m.position.color));
+			return isp;
+		}
+		
+		if(this.id == activeAbilitys.EnergyCountdownAbility)
+		{
+			return isp;
+		}
+		
+		if(this.id == activeAbilitys.MysticAltar)
+		{
+			ArrayList<Minion> mins = b.getPlayerFieldList(m.position.color);
+			for(Minion pp : mins)
+			{
+				if(pp.cardType == Kind.CREATURE)
+				{
+					isp.add(new Position(pp.position));
+				}
 			}
 			return isp;
 		}

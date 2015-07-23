@@ -8,7 +8,7 @@ import BattleStuff.Color;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
 import BattleStuff.Position;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class MireShambler_Sim extends Simtemplate {
 	//"id":164,"name":"Mire Shambler","description":"Before attacking, Mire Shambler moves to a random adjacent tile."

@@ -2,7 +2,7 @@ package SimulationCards;
 
 import BattleStuff.Board;
 import BattleStuff.Minion;
-import BattleStuff.subType;
+import BattleStuff.SubType;
 
 public class SisterOfTheFox_Sim extends Simtemplate {
 	//"id":53,"name":"Sister of the Fox","description":"When Sister of the Fox comes into play, draw 1 scroll."

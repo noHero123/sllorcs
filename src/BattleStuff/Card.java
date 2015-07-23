@@ -21,7 +21,7 @@ public class Card {
 	public int typeId = 0;
 	public String cardname ="unknown";
 	public String cardDescription = "";
-	public ArrayList<subType> subtypes = new ArrayList<subType>();
+	public ArrayList<SubType> subtypes = new ArrayList<SubType>();
 	public Kind cardKind = Kind.NONE;
 	public int rarity = 0;
 	public int hp=0;
