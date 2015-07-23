@@ -22,7 +22,7 @@ public class Frostbeard_Sim extends Simtemplate {
 			{
 				mnn.buffMinionWithoutMessage(2, 0, 0, b);
 				mnn.addnewEnchantments("BUFF", "Frostbeard", m.card.cardDescription, m.card, b, m.position.color);
-				mnn.frostbeardCounter = 1;
+				//mnn.frostbeardCounter = 1;
 			}
 		}
 		
@@ -32,8 +32,11 @@ public class Frostbeard_Sim extends Simtemplate {
 	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, Color turnEndColor)
     {
 		if(triggerEffectMinion.owner==null) return false;//its the minion, not the effect!
-		if(turnEndColor != triggerEffectMinion.owner.position.color) return false;
-		
+		if(turnEndColor != triggerEffectMinion.owner.position.color) return false; //not your end of turn
+		//we dont have to count, because its always enemys turn, when your minions are buffed!
+		triggerEffectMinion.owner.buffMinionWithoutMessage(-2, 0, 0, b);
+		return true;
+		/*
 		if(triggerEffectMinion.owner.frostbeardCounter == 0)
 		{
 			triggerEffectMinion.owner.buffMinionWithoutMessage(-2, 0, 0, b);
@@ -43,7 +46,7 @@ public class Frostbeard_Sim extends Simtemplate {
 		{
 			triggerEffectMinion.owner.frostbeardCounter-=1;
 			return false;
-		}
+		}*/
     }
 	
 	public Boolean isEffect(Minion m)

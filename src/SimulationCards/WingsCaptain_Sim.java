@@ -44,7 +44,7 @@ public class WingsCaptain_Sim extends Simtemplate {
 	 {
 		 if(triggerEffectMinion.owner!=null) return false; // its not the buff :D
 		 triggerEffectMinion.moveChanges-=1;
-	     return false;
+	     return true;
 	 }
 
 	

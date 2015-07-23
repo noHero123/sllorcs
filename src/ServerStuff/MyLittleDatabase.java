@@ -224,6 +224,9 @@ public class MyLittleDatabase {
 		 deck1 = "{\"deck\":\"DecaySet4\",\"author\":\"Mojang\",\"types\":[239,242,243,244,245,246,247,248,249,250,251,252,253,255,259]}";
 		 toadd.add(deck1);
 		 
+		 deck1 = "{\"deck\":\"GrowthSet5\",\"author\":\"Mojang\",\"types\":[261,289,290,291,292,293,294,295,296,297,302,303,304,307,310]}";
+		 toadd.add(deck1);
+		 
 		 //test area targeting!
 		 //deck1 = "{\"deck\":\"testing\",\"author\":\"Mojang\",\"types\":[25,246,244,244,245]}";
 		 //toadd.add(deck1);

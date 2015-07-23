@@ -36,8 +36,8 @@ public class Board {
 	public Minion[][] whiteField = new Minion[5][3];
 	public Minion[][] blackField = new Minion[5][3];
 	
-	public ArrayList<Minion> whiteRulesUpdates = new ArrayList<Minion>();
-	public ArrayList<Minion> blackRulesUpdates = new ArrayList<Minion>();
+	public ArrayList<Minion> whiteRulesUpdates = new ArrayList<Minion>();//linger stuff
+	public ArrayList<Minion> blackRulesUpdates = new ArrayList<Minion>();//linger stuff
 	
 	public ArrayList<Minion> whiteHand = new ArrayList<Minion>();
 	public ArrayList<Minion> blackHand = new ArrayList<Minion>();
@@ -401,7 +401,7 @@ public class Board {
 			{
 			
 				Minion m = mins[i][j];
-				if(m != null && !m.deadTriggersDone)
+				if(m != null && !m.deadTriggersDone && m.Hp>=1)
 				{
 					alist.add(m);
 				}
@@ -423,7 +423,7 @@ public class Board {
 			{
 			
 				Minion m = mins[i][j];
-				if(m != null && !m.deadTriggersDone)
+				if(m != null && !m.deadTriggersDone&& m.Hp>=1)
 				{
 					alist.add(m);
 				}
@@ -439,13 +439,77 @@ public class Board {
 			{
 			
 				Minion m = mins[i][j];
-				if(m != null && !m.deadTriggersDone)
+				if(m != null && !m.deadTriggersDone&& m.Hp>=1)
 				{
 					alist.add(m);
 				}
 				
 			}
 		}
+		
+		return alist;
+	}
+	
+	public ArrayList<Minion> getAllDeadMinionsOfField()
+	{
+		Minion[][] mins =  getPlayerField(this.activePlayerColor);
+		ArrayList<Minion> alist = new ArrayList<Minion>();
+		
+		for(int j=0; j<3; j++)
+		{
+			for(int i=0; i<5; i++)
+			{
+			
+				Minion m = mins[i][j];
+				if(m != null && !m.deadTriggersDone && m.Hp<=0)
+				{
+					alist.add(m);
+				}
+				
+			}
+		}
+		
+		mins =  getPlayerField(Board.getOpposingColor(this.activePlayerColor));
+		
+		for(int j=0; j<3; j++)
+		{
+			for(int i=0; i<5; i++)
+			{	
+			
+				Minion m = mins[i][j];
+				if(m != null && !m.deadTriggersDone && m.Hp<=0)
+				{
+					alist.add(m);
+				}
+				
+			}
+		}
+		
+		return alist;
+	}
+	
+	public ArrayList<Minion> getAllRules()
+	{
+		
+		return getAllRulesWithColorFirst(this.activePlayerColor);
+	}
+	
+	public ArrayList<Minion> getAllRulesWithColorFirst(Color first)
+	{
+		ArrayList<Minion> alist = new ArrayList<Minion>();
+		Color c1 = first;
+		Color c2 = Board.getOpposingColor(c1);
+		
+		for(Minion m : this.getPlayerRules(c1))
+		{
+			if(m.lingerDuration>=1) alist.add(m);
+		}
+		
+		for(Minion m : this.getPlayerRules(c2))
+		{
+			if(m.lingerDuration>=1) alist.add(m);
+		}
+		
 		
 		return alist;
 	}
@@ -954,26 +1018,79 @@ public class Board {
 		return s;
 	}
 	
-	
 	//Rules are cound down
-	private void rulecountdowner(Color col)
+	public void addRule(Minion rule)
 	{
-		ArrayList<Minion> rules = this.getPlayerRules(col);
-		ArrayList<Minion> removerules = new ArrayList<Minion>();
-		ArrayList<Minion> grave = this.getPlayerGrave(col);
-		for(Minion rule : rules)
-		{
-			if(rule.lingerDuration>=1) rule.lingerDuration--;
-			String s = getRuleMessage(rule);
-			this.addMessageToPlayer(Color.white, s);
-			this.addMessageToPlayer(Color.black, s);
-			if(rule.lingerDuration<=0) removerules.add(rule);
+		//if new rule:
+		//{"RuleAdded":{"card":{"id":25869,"typeId":261,"tradable":false,"isToken":false,"level":0},"color":"white","roundsLeft":5}}
+		// + {"RuleUpdate":{"card":{"id":25869,"typeId":261,"tradable":false,"isToken":false,"level":0},"color":"white","roundsLeft":5}}
+		
+		//if rule existed : only ruleupdate
+			ArrayList<Minion> rules = this.getPlayerRules(rule.position.color);
+			boolean isNewOne = true;
+			Minion ruleupdated = rule;
+			for(Minion rul : rules)
+			{
+				if(rul.typeId == rule.typeId && rul.lingerDuration>=1) 
+				{
+					rul.lingerDuration+=rule.card.cardSim.getLingerDuration(this, rule);
+					ruleupdated = rul;
+					isNewOne=false;
+				}
+			}
 			
+			String s="";
+			if(isNewOne)
+			{
+				ruleupdated.lingerDuration = rule.card.cardSim.getLingerDuration(this, rule);
+				s="{\"RuleAdded\":{\"card\":{\"id\":"+ruleupdated.cardID+",\"typeId\":"+ruleupdated.typeId+",\"tradable\":false,\"isToken\":false,\"level\":"+ruleupdated.lvl+"},\"color\":\""+ Board.colorToString(ruleupdated.position.color)+"\",\"roundsLeft\":"+ruleupdated.lingerDuration+"}}";
+				this.addMessageToBothPlayers(s);
+				rules.add(ruleupdated);
+				s = this.getRuleMessage(ruleupdated);
+				this.addMessageToBothPlayers(s);
+			}
+			else
+			{
+				
+				s = this.getRuleMessage(ruleupdated);
+				this.addMessageToBothPlayers(s);
+				this.addMinionToGrave(rule);
+			}
+			
+	}
+	
+	public void ruleCountDown(Minion rule, int value)
+	{
+		ArrayList<Minion> rules = this.getPlayerRules(rule.position.color);
+		Minion removerules = null;
+		ArrayList<Minion> grave = this.getPlayerGrave(rule.position.color);
+		for(Minion rul : rules)
+		{
+			if(rul.typeId != rule.typeId) continue;
+			
+			if(rule.lingerDuration>=1) rule.lingerDuration-=value;
+			String s = getRuleMessage(rule);
+			this.addMessageToBothPlayers(s);
+			if(rule.lingerDuration<=0) removerules=rule;
+			break;
 		}
 		
-		grave.addAll(removerules);
-		rules.removeAll(removerules);
+		if(removerules!=null)
+		{
+			this.addMinionToGrave(removerules);
+			rules.remove(removerules);
+		}
 		
+	}
+	
+	//all Rules are cound down
+	private void rulecountdowner(Color col)
+	{
+		ArrayList<Minion> rules = new ArrayList<Minion>(this.getPlayerRules(col));
+		for(Minion rule : rules)
+		{
+			ruleCountDown(rule, 1);
+		}
 	}
 	
 	private String getRuleMessage(Minion rule)
@@ -1282,6 +1399,11 @@ public class Board {
 			}
 		}
 		
+		for(Minion rule : this.getAllRules())
+		{
+			rule.card.cardSim.onTurnStartTrigger(this, rule, this.activePlayerColor);
+		}
+		
 		//this.doDeathRattles();
 		
 		
@@ -1297,6 +1419,11 @@ public class Board {
 			m.card.cardSim.onTurnEndsTrigger(this, m, this.activePlayerColor);
 			//delete turn-buffs and stuff
 			m.turnEndingDebuffing(this);
+		}
+		
+		for(Minion rule : this.getAllRules())
+		{
+			rule.card.cardSim.onTurnEndsTrigger(this, rule, this.activePlayerColor);
 		}
 		
 		//this.doDeathRattles();
@@ -1436,8 +1563,9 @@ public class Board {
 
 				//reset Ac (=current count down) of minions with Ac<=0-----------------------------------------
 				
-				this.doTurnEndsTriggers();
+				
 				this.allMinionsOfASideResetCountDown(this.activePlayerColor);
+				this.doTurnEndsTriggers();
 				this.sendEffectMessagesToPlayers();
 				
 				//the end:
@@ -1648,8 +1776,9 @@ public class Board {
 
 		if(card.cardType == Kind.SPELL )
 		{
-			System.out.println("add to grave");
-			this.addMinionToGrave(card);
+			//System.out.println("add to grave");
+			//only add to grave when its not a linger spell (adding to grave it then done automatically by addingRule...
+			if(card.card.cardSim.getLingerDuration(this,card) == 0) this.addMinionToGrave(card);
 			//trigger effects
 			for(Minion m : this.getAllMinionOfField())
 			{
@@ -1779,6 +1908,11 @@ public class Board {
 			for(Minion mins : this.getAllMinionOfField())
 			{
 				mins.card.cardSim.onMinionIsSummoned(this, mins, m);
+			}
+			
+			for(Minion rule : this.getAllRules())
+			{
+				rule.card.cardSim.onMinionIsSummoned(this, rule, m);
 			}
 		}
 		
@@ -2469,6 +2603,24 @@ public class Board {
 			return ret;
 		}
 		
+		if(ts == tileSelector.own_beasts)
+		{
+			for(int i=0; i<5; i++)
+			{
+				for(int j=0; j<3; j++)
+				{
+					Minion m = field[i][j];
+					if(m!=null && (m.card.cardKind == Kind.CREATURE) && m.getSubTypes().contains(SubType.Beast))
+					{
+						ret.add(new Position(oppCol, i, j));
+					}
+				}
+			}
+			return ret;
+		}
+		
+		
+		
 		if(ts == tileSelector.own_structures)
 		{
 			for(int i=0; i<5; i++)
@@ -3151,6 +3303,11 @@ public class Board {
 			{
 				e.card.cardSim.onMinionMoved(this, e, m);
 			}
+			
+			for(Minion mnn : this.getAllRulesWithColorFirst(m.position.color))
+			{
+				mnn.card.cardSim.onMinionMoved(this, mnn, m);
+			}
 		}
 		
 		if(doTrigger)doOnFieldChangedTriggers();
@@ -3168,6 +3325,11 @@ public class Board {
 		for(Minion m : this.getAllMinionOfField())
 		{
 			m.card.cardSim.onFieldChanged(this, m);
+		}
+		
+		for(Minion rule : this.getAllRules())
+		{
+			rule.card.cardSim.onFieldChanged(this, rule);
 		}
 		
 	}
@@ -3228,11 +3390,20 @@ public class Board {
 	{
 		public Minion minion;
 		public Position pos;
+		public int flags=0;
 		
 		public SummonItem(Minion a, Position p)
 		{
 			this.minion=a;
 			this.pos = p;
+			this.flags=0;
+		}
+		
+		public SummonItem(Minion a, Position p, int flag)
+		{
+			this.minion=a;
+			this.pos = p;
+			this.flags=flag;
 		}
 	}
 	
@@ -3244,14 +3415,15 @@ public class Board {
 		int died=0;
         this.graveWhiteChanged=false;
         this.graveBlackChanged=false;
-        ArrayList<Minion> allmins = this.getAllMinionOfField();
+        ArrayList<Minion> allmins = this.getAllDeadMinionsOfField();
+        ArrayList<Minion> allminsallive = this.getAllMinionOfField();
         for(Minion m : allmins)
         {
         	
         	if(m.Hp <= 0 && !m.deadTriggersDone)
         	{
         		m.deadTriggersDone=true;//only to be save :D
-        		for(Minion mnn : allmins)
+        		for(Minion mnn : allminsallive)
         		{
         			if(mnn.Hp <= 0) continue; //only the living effects are triggered
         				
@@ -3264,8 +3436,7 @@ public class Board {
             		
         		}
         		
-        		
-        		
+
         		//do triggers for enchantments
         		for(Minion e : m.getAttachedCards())
         		{
@@ -3289,6 +3460,11 @@ public class Board {
         		}
         		//m.attachedCards.clear();
         		
+        		//do triggers for linger
+        		for(Minion rule : this.getAllRulesWithColorFirst(m.position.color))
+    			{
+        			rule.card.cardSim.onMinionDiedTrigger(this, rule, m, attacker, attacktype, dmgtype);
+    			}
         		
         		this.addMinionToGrave(m);//with triggers of enchantments
         		
@@ -3312,7 +3488,17 @@ public class Board {
         	//do onDestroy Triggers
         	for(SummonItem si : this.summonList)
         	{
-        		this.summonUnitOnPosition(si.pos, si.minion);
+        		Minion before = this.getPlayerField(si.pos.color)[si.pos.row][si.pos.column];
+        		if(before==null || before.Hp<=0)
+        		{
+        			this.summonUnitOnPosition(si.pos, si.minion);
+        			if(si.flags == 1)
+        			{
+        				Minion after = this.getPlayerField(si.pos.color)[si.pos.row][si.pos.column];
+        				int buff = 1-after.getAc();
+        				after.buffMinion(0, 0, buff, this);
+        			}
+        		}
         	}
         	this.summonList.clear();
 		}
@@ -3385,6 +3571,14 @@ public class Board {
 				target.aoeDmgToDo=0;
 			}
 			
+			if(target.isIdol)
+			{
+				for(Minion rule : this.getAllRules())//get bonus form lingering spells
+				{
+					dmg += rule.card.cardSim.getIdolDamageBonus(this, rule);
+				}
+			}
+			
 			int overAttack = 0;
 			int oldHP = target.Hp;
 			
@@ -3416,6 +3610,12 @@ public class Board {
 			if(damageType == DamageType.POISON)
 			{
 					int rdmg = target.curse + dmg;
+					
+					for(Minion rule : this.getAllRules())//get bonus form lingering spells
+					{
+						rdmg += rule.card.cardSim.getPoisonBonus(this, rule);
+					}
+					
 					if(rdmg >=1 && target.imuneToNextDmg) 
 					{
 						target.imuneToNextDmg=false;
@@ -3532,12 +3732,10 @@ public class Board {
             }
         	
         	
-        	ArrayList<Minion> lingerspells = this.getPlayerRules(deffender.position.color);
-        	
-        	for (Minion ench : lingerspells)
+        	for (Minion rule : this.getAllRulesWithColorFirst(deffender.position.color))
         	{
             
-        		spikydmg = ench.card.cardSim.getSpikyDamage(this, ench);
+        		spikydmg = rule.card.cardSim.getSpikyDamage(this, rule);
             	if(spikydmg>=1)
             	{
             		performDmg(attacker, deffender, AttackType.MELEE_COUNTER , DamageType.COMBAT, spikydmg);
@@ -3567,6 +3765,7 @@ public class Board {
             		attacker.addnewPoison(this, deffender.position.color);
             	}
             }
+        	//TODO linger?
         	
         }
 
@@ -3596,6 +3795,11 @@ public class Board {
             	ench.card.cardSim.onMinionGotDmgTrigger(this, ench, deffender, dmgdone, attacker);
             }
             
+            for (Minion rule : this.getAllRulesWithColorFirst(deffender.position.color))
+        	{
+            	rule.card.cardSim.onMinionGotDmgTrigger(this, rule, deffender, dmgdone, attacker);
+            }
+            
         }
         deffender.numberOfDmgTaken=0;
 
@@ -3617,7 +3821,7 @@ public class Board {
         			deffender.addnewPoison(this, attacker.position.color);
             	}
             }
-        	
+        	//TODO linger?
         }
         
         
@@ -3631,6 +3835,11 @@ public class Board {
         	for (Minion ench :attacker.getAttachedCards())
         	{
         		ench.card.cardSim.onMinionDidDmgTrigger(this, ench, deffender, attacker, dmgdone, attackType, damageType);
+            }
+        	
+        	for (Minion rule : this.getAllRulesWithColorFirst(attacker.position.color))
+        	{
+        		rule.card.cardSim.onMinionDidDmgTrigger(this, rule, deffender, attacker, dmgdone, attackType, damageType);
             }
         }
         

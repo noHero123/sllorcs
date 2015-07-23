@@ -68,6 +68,10 @@ public class Minion {
 	public int royalInfCounter=0;
 	public int pillarCounter=0;
 	public int monstroCounter =0;
+	public int cullingCounter =0;
+	public boolean didDmgToIdol=false;
+	public boolean fangbear=false;
+	public int turnCounter = 0; //TODO replace that other counters with it!
 	
 	public int getAc()
 	{
@@ -141,6 +145,8 @@ public class Minion {
 		royalInfCounter=0;
 		monstroCounter =0;
 		this.aoeDmgToDo=0;
+		didDmgToIdol=false;
+		fangbear=false;
 	}
 	
 	public Minion getMinionToken()
@@ -163,6 +169,8 @@ public class Minion {
 		this.position.row = pos;
 		this.position.column = 4;
 		this.aoeDmgToDo=0;
+		didDmgToIdol=false;
+		fangbear=false;
 	}
 	
 	public Minion (String type, String name, String description, Card c, Color ownercolor)
@@ -175,6 +183,8 @@ public class Minion {
 		this.position.color = ownercolor;
 		this.isToken=true;
 		this.aoeDmgToDo=0;
+		didDmgToIdol=false;
+		fangbear=false;
 	}
 	
 	/*public String getStatusUpdate()
@@ -231,6 +241,8 @@ public class Minion {
 		ducalInfCounter=0;
 		royalInfCounter=0;
 		monstroCounter =0;
+		didDmgToIdol=false;
+		fangbear=false;
 	}
 	
 	
@@ -281,6 +293,17 @@ public class Minion {
 		}
 		
 		return rel;
+	}
+	
+	
+	public boolean hasEnchantment()
+	{
+		for(Minion e: this.attachedCards)
+		{
+			if(e.owner!=null) return true;
+		}
+		
+		return false;
 	}
 	
 	public ArrayList<Minion> getTargets(Minion[][] enemyField, ArrayList<Position> posis, ArrayList<Minion> idols, Board b)
@@ -358,6 +381,8 @@ public class Minion {
 		return getTargets(enemyField, posis, idols, b);
 	}
 	
+	
+	
 	public void addCardAsEnchantment(String type, String bname, String description, Minion card, Board b)
 	{
 		card.buffName = bname;
@@ -366,50 +391,23 @@ public class Minion {
 		card.attachedCards.clear();
 		card.owner = this;//to know the owner of this card
 		
-		this.attachedCards.add(card);
+		addEnchantmentToList(card, b);
 		
-		String s = "{\"EnchantUnit\":{\"target\":{\"color\":\""+Board.colorToString(this.position.color)+"\",\"position\":\""+this.position.row+","+this.position.column+"\"},\"enchantTags\":[]}}";
-		b.addMessageToBothPlayers(s);
-		
-		if(this.Hp <=0 )
-		{
-			
-			s= "{\"RemoveUnit\":{\"tile\":"+this.position.posToString()+",\"removalType\":\"DESTROY\"}}";
-			b.addMessageToBothPlayers(s);
-			b.doDeathRattles2(this, 0, AttackType.UNDEFINED, DamageType.TERMINAL);
-			
-		}
-		else
-		{
-			b.addMessageToBothPlayers(b.getStatusUpdateMessage(this));
-		}
 	}
 	
 	public void addnewEnchantments(String type, String name, String description, Card c, Board b, Color owner)
+	{
+		addnewEnchantments( type,  name,  description,  c,  b,  owner, 0);
+	}
+	
+	public void addnewEnchantments(String type, String name, String description, Card c, Board b, Color owner, int turnCounter)
 	{
 		Minion buff = new Minion(type, name, description, c, owner);
 		
 		buff.attachedCards.clear();
 		buff.owner = this;//to know the owner of this card
-		
-		this.attachedCards.add(buff);
-		
-		String s = "{\"EnchantUnit\":{\"target\":{\"color\":\""+Board.colorToString(this.position.color)+"\",\"position\":\""+this.position.row+","+this.position.column+"\"},\"enchantTags\":[]}}";
-		
-		
-		b.addMessageToBothPlayers(s);
-		
-		if(this.Hp <=0 )
-		{
-			
-			s= "{\"RemoveUnit\":{\"tile\":"+this.position.posToString()+",\"removalType\":\"DESTROY\"}}";
-			b.addMessageToBothPlayers(s);
-			b.doDeathRattles2(this, 0, AttackType.UNDEFINED, DamageType.TERMINAL);
-		}
-		else
-		{
-			b.addMessageToBothPlayers(b.getStatusUpdateMessage(this));
-		}
+		this.turnCounter = 0;
+		addEnchantmentToList(buff, b);
 	}
 	
 	public void addnewPoison(Board b, Color owner)
@@ -506,13 +504,13 @@ public class Minion {
 	
 	public void turnEndingDebuffing(Board b)
 	{
-		//no status update needed, its done witch AC countdown
+		
 		ArrayList<Minion> temp = new ArrayList<Minion>(this.attachedCards);
 		for(Minion m : temp)
 		{
 			if(m.card.cardSim.onTurnEndsTrigger(b, m, b.activePlayerColor))
 			{
-				this.removeEnchantment(m, false, b);
+				this.removeEnchantment(m, true, b);
 			}
 		}
 		
@@ -533,8 +531,47 @@ public class Minion {
 		return false;
 	}
 	
+	
+	private void addEnchantmentToList(Minion ench, Board b)
+	{
+		boolean start = this.hasEnchantment();
+		
+		this.attachedCards.add(ench);
+		
+		String s = "{\"EnchantUnit\":{\"target\":{\"color\":\""+Board.colorToString(this.position.color)+"\",\"position\":\""+this.position.row+","+this.position.column+"\"},\"enchantTags\":[]}}";
+		b.addMessageToBothPlayers(s);
+		
+		if(this.Hp <=0 )
+		{
+			
+			s= "{\"RemoveUnit\":{\"tile\":"+this.position.posToString()+",\"removalType\":\"DESTROY\"}}";
+			b.addMessageToBothPlayers(s);
+			b.doDeathRattles2(this, 0, AttackType.UNDEFINED, DamageType.TERMINAL);
+			
+		}
+		else
+		{
+			b.addMessageToBothPlayers(b.getStatusUpdateMessage(this));
+		}
+		
+		boolean end = this.hasEnchantment();
+		
+		boolean newench = false;
+		if(start == false && end == true)
+		{
+			newench = true;	
+		}
+		//DO unit got enchanted trigger!
+		for(Minion mnn : b.getAllMinionOfField())
+		{
+			mnn.card.cardSim.onUnitGotEnchantment(b, mnn, this, newench);
+		}
+	}
+	
 	public void removeEnchantment(Minion e, boolean writeUpdateMessage, Board b)
 	{
+		boolean start = this.hasEnchantment();
+		
 		this.attachedCards.remove(e);
 		//ArrayList<Minion> temp = new ArrayList<Minion>(this.attachedCards);
 		//for(Minion m:temp)
@@ -549,6 +586,16 @@ public class Minion {
 			b.addMessageToBothPlayers(b.getStatusUpdateMessage(this));
 		}
 		e.owner=null;
+		
+		boolean end = this.hasEnchantment();
+		
+		if(start == false && end == true)
+		{
+			for(Minion mnn : b.getAllMinionOfField())
+			{
+				mnn.card.cardSim.onUnitLostAllEnchantments(b, mnn, this);
+			}
+		}
 		
 	}
 	
@@ -574,12 +621,19 @@ public class Minion {
 		{
 			for(Minion m : b.getAllMinionOfField())
 			{
-				m.card.cardSim.onSubTypeAdded(b, m, m, sub);
+				m.card.cardSim.onSubTypeAdded(b, m, this, sub);
 				for(Minion e : m.getAttachedCards())
 				{
-					e.card.cardSim.onSubTypeAdded(b, e, m, sub);
+					e.card.cardSim.onSubTypeAdded(b, e, this, sub);
 				}
+				
 			}
+			
+			for(Minion rule : b.getAllRulesWithColorFirst(this.position.color))
+			{
+				rule.card.cardSim.onSubTypeAdded(b, rule, this, sub);
+			}
+			
 		}
 		
 	}
@@ -608,11 +662,16 @@ public class Minion {
 		{
 			for(Minion m : b.getAllMinionOfField())
 			{
-				m.card.cardSim.onSubTypeDeleted(b, m, m, sub);
+				m.card.cardSim.onSubTypeDeleted(b, m, this, sub);
 				for(Minion e : m.getAttachedCards())
 				{
-					e.card.cardSim.onSubTypeDeleted(b, e, m, sub);
+					e.card.cardSim.onSubTypeDeleted(b, e, this, sub);
 				}
+			}
+			
+			for(Minion rule : b.getAllRulesWithColorFirst(this.position.color))
+			{
+				rule.card.cardSim.onSubTypeAdded(b, rule, this, sub);
 			}
 		}
 		

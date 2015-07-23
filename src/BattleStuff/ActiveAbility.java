@@ -258,6 +258,12 @@ public class ActiveAbility {
 			return false;
 		}
 		
+		if(this.id == activeAbilitys.DrawEnchantment)
+		{
+			if(m.getAc() == 0) return true;
+			return false;
+		}
+		
 		
 		return isp;
 	}
@@ -312,6 +318,10 @@ public class ActiveAbility {
 		if(this.id == activeAbilitys.MysticAltar)
 		{
 			return true;
+		}
+		if(this.id == activeAbilitys.DrawEnchantment)
+		{
+			return false;
 		}
 		
 		return false;
@@ -425,6 +435,12 @@ public class ActiveAbility {
 			}
 			return isp;
 		}
+		
+		if(this.id == activeAbilitys.DrawEnchantment)
+		{
+			return isp;
+		}
+		
 		
 		return isp;
 	}

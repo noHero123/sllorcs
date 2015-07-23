@@ -24,6 +24,7 @@ public enum tileSelector {//used for getting tiles for cardinfo-msg
 	own_all,
 	own_units, 
 	own_creatures,
+	own_beasts,
 	own_structures,
 	own_free,
 	

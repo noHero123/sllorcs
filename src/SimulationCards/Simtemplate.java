@@ -142,6 +142,10 @@ public class Simtemplate {
     	return;
     }
     
+    public int getLingerDuration(Board b ,Minion m)
+    {
+    	return 0;
+    }
 
     // returns the spiky damage for the unit or the enchantment that is providing the dmg or the linger-spell
     public int getSpikyDamage(Board b ,Minion m)
@@ -155,6 +159,16 @@ public class Simtemplate {
     }
     
     public int getMagicResistance(Board b ,Minion m)
+    {
+    	return 0;
+    }
+    
+    public int getPoisonBonus(Board b ,Minion m)
+    {
+    	return 0;
+    }
+    
+    public int getIdolDamageBonus(Board b ,Minion m)
     {
     	return 0;
     }
@@ -267,6 +281,17 @@ public class Simtemplate {
     
     //like ember bonds
     public  void onUnitIsGoingToAttack(Board b, Minion triggerEffectMinion, Minion attacker )
+    {
+        return;
+    }
+    
+    //for cards like earthborn mystic
+    public  void onUnitGotEnchantment(Board b, Minion triggerEffectMinion, Minion minion, boolean isItsFirstEnchantment )
+    {
+        return;
+    }
+    
+    public  void onUnitLostAllEnchantments(Board b, Minion triggerEffectMinion, Minion minion )
     {
         return;
     }
@@ -592,6 +617,22 @@ public class Simtemplate {
     	if(id == 240) return new RefinedStrategy_Sim();
     	if(id == 254) return new WingsCaptain_Sim();
     	
+    	//growth set 5
+    	if(id == 261) return new AncestralPact_Sim();
+    	if(id == 289) return new OutcastRebel_Sim();
+    	if(id == 290) return new CullingTheFlock_Sim();
+    	if(id == 291) return new EarthenTestament_Sim();
+    	if(id == 292) return new VengefulVaettr_Sim();
+    	if(id == 293) return new BountifulTimes_Sim();
+    	if(id == 294) return new VerdantVeil_Sim();
+    	if(id == 295) return new UnderdogsSpite_Sim();
+    	if(id == 296) return new WetlandRanger_Sim();
+    	if(id == 297) return new JarlUrhald_Sim();
+    	if(id == 302) return new EarthbornMystic_Sim();
+    	if(id == 303) return new Earthbond_Sim();
+    	if(id == 304) return new SeedOfInsurgency_Sim();
+    	if(id == 307) return new StripedFangbear_Sim();
+    	if(id == 310) return new Unground_Sim();
     	
     	
     	return new Simtemplate();
