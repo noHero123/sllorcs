@@ -666,7 +666,7 @@ public class Simtemplate {
     	if(id == 278) return new NuruFleshSeamstress_Sim();
     	if(id == 279) return new MalevolentGaze_Sim();
     	if(id == 309) return new NurusNeedle_Sim();
-    	//if(id == 319) return new ReapingMask_Sim();
+    	if(id == 319) return new ReapingMask_Sim();
     	
     	
     	

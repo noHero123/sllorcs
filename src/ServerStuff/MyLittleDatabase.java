@@ -230,6 +230,9 @@ public class MyLittleDatabase {
 		 deck1 = "{\"deck\":\"OrderSet5\",\"author\":\"Mojang\",\"types\":[263,273,274,275,280,298,305,306,308,311,312,313,314,315,316]}";
 		 toadd.add(deck1);
 		 
+		 deck1 = "{\"deck\":\"OrderSet5\",\"author\":\"Mojang\",\"types\":[260,264,265,266,267,268,269,270,271,272,276,278,279,309,319]}";
+		 toadd.add(deck1);
+		 
 		 //test area targeting!
 		 //deck1 = "{\"deck\":\"testing\",\"author\":\"Mojang\",\"types\":[25,246,244,244,245]}";
 		 //toadd.add(deck1);
