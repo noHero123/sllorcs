@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.tileSelector;
 
 public class EmberBonds_Sim extends Simtemplate
@@ -20,7 +20,7 @@ public class EmberBonds_Sim extends Simtemplate
 	}
 	
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
 		target.addCardAsEnchantment("ENCHANTMENT", "Ember Bonds", playedCard.card.cardDescription, playedCard, b);

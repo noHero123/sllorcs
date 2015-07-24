@@ -7,7 +7,7 @@ import BattleStuff.Card;
 import BattleStuff.CardDB;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 
 public class SolemnGiant_Sim extends Simtemplate {
@@ -24,7 +24,7 @@ public class SolemnGiant_Sim extends Simtemplate {
     	return;
     }
 	
-	public  void onAbilityIsActivated(Board b, Minion triggerEffectMinion, ArrayList<Position> targets )
+	public  void onAbilityIsActivated(Board b, Minion triggerEffectMinion, ArrayList<UPosition> targets )
     {
 		triggerEffectMinion.buffMinion(0, 0, -2, b);
         return;

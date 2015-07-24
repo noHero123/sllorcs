@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import org.json.*;
 
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.Player;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 
 
 public class BattleServerThread extends Thread{
@@ -177,7 +177,7 @@ public class BattleServerThread extends Thread{
 			//"data" is optional
 			//we send ress update, hand update, CardPlayed and then SelectedTiles, SummonUnit, StatsUpdate
 			long cardid = jo.getLong("card");
-			ArrayList<Position> poses = new ArrayList<Position>();
+			ArrayList<UPosition> poses = new ArrayList<UPosition>();
 			if(jo.has("data"))
 			{
 				
@@ -185,13 +185,13 @@ public class BattleServerThread extends Thread{
 				for(int i=0; i < jarr.length(); i++)
 				{
 					String po = jarr.getString(i);
-					Color c = Color.white;
-					if(po.split(",")[0].equals("B")) c=Color.black;
+					UColor c = UColor.white;
+					if(po.split(",")[0].equals("B")) c=UColor.black;
 					
 					int r = Integer.parseInt(po.split(",")[1]);
 					int col = Integer.parseInt(po.split(",")[2]);
 					
-					Position posi = new Position(c, r, col);
+					UPosition posi = new UPosition(c, r, col);
 					poses.add(posi);					
 				}
 			}
@@ -221,12 +221,12 @@ public class BattleServerThread extends Thread{
 			String abilityName = jo.getString("abilityId");
 			
 			String upos = jo.getString("unitPosition");
-			Color c = Color.white;
-			if(upos.split(",")[0].equals("B")) c=Color.black;
+			UColor c = UColor.white;
+			if(upos.split(",")[0].equals("B")) c=UColor.black;
 			int r = Integer.parseInt(upos.split(",")[1]);
 			int col = Integer.parseInt(upos.split(",")[2]);
 			
-			Position pos = new Position(c, r, col);
+			UPosition pos = new UPosition(c, r, col);
 			
 			this.playedBoard.getAbilityInfo( abilityName, pos, this.ownPlayer.profileId);
 			return;
@@ -239,25 +239,25 @@ public class BattleServerThread extends Thread{
 			//{"abilityId" : "SummonWolf","unitPosition" : "W,2,1","data" : {"positions" : ["W,2,2"]},"msg" : "ActivateAbility"}
 			String abilityName = jo.getString("abilityId");
 			String upos = jo.getString("unitPosition");
-			Color c = Color.white;
-			if(upos.split(",")[0].equals("B")) c=Color.black;
+			UColor c = UColor.white;
+			if(upos.split(",")[0].equals("B")) c=UColor.black;
 			int r = Integer.parseInt(upos.split(",")[1]);
 			int col = Integer.parseInt(upos.split(",")[2]);
-			Position unitpos = new Position(c, r, col); 
-			ArrayList<Position> poses = new ArrayList<Position>();
+			UPosition unitpos = new UPosition(c, r, col); 
+			ArrayList<UPosition> poses = new ArrayList<UPosition>();
 			if(jo.has("data"))
 			{
 				JSONArray jarr = jo.getJSONObject("data").getJSONArray("positions");
 				for(int i=0; i < jarr.length(); i++)
 				{
 					String po = jarr.getString(i);
-					c = Color.white;
-					if(po.split(",")[0].equals("B")) c=Color.black;
+					c = UColor.white;
+					if(po.split(",")[0].equals("B")) c=UColor.black;
 					
 					r = Integer.parseInt(po.split(",")[1]);
 					col = Integer.parseInt(po.split(",")[2]);
 					
-					Position posi = new Position(c, r, col);
+					UPosition posi = new UPosition(c, r, col);
 					poses.add(posi);					
 				}
 			}

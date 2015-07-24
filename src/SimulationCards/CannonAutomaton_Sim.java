@@ -11,7 +11,7 @@ public class CannonAutomaton_Sim extends Simtemplate {
         return;
     }
 	
-	public int getArmor(Board b ,Minion m)
+	public int getArmor(Board b ,Minion triggerEffectMinion, Minion minion)
     {
     	return 1;
     }

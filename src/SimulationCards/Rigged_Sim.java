@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
 import BattleStuff.SubType;
@@ -23,7 +23,7 @@ public class Rigged_Sim extends Simtemplate {
 	    {
 		 	if(triggerEffectMinion.owner != null && triggerEffectMinion.owner == diedMinion)
 		 	{
-		 		Color oppcol = Board.getOpposingColor(diedMinion.position.color);
+		 		UColor oppcol = Board.getOpposingColor(diedMinion.position.color);
 		 		ArrayList<Minion> all = b.getPlayerFieldList(oppcol);
 		 		ArrayList<Minion> targets = new ArrayList<Minion>();
 		 		for(Minion m : all)

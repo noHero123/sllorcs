@@ -8,7 +8,7 @@ import BattleStuff.Card;
 import BattleStuff.CardDB;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 
 public class SisterOfTheOwl_Sim extends Simtemplate {
@@ -18,10 +18,10 @@ public class SisterOfTheOwl_Sim extends Simtemplate {
 	public  void getBattlecryEffect(Board b, Minion own, Minion target)
     {
 		
-		Position center = own.position;
-		ArrayList<Position> temp = center.getNeightbours(); 
+		UPosition center = own.position;
+		ArrayList<UPosition> temp = center.getNeightbours(); 
 		temp.add(center);
-		ArrayList<Position> freenbrs  = b.getFreePositionsFromPosition(temp); 
+		ArrayList<UPosition> freenbrs  = b.getFreePositionsFromPosition(temp); 
 		if(freenbrs.size()==0) return;
 	
 		int rndm = b.getRandomNumber(0, freenbrs.size()-1);

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.tileSelector;
 
 public class Breaker_Sim extends Simtemplate

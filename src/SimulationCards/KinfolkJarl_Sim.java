@@ -1,9 +1,9 @@
 package SimulationCards;
 
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 
 public class KinfolkJarl_Sim extends Simtemplate {
@@ -21,7 +21,7 @@ public class KinfolkJarl_Sim extends Simtemplate {
 		}
 		
 		//buff jarl
-		Position p = new Position(own.position);
+		UPosition p = new UPosition(own.position);
 		int buffs =b.getMinionsFromPositions(p.getNeightbours()).size();
 		if(buffs>=1)own.buffMinion(buffs, 0, 0, b);
 		
@@ -32,7 +32,7 @@ public class KinfolkJarl_Sim extends Simtemplate {
 	
 	public void onFieldChanged(Board b, Minion triggerEffectMinion)
     {
-		Position p = new Position(triggerEffectMinion.position);
+		UPosition p = new UPosition(triggerEffectMinion.position);
 		int buffs =b.getMinionsFromPositions(p.getNeightbours()).size();
 		if(triggerEffectMinion.currentAttackPlus == buffs) return;
 		
@@ -49,7 +49,7 @@ public class KinfolkJarl_Sim extends Simtemplate {
         return false;
     }
 	
-	public Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, Color turnEndColor)
+	public Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)
     {
 
 		if(triggerEffectMinion.owner == null) return false;//its the minion, not the buff!

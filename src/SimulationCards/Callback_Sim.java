@@ -3,9 +3,9 @@ package SimulationCards;
 import java.util.ArrayList;
 
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.ResourceName;
 import BattleStuff.tileSelector;
 
@@ -19,7 +19,7 @@ public class Callback_Sim extends Simtemplate
 		return tileSelector.own_units;
 	}
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		//replenish
 		Minion target = b.getMinionOnPosition(targets.get(0));

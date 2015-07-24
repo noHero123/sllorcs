@@ -1,7 +1,7 @@
 package SimulationCards;
 
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
 import BattleStuff.SubType;
@@ -36,7 +36,7 @@ public class RoyalVanguard_Sim extends Simtemplate {
     	return;
     }
 	
-	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, Color turnEndColor)
+	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)
     {
 		
 		//if()

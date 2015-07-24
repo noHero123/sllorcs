@@ -6,7 +6,7 @@ import BattleStuff.Board;
 import BattleStuff.Card;
 import BattleStuff.CardDB;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 
 public class ProximityCharge_Sim extends Simtemplate {
@@ -22,13 +22,13 @@ public class ProximityCharge_Sim extends Simtemplate {
 		Card c = CardDB.getInstance().cardId2Card.get(90);
 		Minion ill = new Minion(c, -1, own.position.color);
 		//TODO : unefficient ;D
-		ArrayList<Position> poses = own.position.getNeightbours(); //own.position is not included, so new minion will not spawn there!
+		ArrayList<UPosition> poses = own.position.getNeightbours(); //own.position is not included, so new minion will not spawn there!
 		
 		ArrayList<Minion> mins = b.getMinionsFromPositions(poses);
 		
-		ArrayList<Position> isp = new ArrayList<Position>();
+		ArrayList<UPosition> isp = new ArrayList<UPosition>();
 		
-		for(Position pp : poses)
+		for(UPosition pp : poses)
 		{
 			Boolean isEmpty = true;
 			for(Minion mi : mins)

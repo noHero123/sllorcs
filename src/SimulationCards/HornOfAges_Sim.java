@@ -3,10 +3,10 @@ package SimulationCards;
 import java.util.ArrayList;
 
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
@@ -19,9 +19,9 @@ public class HornOfAges_Sim extends Simtemplate {
 		return tileSelector.None;
 	}
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
-		Color oppcol = Board.getOpposingColor(playedCard.position.color);
+		UColor oppcol = Board.getOpposingColor(playedCard.position.color);
 		for(Minion m : b.getPlayerFieldList(oppcol))
 		{
 			if(m.getAc()>=0)
@@ -39,7 +39,7 @@ public class HornOfAges_Sim extends Simtemplate {
         return false;
     }
 	
-	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, Color turnEndColor)
+	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)
     {
 		//if()
 		if(triggerEffectMinion.owner.position.color == turnEndColor)

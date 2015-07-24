@@ -3,9 +3,9 @@ package SimulationCards;
 import java.util.ArrayList;
 
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.ResourceName;
 import BattleStuff.tileSelector;
 

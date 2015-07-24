@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.tileSelector;
 
 public class MireCurse_Sim extends Simtemplate
@@ -20,14 +20,14 @@ public class MireCurse_Sim extends Simtemplate
 		return tileSelector.all_units;
 	}
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
 		target.addCardAsEnchantment("ENCHANTMENT", "Mire Curse", playedCard.card.cardDescription, playedCard, b);
         return;
     }
 	
-	public void onTurnStartTrigger(Board b, Minion triggerEffectMinion, Color turnStartColor)
+	public void onTurnStartTrigger(Board b, Minion triggerEffectMinion, UColor turnStartColor)
 	{
 		if(triggerEffectMinion.owner != null && turnStartColor == triggerEffectMinion.owner.position.color)
 		{

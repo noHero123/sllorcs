@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
@@ -26,7 +26,7 @@ public class AncestralPact_Sim extends Simtemplate {
 		 return 5;
 	 }
 	 
-	 public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	 public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
 	 {
 		b.addRule(playedCard);
 	    return;

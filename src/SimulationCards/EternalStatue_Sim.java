@@ -3,9 +3,9 @@ package SimulationCards;
 import java.util.ArrayList;
 
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.tileSelector;
 
 public class EternalStatue_Sim extends Simtemplate
@@ -14,7 +14,7 @@ public class EternalStatue_Sim extends Simtemplate
 
 	
 	
-	public void onTurnStartTrigger(Board b, Minion triggerEffectMinion, Color turnStartColor)
+	public void onTurnStartTrigger(Board b, Minion triggerEffectMinion, UColor turnStartColor)
 	{
 		if(turnStartColor == triggerEffectMinion.position.color)
 		{

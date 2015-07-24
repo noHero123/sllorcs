@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
@@ -20,7 +20,7 @@ public class Watcher_Sim extends Simtemplate {
 		{
 			//do dmg to random idol
 			ArrayList<Minion> idols = new ArrayList<Minion>();
-			Color oppcol = Board.getOpposingColor(triggerEffectMinion.position.color);
+			UColor oppcol = Board.getOpposingColor(triggerEffectMinion.position.color);
 			for(Minion idol : b.getPlayerIdols(oppcol))
 			{
 				if(idol.Hp>=1) idols.add(idol);

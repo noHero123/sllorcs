@@ -3,9 +3,9 @@ package SimulationCards;
 import java.util.ArrayList;
 
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.tileSelector;
 
 public class Earthbond_Sim extends Simtemplate 
@@ -19,16 +19,15 @@ public class Earthbond_Sim extends Simtemplate
 	}
 	
 	
-	public int getMagicResistance(Board b ,Minion m)
+	public int getMagicResistance(Board b ,Minion triggerEffectMinion, Minion minion)
     {
     	return 2;
     }
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
 		target.buffMinionWithoutMessage(0, 2, 0, b);//status update is done in add card as enchantment
-		target.magicRessi+= this.getMagicResistance(b, playedCard);
 		target.addCardAsEnchantment("ENCHANTMENT", "Bear Paw", playedCard.card.cardDescription, playedCard, b);
         return;
     }

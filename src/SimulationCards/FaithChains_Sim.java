@@ -6,11 +6,11 @@ import BattleStuff.AttackType;
 import BattleStuff.Board;
 import BattleStuff.Card;
 import BattleStuff.CardDB;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
@@ -22,7 +22,7 @@ public class FaithChains_Sim extends Simtemplate {
 		return tileSelector.all_creatures;
 	}
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
 		target.addCardAsEnchantment("ENCHANTMENT", "Faith Chains", "", playedCard, b);
@@ -34,7 +34,7 @@ public class FaithChains_Sim extends Simtemplate {
 		//unbuff wolf if a wolf dies
 		if(triggerEffectMinion.owner != null && triggerEffectMinion.owner == diedMinion)
 		{
-			Color opp = Board.getOpposingColor(diedMinion.position.color);
+			UColor opp = Board.getOpposingColor(diedMinion.position.color);
 			ArrayList<Minion> idols = new ArrayList<Minion>();
 			for(Minion m : b.getPlayerIdols(opp))
 			{

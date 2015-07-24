@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
 import BattleStuff.SubType;
@@ -22,7 +22,7 @@ public class BeetleStone_Sim extends Simtemplate {
 			
 			//do dmg to random idol
 			ArrayList<Minion> idols = new ArrayList<Minion>();
-			Color oppcol = Board.getOpposingColor(own.position.color);
+			UColor oppcol = Board.getOpposingColor(own.position.color);
 			for(Minion idol : b.getPlayerIdols(oppcol))
 			{
 				if(idol.Hp>=1) idols.add(idol);

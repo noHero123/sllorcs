@@ -9,7 +9,6 @@ public class RoyalSkirmisher_Sim extends Simtemplate {
 	
 	public  void getBattlecryEffect(Board b, Minion own, Minion target)
     {
-		own.isRelentless=true;
         return;
     }
 	

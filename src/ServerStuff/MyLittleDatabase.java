@@ -6,7 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import BattleStuff.CardDB;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.Deck;
 import BattleStuff.Minion;
 import BattleStuff.Player;
@@ -225,6 +225,9 @@ public class MyLittleDatabase {
 		 toadd.add(deck1);
 		 
 		 deck1 = "{\"deck\":\"GrowthSet5\",\"author\":\"Mojang\",\"types\":[261,289,290,291,292,293,294,295,296,297,302,303,304,307,310]}";
+		 toadd.add(deck1);
+		 
+		 deck1 = "{\"deck\":\"OrderSet5\",\"author\":\"Mojang\",\"types\":[263,273,274,275,280,298,305,306,308,311,312,313,314,315,316]}";
 		 toadd.add(deck1);
 		 
 		 //test area targeting!
@@ -619,8 +622,8 @@ public class MyLittleDatabase {
  		
  		CardDB cdb = CardDB.getInstance();
  		
- 		Color colw = Color.black;
- 		if(iswhite)colw = Color.white;
+ 		UColor colw = UColor.black;
+ 		if(iswhite)colw = UColor.white;
  		for(SmallCard sc : cards)
  		{
  			Minion m = new Minion(cdb.cardId2Card.get(sc.typeid), sc.cardid, colw);

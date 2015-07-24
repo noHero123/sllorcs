@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import BattleStuff.Board;
 import BattleStuff.Card;
 import BattleStuff.CardDB;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.ResourceName;
 import BattleStuff.SubType;
 
@@ -20,7 +20,7 @@ public class TribalMemorial_Sim extends Simtemplate {
         return false;
     }
 	
-	public  void onAbilityIsActivated(Board b, Minion triggerEffectMinion, ArrayList<Position> targets )
+	public  void onAbilityIsActivated(Board b, Minion triggerEffectMinion, ArrayList<UPosition> targets )
     {
 		b.destroyMinion(triggerEffectMinion, triggerEffectMinion);
 		

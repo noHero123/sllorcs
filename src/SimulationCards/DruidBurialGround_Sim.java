@@ -1,7 +1,7 @@
 package SimulationCards;
 
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
 import BattleStuff.SubType;
@@ -24,7 +24,7 @@ public class DruidBurialGround_Sim extends Simtemplate {
     	return;
     }
 	
-	public  void onTurnStartTrigger(Board b, Minion triggerEffectMinion, Color turnStartColor)
+	public  void onTurnStartTrigger(Board b, Minion triggerEffectMinion, UColor turnStartColor)
 	{
 		//TODO aoeHeal?
 		for(Minion mnn : b.getMinionsFromPositions(triggerEffectMinion.position.getNeightbours()))

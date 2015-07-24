@@ -1,7 +1,7 @@
 package BattleStuff;
 
 // enums are classes in java :D
-public enum Color {
+public enum UColor {
 	white,
 	black,
 	

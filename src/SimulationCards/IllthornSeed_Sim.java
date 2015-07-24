@@ -6,27 +6,28 @@ import BattleStuff.AttackType;
 import BattleStuff.Board;
 import BattleStuff.Card;
 import BattleStuff.CardDB;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
 public class IllthornSeed_Sim extends Simtemplate {
 	//"id":114,"name":"Illthorn Seed","description":"When enchanted unit you control is destroyed, summon an <Illthorn> in its place."
+	//spiky 1
 	
 	public tileSelector getTileSelectorForFirstSelection()
 	{
 		return tileSelector.own_units;
 	}
 	
-	public int getSpikyDamage(Board b ,Minion m)
+	public int getSpikyDamage(Board b ,Minion m, Minion defender)
     {
     	return 1;
     }
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
 		target.addCardAsEnchantment("ENCHANTMENT", "Illthorn Seed", "", playedCard, b);

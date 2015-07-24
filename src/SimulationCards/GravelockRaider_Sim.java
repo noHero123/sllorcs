@@ -8,7 +8,6 @@ public class GravelockRaider_Sim extends Simtemplate {
 	//"id":2,"name":"Gravelock Raider","description":"" (relentless)
 	public  void getBattlecryEffect(Board b, Minion own, Minion target)
     {
-		own.isRelentless=true;
         return;
     }
 	

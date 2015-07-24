@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import BattleStuff.Board;
 import BattleStuff.Card;
 import BattleStuff.CardDB;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
@@ -21,16 +21,16 @@ public class RatKing_Sim extends Simtemplate {
 		return tileSelector.own_all;//TODO test?
 	}
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
-		Position center = targets.get(0);
-		ArrayList<Position> temp = center.getNeightbours(); 
+		UPosition center = targets.get(0);
+		ArrayList<UPosition> temp = center.getNeightbours(); 
 		temp.add(center);
 		
 		
 		for(int i=0; i<3 ; i++)//summon 3 beastrats on target + neighbours
 		{
-			ArrayList<Position> freenbrs  = b.getFreePositionsFromPosition(temp); 
+			ArrayList<UPosition> freenbrs  = b.getFreePositionsFromPosition(temp); 
 			if(freenbrs.size()==0) return;
 		
 			int rndm = b.getRandomNumber(0, freenbrs.size()-1);

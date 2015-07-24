@@ -24,7 +24,6 @@ public class StripedFangbear_Sim extends Simtemplate {
 		{
 			own.buffMinion(3, 0, 0, b);
 			own.fangbear=true;
-			own.isRelentless=true;
 		}
         return;
     }
@@ -41,7 +40,6 @@ public class StripedFangbear_Sim extends Simtemplate {
 		{
 			triggerEffectMinion.buffMinion(3, 0, 0, b);
 			triggerEffectMinion.fangbear=true;
-			triggerEffectMinion.isRelentless=true;
 		}
 		
         return;
@@ -64,7 +62,6 @@ public class StripedFangbear_Sim extends Simtemplate {
 		{
 			triggerEffectMinion.buffMinion(-3, 0, 0, b);
 			triggerEffectMinion.fangbear=false;
-			triggerEffectMinion.isRelentless=false;
 		}
         return;
     }
@@ -76,7 +73,6 @@ public class StripedFangbear_Sim extends Simtemplate {
 		{
 			triggerEffectMinion.buffMinion(3, 0, 0, b);
 			triggerEffectMinion.fangbear=true;
-			triggerEffectMinion.isRelentless=true;
 		}
 		 return;
 	 }
@@ -98,7 +94,6 @@ public class StripedFangbear_Sim extends Simtemplate {
 			{
 				triggerEffectMinion.buffMinion(-3, 0, 0, b);
 				triggerEffectMinion.fangbear=false;
-				triggerEffectMinion.isRelentless=false;
 			}
 		 return;
 	 }

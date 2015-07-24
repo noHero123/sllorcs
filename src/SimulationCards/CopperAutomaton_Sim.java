@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import BattleStuff.Board;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 
 public class CopperAutomaton_Sim extends Simtemplate {

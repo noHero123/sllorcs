@@ -6,11 +6,11 @@ import BattleStuff.AttackType;
 import BattleStuff.Board;
 import BattleStuff.Card;
 import BattleStuff.CardDB;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.ResourceName;
 import BattleStuff.SubType;
 import BattleStuff.tileSelector;
@@ -24,9 +24,9 @@ public class ReturnToNature_Sim extends Simtemplate {
 	}
 	
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
-		ArrayList<Position> posses = targets.get(0).getNeightbours();
+		ArrayList<UPosition> posses = targets.get(0).getNeightbours();
 		posses.add(targets.get(0));
 		int growth=0;
 		for(Minion m : b.getMinionsFromPositions(posses))
@@ -54,7 +54,7 @@ public class ReturnToNature_Sim extends Simtemplate {
         return false;
     }
 	
-	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, Color turnEndColor)
+	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)
     {
 		//if()
 		if(triggerEffectMinion.owner.getAc()>=0)

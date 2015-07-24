@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 
 public class MireShambler_Sim extends Simtemplate {
@@ -21,12 +21,12 @@ public class MireShambler_Sim extends Simtemplate {
 		Minion m = attacker;
 		if(m != null)
 		{
-			Color opp = m.position.color;
+			UColor opp = m.position.color;
 			Minion[][] enemyb = b.getPlayerField(opp);
 			//move unit to random tile
-			ArrayList<Position> nbrs  = m.position.getNeightbours();
-			ArrayList<Position> freetiles  = new ArrayList<Position>();
-			for(Position ps : nbrs)
+			ArrayList<UPosition> nbrs  = m.position.getNeightbours();
+			ArrayList<UPosition> freetiles  = new ArrayList<UPosition>();
+			for(UPosition ps : nbrs)
 			{
 				if(enemyb[ps.row][ps.column] == null)
 				{

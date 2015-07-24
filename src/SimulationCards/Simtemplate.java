@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import BattleStuff.AttackType;
 import BattleStuff.Board;
 import BattleStuff.Card;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 import BattleStuff.TargetAreaGroup;
 import BattleStuff.tileSelector;
@@ -57,7 +57,7 @@ public class Simtemplate {
 	}
 	
 	//spell is played
-    public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+    public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
         return;
     }
@@ -121,9 +121,9 @@ public class Simtemplate {
     }
     
     //for hellspliter choose random tile here!
-    public ArrayList<Position> getSpecialAttackTarget(Board b, Minion m)
+    public ArrayList<UPosition> getSpecialAttackTarget(Board b, Minion m)
     {
-    	ArrayList<Position> posis = new ArrayList<Position>();
+    	ArrayList<UPosition> posis = new ArrayList<UPosition>();
     	
     	return posis;
     }
@@ -148,17 +148,17 @@ public class Simtemplate {
     }
 
     // returns the spiky damage for the unit or the enchantment that is providing the dmg or the linger-spell
-    public int getSpikyDamage(Board b ,Minion m)
+    public int getSpikyDamage(Board b ,Minion m, Minion defender)
     {
     	return 0;
     }
     
-    public int getArmor(Board b ,Minion m)
+    public int getArmor(Board b ,Minion triggerEffectMinion, Minion minion)
     {
     	return 0;
     }
     
-    public int getMagicResistance(Board b ,Minion m)
+    public int getMagicResistance(Board b ,Minion triggerEffectMinion, Minion minion)
     {
     	return 0;
     }
@@ -238,7 +238,7 @@ public class Simtemplate {
     }
     
     //for effects like elan vital or other heal effects
-    public  void onTurnStartTrigger(Board b, Minion triggerEffectMinion, Color turnStartColor)
+    public  void onTurnStartTrigger(Board b, Minion triggerEffectMinion, UColor turnStartColor)
     {
         return;
     }
@@ -249,7 +249,7 @@ public class Simtemplate {
     //triggerEffectMinion = minion that triggers the effect himself
     
     //maybe another function for enchantments? (cause kinfolk has a enchantment, but is a minion so his enchantment remove is called when he dies :D)
-    public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, Color turnEndColor)
+    public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)
     {
         return false;
     }
@@ -274,7 +274,7 @@ public class Simtemplate {
     }
     
     //ability is activated
-    public  void onAbilityIsActivated(Board b, Minion triggerEffectMinion, ArrayList<Position> targets )
+    public  void onAbilityIsActivated(Board b, Minion triggerEffectMinion, ArrayList<UPosition> targets )
     {
         return;
     }
@@ -634,6 +634,45 @@ public class Simtemplate {
     	if(id == 307) return new StripedFangbear_Sim();
     	if(id == 310) return new Unground_Sim();
     	
+    	//order set 5
+    	if(id == 263) return new StifledAdvance_Sim();
+    	if(id == 273) return new SoldiersBond_Sim();
+    	if(id == 274) return new PilgrimsFeet_Sim();
+    	if(id == 275) return new Reversal_Sim();
+    	if(id == 280) return new GallantDefender_Sim();
+    	if(id == 298) return new WingsWarder_Sim();
+    	if(id == 305) return new WingsSpear_Sim();
+    	if(id == 306) return new WingsCleaver_Sim();
+    	if(id == 308) return new RighteousPartisan_Sim();
+    	if(id == 311) return new WingsCharger_Sim();
+    	if(id == 312) return new Infiltrate_Sim();
+    	if(id == 313) return new Ruse_Sim();
+    	if(id == 314) return new CayRoyalEnvoy_Sim();
+    	if(id == 315) return new WardingStone_Sim();
+    	if(id == 316) return new PrisonersOfWar_Sim();
+    	
+    	//decay set 5
+    	if(id == 260) return new Eclipse_Sim();
+    	if(id == 264) return new Blightseed_Sim();
+    	if(id == 265) return new MorbidCuriosity_Sim();
+    	if(id == 266) return new Stitcher_Sim();
+    	if(id == 267) return new ArhartsDisciple_Sim();
+    	if(id == 268) return new BladeHusk_Sim();
+    	if(id == 269) return new BogHound_Sim();
+    	if(id == 270) return new FesteringFreak_Sim();
+    	if(id == 271) return new CorpusCollector_Sim();
+    	if(id == 272) return new BalefulWitch_Sim();
+    	if(id == 276) return new CursedPresence_Sim();
+    	if(id == 278) return new NuruFleshSeamstress_Sim();
+    	if(id == 279) return new MalevolentGaze_Sim();
+    	if(id == 309) return new NurusNeedle_Sim();
+    	//if(id == 319) return new ReapingMask_Sim();
+    	
+    	
+    	
+    	
+    	//decay set 6 :D
+    	if(id == 342) return new SanctuaryOfTheLost_Sim();
     	
     	return new Simtemplate();
     }

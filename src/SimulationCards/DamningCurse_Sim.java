@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
@@ -18,7 +18,7 @@ public class DamningCurse_Sim extends Simtemplate {
 	public int getDecayCost(Board b ,Minion m)
     {
 		int tax = b.whiteDamningTaxing;
-		if(m.position.color == Color.black) tax = b.blackDamningTaxing;
+		if(m.position.color == UColor.black) tax = b.blackDamningTaxing;
     	return m.card.costDecay + tax;
     }
 	
@@ -27,7 +27,7 @@ public class DamningCurse_Sim extends Simtemplate {
 		return tileSelector.all_creatures;
 	}
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		
 		Minion target = b.getMinionOnPosition(targets.get(0));
@@ -37,7 +37,7 @@ public class DamningCurse_Sim extends Simtemplate {
 		
 		b.doDmg(all, playedCard, 1, AttackType.UNDEFINED, DamageType.MAGICAL);
 		
-		if(playedCard.position.color == Color.white)
+		if(playedCard.position.color == UColor.white)
 		{
 			b.whiteDamningTaxing+=1;
 		}

@@ -4,7 +4,7 @@ import BattleStuff.AttackType;
 import BattleStuff.Board;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 
 public class Wildling_Sim extends Simtemplate {
@@ -14,7 +14,7 @@ public class Wildling_Sim extends Simtemplate {
 		if(summonedMinion.position.color == triggerEffectMinion.position.color)
 		{
 			boolean jes=false;
-			for(Position p : triggerEffectMinion.position.getNeightbours())
+			for(UPosition p : triggerEffectMinion.position.getNeightbours())
 			{
 				if(p.isEqual(summonedMinion.position))
 				{

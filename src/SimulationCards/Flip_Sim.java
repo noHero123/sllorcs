@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.tileSelector;
 
 public class Flip_Sim extends Simtemplate
@@ -24,7 +24,7 @@ public class Flip_Sim extends Simtemplate
 		return tileSelector.opp_free;
 	}
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
 		String s = "{\"TeleportUnits\":{\"units\":[{\"from\":"+targets.get(0).posToString()+",\"to\":"+targets.get(1).posToString()+"}]}}";

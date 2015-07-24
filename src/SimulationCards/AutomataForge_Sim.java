@@ -7,7 +7,7 @@ import BattleStuff.Card;
 import BattleStuff.CardDB;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 
 public class AutomataForge_Sim extends Simtemplate {
@@ -23,7 +23,7 @@ public class AutomataForge_Sim extends Simtemplate {
     	return;
     }
 	
-	public  void onAbilityIsActivated(Board b, Minion triggerEffectMinion, ArrayList<Position> targets )
+	public  void onAbilityIsActivated(Board b, Minion triggerEffectMinion, ArrayList<UPosition> targets )
     {
 		triggerEffectMinion.buffMinion(0, 0, -1, b);
         return;
@@ -33,12 +33,12 @@ public class AutomataForge_Sim extends Simtemplate {
     {
 		if(m!=self) return;
 		//choose random target
-		ArrayList<Position> postargets = b.getFreePositionsFromPosition(m.position.getNeightbours());
+		ArrayList<UPosition> postargets = b.getFreePositionsFromPosition(m.position.getNeightbours());
 		if(postargets.size()==0) return;
 		
 		int random = b.getRandomNumber(0, postargets.size()-1);
 		
-		Position targ = postargets.get(random);
+		UPosition targ = postargets.get(random);
 		
 		Card c = CardDB.getInstance().cardId2Card.get(96);
 		Minion ill = new Minion(c, -1, m.position.color);

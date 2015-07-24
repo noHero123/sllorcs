@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.TargetAreaGroup;
 import BattleStuff.tileSelector;
 
@@ -25,21 +25,21 @@ public class ThunderSurge_Sim extends Simtemplate
 		return TargetAreaGroup.all_units;
 	}
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
-		ArrayList<ArrayList<Position>> sequentials = b.getSequentialPositions(Color.white, this.getTargetAreaGroup());
-		sequentials.addAll(b.getSequentialPositions(Color.black,this.getTargetAreaGroup()));
+		ArrayList<ArrayList<UPosition>> sequentials = b.getSequentialPositions(UColor.white, this.getTargetAreaGroup());
+		sequentials.addAll(b.getSequentialPositions(UColor.black,this.getTargetAreaGroup()));
 		
-		Position selected = targets.get(0);
+		UPosition selected = targets.get(0);
 		System.out.println(selected.posToString());
 		ArrayList<Minion> mins = new ArrayList<Minion>();
 		
-		for(ArrayList<Position> pos : sequentials )
+		for(ArrayList<UPosition> pos : sequentials )
 		{
 			boolean inpos = false;
 			//does contains work ? 
 			System.out.println("seqental");
-			for(Position po : pos)
+			for(UPosition po : pos)
 			{
 				System.out.println(po.posToString());
 				if(po.isEqual(selected))

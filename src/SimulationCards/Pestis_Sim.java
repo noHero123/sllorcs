@@ -6,10 +6,10 @@ import BattleStuff.AttackType;
 import BattleStuff.Board;
 import BattleStuff.Card;
 import BattleStuff.CardDB;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
@@ -21,7 +21,7 @@ public class Pestis_Sim extends Simtemplate {
 	}
 	
 	//TODO test buff a rat  with it
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
 		int buff =0;
@@ -54,7 +54,7 @@ public class Pestis_Sim extends Simtemplate {
 			Card c = CardDB.getInstance().cardId2Card.get(165);
 			Minion ill = new Minion(c, -1, attacker.position.color);
 			
-			ArrayList<Position> poses = b.getFreePositions(attacker.position.color);
+			ArrayList<UPosition> poses = b.getFreePositions(attacker.position.color);
 			if(poses.size()==0) return;
 			
 			int randomint = b.getRandomNumber(0, poses.size()-1);

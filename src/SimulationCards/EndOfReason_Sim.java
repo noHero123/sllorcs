@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
@@ -21,11 +21,11 @@ public class EndOfReason_Sim extends Simtemplate {
 		return tileSelector.None;
 	}
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		
 
-		Color oppcol = Board.getOpposingColor(playedCard.position.color);
+		UColor oppcol = Board.getOpposingColor(playedCard.position.color);
 		ArrayList<Minion> all = new ArrayList<Minion>(b.getPlayerFieldList(playedCard.position.color));
 		int[] dmgrow = {0,0,0,0,0};
 		

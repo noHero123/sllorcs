@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
@@ -21,7 +21,7 @@ public class RestlessBones_Sim extends Simtemplate {
 		return tileSelector.None;
 	}
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		for(Minion m : b.getPlayerFieldList(playedCard.position.color))
 		{
@@ -42,7 +42,7 @@ public class RestlessBones_Sim extends Simtemplate {
         return false;
     }
 	
-	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, Color turnEndColor)
+	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)
     {
 		if(triggerEffectMinion.owner == null) return false;
 		triggerEffectMinion.owner.buffMinionWithoutMessage(-2, 0, 0, b);

@@ -3,9 +3,9 @@ package SimulationCards;
 import java.util.ArrayList;
 
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.tileSelector;
 
 public class ResonantHelm_Sim extends Simtemplate 
@@ -19,15 +19,14 @@ public class ResonantHelm_Sim extends Simtemplate
 		return tileSelector.all_units;
 	}
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
-		target.magicRessi+= this.getMagicResistance(b, playedCard);
 		target.addCardAsEnchantment("ENCHANTMENT", "Resonant Helm", playedCard.card.cardDescription, playedCard, b);
         return;
     }
 	
-	public int getMagicResistance(Board b ,Minion m)
+	public int getMagicResistance(Board b ,Minion triggerEffectMinion, Minion minion)
     {
     	return 1;
     }

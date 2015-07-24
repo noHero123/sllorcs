@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
@@ -24,11 +24,11 @@ public class Quake_Sim extends Simtemplate {
 	public int getGrowthCost(Board b ,Minion m)
     {
 		int tax = b.whiteQuakeTaxing;
-		if(m.position.color == Color.black) tax = b.blackQuakeTaxing;
+		if(m.position.color == UColor.black) tax = b.blackQuakeTaxing;
     	return m.card.costGrowth + tax;
     }
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		
 		//draw creature scroll
@@ -40,7 +40,7 @@ public class Quake_Sim extends Simtemplate {
 		}
 		
 		b.doDmg(all, playedCard, -100, AttackType.UNDEFINED, DamageType.MAGICAL);//dmg=-100 => aoedmg :D
-		if(playedCard.position.color == Color.white)
+		if(playedCard.position.color == UColor.white)
 		{
 			b.whiteQuakeTaxing+=2;
 		}

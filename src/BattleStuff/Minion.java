@@ -22,20 +22,19 @@ public class Minion {
 	public int moveChanges=0;
 	public int tempMove=0;
 	
-	public boolean isRelentless = false;
 	public boolean hasPiercing = false; // it doesnt have to be on card, can also be enchantment!
 	
 	public AttackType attackType = AttackType.MELEE;
-	public int armor = 0;
+	//public int armor = 0;
 	public int curse = 0;
 	//public int spiky = 0;
 	public boolean isPoisonous = false;
-	public int magicRessi=0;
+	//private int magicRessi=0;
 	
 	public boolean isToken = true;
 	
 	//TODO save in position variable
-	public Position position = new Position(Color.white, -1, -1);
+	public UPosition position = new UPosition(UColor.white, -1, -1);
 	//public Color color = Color.white;
 	//public int row = -1; // 0-4
 	//public int column = -1;// 0-2
@@ -71,7 +70,9 @@ public class Minion {
 	public int cullingCounter =0;
 	public boolean didDmgToIdol=false;
 	public boolean fangbear=false;
-	public int turnCounter = 0; //TODO replace that other counters with it!
+	
+	//its used as a used variable for all minions... can only be changed by itself!
+	public int turnCounter = 0; //TODO replace that other counters with it! 
 	
 	public int getAc()
 	{
@@ -115,7 +116,7 @@ public class Minion {
 		this.maxAc=v;
 	}
 	
-	public Minion(Card c, long cid, Color playercol)
+	public Minion(Card c, long cid, UColor playercol)
 	{
 		this.card = c;
 		this.cardID = cid;
@@ -159,7 +160,7 @@ public class Minion {
 	}
 	
 	
-	public Minion(int maxHP, Color col, int pos)
+	public Minion(int maxHP, UColor col, int pos)
 	{
 		this.Hp = maxHP;
 		this.maxHP = maxHP;
@@ -173,7 +174,7 @@ public class Minion {
 		fangbear=false;
 	}
 	
-	public Minion (String type, String name, String description, Card c, Color ownercolor)
+	public Minion (String type, String name, String description, Card c, UColor ownercolor)
 	{
 		this.bufftype = type;
 		this.buffName = name;
@@ -199,8 +200,7 @@ public class Minion {
 	
 	public void setDefaultValues(Board b)
 	{
-		this.armor = this.card.cardSim.getArmor(b, this);
-		this.isRelentless = this.card.cardSim.isRelentless(b, this);
+		//this.isRelentless = this.card.cardSim.isRelentless(b, this);
 	}
 	
 	public void reset()
@@ -224,11 +224,11 @@ public class Minion {
 			this.subtypes.add(s);
 		}
 		this.moveChanges=0;
-		this.armor=0;
-		this.isRelentless=false;
+		//this.isRelentless=false;
 		
 		numberOfDmgTaken=0;
 		deadTriggersDone=false;
+		
 		currentAttackPlus = 0; // for kinfolk jarl 
 		turnsInplay=0;
 		aoeDmgToDo=0;
@@ -237,12 +237,14 @@ public class Minion {
 		addToHandAfterDead = false;
 		this.attachedCards.clear();
 		this.owner = null;
+		
 		frostbeardCounter=0;
 		ducalInfCounter=0;
 		royalInfCounter=0;
 		monstroCounter =0;
 		didDmgToIdol=false;
 		fangbear=false;
+		
 	}
 	
 	
@@ -261,7 +263,7 @@ public class Minion {
 	
 	public boolean isRelentless(Board b)
 	{
-		boolean rel =  this.isRelentless || this.card.cardSim.isRelentless(b, this);
+		boolean rel =  this.card.cardSim.isRelentless(b, this);
 		
 		for(Minion e: this.attachedCards)
 		{
@@ -279,8 +281,65 @@ public class Minion {
 		{
 			rel = rel || e.card.cardSim.hasWard(b, e);
 		}
+		if(rel) return true;
+		//check if a wings warder is on same row
+		Minion[][] field = b.getPlayerField(this.position.color);
+		
+		for(int i=0; i< 3; i++)
+		{
+			//it gets ward from wings warder!
+			if(this.position.column != i && field[this.position.row][i] != null && field[this.position.row][i].typeId == 298)
+			{
+				return true;
+			}
+		}
+		
+		//check if sancturary of the lost is buffing this minion
+		if(this.subtypes.contains(SubType.Undead) && this.cardType == Kind.CREATURE)
+		{
+			for(Minion rule : b.getAllRules())
+			{
+				
+				if(rule.typeId == 342)
+				return true;
+			}
+		}
 		
 		return rel;
+	}
+	
+	
+	public int getArmor(Board b)
+	{
+		int ret = 0;
+		ret += this.card.cardSim.getArmor(b ,this, this);
+		for(Minion e: this.attachedCards)
+		{
+			ret += e.card.cardSim.getArmor(b ,e, this);
+		}
+		//There are currently no armor giving lingers
+		
+		return ret;
+	}
+	
+	public int getMagicRessi(Board b)
+	{
+		int ret = 0;
+		ret += this.card.cardSim.getMagicResistance(b ,this, this);
+		for(Minion e: this.attachedCards)
+		{
+			ret += e.card.cardSim.getMagicResistance(b ,e, this);
+		}
+		
+		if(this.subtypes.contains(SubType.Undead) && this.cardType == Kind.CREATURE)
+		{
+			for(Minion rule : b.getAllRules())
+			{
+				
+				if(rule.typeId == 342) ret += rule.card.cardSim.getMagicResistance(b ,rule, this);
+			}
+		}
+		return ret;
 	}
 	
 	public boolean hasPiercing(Board b)
@@ -306,7 +365,7 @@ public class Minion {
 		return false;
 	}
 	
-	public ArrayList<Minion> getTargets(Minion[][] enemyField, ArrayList<Position> posis, ArrayList<Minion> idols, Board b)
+	public ArrayList<Minion> getTargets(Minion[][] enemyField, ArrayList<UPosition> posis, ArrayList<Minion> idols, Board b)
 	{
 		ArrayList<Minion> targets = new ArrayList<Minion>();
 		if(this.card.trgtArea == targetArea.FORWARD)
@@ -314,7 +373,7 @@ public class Minion {
 			if(this.hasPiercing(b)) 
 			{
 				int currentattack = this.Ap;
-				for(Position posi : posis)
+				for(UPosition posi : posis)
 				{
 					if(posi.row>=0 && posi.row <=4 && posi.column>=0 && posi.column <=2)
 					{
@@ -332,7 +391,7 @@ public class Minion {
 				return targets;
 			}
 			
-			for(Position posi : posis)
+			for(UPosition posi : posis)
 			{
 				if(posi.row>=0 && posi.row <=4 && posi.column>=0 && posi.column <=2)
 				{
@@ -354,7 +413,7 @@ public class Minion {
 		if(this.card.trgtArea == targetArea.RADIUS_4)
 		{
 			
-			for(Position posi : posis)
+			for(UPosition posi : posis)
 			{
 				if(posi.row>=0 && posi.row <=4 && posi.column>=0 && posi.column <=2)
 				{
@@ -376,7 +435,7 @@ public class Minion {
 	
 	public ArrayList<Minion> getTargets(Minion[][] enemyField , ArrayList<Minion> idols, Board b)
 	{
-		ArrayList<Position> posis = Board.getAttackPositions(this);
+		ArrayList<UPosition> posis = Board.getAttackPositions(this);
 		
 		return getTargets(enemyField, posis, idols, b);
 	}
@@ -395,12 +454,12 @@ public class Minion {
 		
 	}
 	
-	public void addnewEnchantments(String type, String name, String description, Card c, Board b, Color owner)
+	public void addnewEnchantments(String type, String name, String description, Card c, Board b, UColor owner)
 	{
 		addnewEnchantments( type,  name,  description,  c,  b,  owner, 0);
 	}
 	
-	public void addnewEnchantments(String type, String name, String description, Card c, Board b, Color owner, int turnCounter)
+	public void addnewEnchantments(String type, String name, String description, Card c, Board b, UColor owner, int turnCounter)
 	{
 		Minion buff = new Minion(type, name, description, c, owner);
 		
@@ -410,7 +469,7 @@ public class Minion {
 		addEnchantmentToList(buff, b);
 	}
 	
-	public void addnewPoison(Board b, Color owner)
+	public void addnewPoison(Board b, UColor owner)
 	{
 		//TODO add poison + course cardtypes!
 		
@@ -419,7 +478,7 @@ public class Minion {
 		this.addnewEnchantments("BUFF", "Poison", "Unit takes 1 damage at the beginning of owner's turn.", c, b, owner);
 	}
 	
-	public void addnewCurse(Board b, Color owner, int amountt)
+	public void addnewCurse(Board b, UColor owner, int amountt)
 	{
 		int amount = amountt;
 		Card c = new Card();

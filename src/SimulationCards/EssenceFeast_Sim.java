@@ -3,10 +3,10 @@ package SimulationCards;
 import java.util.ArrayList;
 
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
@@ -25,7 +25,7 @@ public class EssenceFeast_Sim extends Simtemplate {
         return false;
     }
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		for(Minion m : b.getPlayerIdols(playedCard.position.color))
 		{
@@ -52,7 +52,7 @@ public class EssenceFeast_Sim extends Simtemplate {
 				found=true;
 				b.currentHand.add(m);
 				deck.remove(i);
-				b.shuffleList(deck);
+				b.shuffleList(b.currentDeck);
 				break;
 			}
 		}
@@ -70,7 +70,7 @@ public class EssenceFeast_Sim extends Simtemplate {
 					found=true;
 					b.currentHand.add(m);
 					deck.remove(i);
-					b.shuffleList(deck);
+					b.shuffleList(b.currentGrave);
 					break;
 				}
 			}
@@ -86,7 +86,7 @@ public class EssenceFeast_Sim extends Simtemplate {
         return;
     }
 	
-	public Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, Color turnEndColor)
+	public Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)
     {
 
 		/*if(triggerEffectMinion.owner.Ac>=0 && triggerEffectMinion.owner.subtypes.contains(subType.Beast))

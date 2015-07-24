@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.tileSelector;
 
 public class Redeploy_Sim extends Simtemplate
@@ -24,19 +24,19 @@ public class Redeploy_Sim extends Simtemplate
 		return tileSelector.own_all;
 	}
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		int row1 = targets.get(0).row;
 		int row2 = targets.get(1).row;
-		Color c = playedCard.position.color;
+		UColor c = playedCard.position.color;
 		
 		
 		//first create message
 		String teleports="";
 		for(int i=0; i<3; i++)
 		{
-			Position c1=new Position(c, row1, i);
-			Position c2=new Position(c, row2, i);
+			UPosition c1=new UPosition(c, row1, i);
+			UPosition c2=new UPosition(c, row2, i);
 			Minion m1 = b.getMinionOnPosition(c1);
 			Minion m2 = b.getMinionOnPosition(c2);
 			if(m1!=null)
@@ -58,8 +58,8 @@ public class Redeploy_Sim extends Simtemplate
 		//switch units
 		for(int i=0; i<3; i++)
 		{
-			Position c1=new Position(c, row1, i);
-			Position c2=new Position(c, row2, i);
+			UPosition c1=new UPosition(c, row1, i);
+			UPosition c2=new UPosition(c, row2, i);
 			Minion m1 = b.getMinionOnPosition(c1);
 			Minion m2 = b.getMinionOnPosition(c2);
 			if(m1==null && m2==null) 

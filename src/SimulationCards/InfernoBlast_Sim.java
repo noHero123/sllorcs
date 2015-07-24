@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
@@ -22,11 +22,11 @@ public class InfernoBlast_Sim extends Simtemplate {
 	}
 	
 	//TODO targettiles!
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		
 		//draw creature scroll
-		ArrayList<Position> posses = targets.get(0).getNeightbours();
+		ArrayList<UPosition> posses = targets.get(0).getNeightbours();
 		posses.add(targets.get(0));
 		
 		ArrayList<Minion> addjacent = new ArrayList<Minion>(b.getMinionsFromPositions(posses));

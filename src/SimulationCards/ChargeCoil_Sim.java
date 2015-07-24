@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
 import BattleStuff.SubType;
@@ -20,7 +20,7 @@ public class ChargeCoil_Sim extends Simtemplate {
 	public  void doSpecialAttack(Board b, Minion own)
     {
 		//special attack message is added automatically! dont have to do it here
-		Color oppcol = Board.getOpposingColor(own.position.color);
+		UColor oppcol = Board.getOpposingColor(own.position.color);
 		ArrayList<Minion> all = new ArrayList<Minion>(b.getPlayerFieldList(oppcol));
 		
 		if(all.size() == 0) return;

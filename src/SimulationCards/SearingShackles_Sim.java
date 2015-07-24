@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.tileSelector;
 
 public class SearingShackles_Sim extends Simtemplate 
@@ -20,14 +20,14 @@ public class SearingShackles_Sim extends Simtemplate
 		return tileSelector.all_units;
 	}
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
 		target.addCardAsEnchantment("ENCHANTMENT", "Searing Shackles", playedCard.card.cardDescription, playedCard, b);
         return;
     }
 	
-	 public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, Color turnEndColor)
+	 public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)
 	    {
 		 	if(turnEndColor != triggerEffectMinion.owner.position.color) return false;
 		 	Minion idol = b.getPlayerIdol(turnEndColor, triggerEffectMinion.owner.position.row);

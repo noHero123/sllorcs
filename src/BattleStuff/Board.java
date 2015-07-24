@@ -17,9 +17,9 @@ public class Board {
 	public String serverip = "127.0.0.1"; // is set to InterThreadStuff.getInstance().usedServerIp; at start
 	public int port = InterThreadStuff.getInstance().battlePort;
 	
-	public int GameState = 0; // 0=init, 1= turnbegin, 2= main, 3 = battle, 4 = endgame
+	public GameState gameState = GameState.Init; // 0=init, 1= we have to do end-premain, we are in battle, 2= we have to do end main, we are in premain
 	public int turnNumber =0;
-	public Color activePlayerColor = Color.white;
+	public UColor activePlayerColor = UColor.white;
 	
 	public boolean canAllwaysSacForWild =false;
 	
@@ -123,9 +123,9 @@ public class Board {
 		
 	}
 	
-	public void addMessageToPlayer(Color col, String msg)
+	public void addMessageToPlayer(UColor col, String msg)
 	{
-		if(col == Color.white)
+		if(col == UColor.white)
 		{
 			this.messagesToWhite.add(msg);
 			return;
@@ -147,12 +147,12 @@ public class Board {
 		String s = "";
 		if(this.messagesToWhite.size()>=1)
 		{
-			s= makeBigEffectMessage(Color.white);
+			s= makeBigEffectMessage(UColor.white);
 			this.whitePlayer.sendMessgeToBattleServer(s);
 		}
 		if(this.messagesToBlack.size()>=1)
 		{
-			s= makeBigEffectMessage(Color.black);
+			s= makeBigEffectMessage(UColor.black);
 			this.blackPlayer.sendMessgeToBattleServer(s);
 		}
 	}
@@ -202,9 +202,9 @@ public class Board {
 		p.activeRessis = ressis;
 	}
 	
-	public void changeCurrentRessource(ResourceName ressi, Color color, int amount)
+	public void changeCurrentRessource(ResourceName ressi, UColor color, int amount)
 	{
-		if(color == Color.white)
+		if(color == UColor.white)
 		{
 			if(ressi == ResourceName.GROWTH)
 			{
@@ -254,9 +254,9 @@ public class Board {
 		this.addMessageToBothPlayers(this.getResourcesUpdateMessage());
 	}
 	
-	public void changeMaxRessource(ResourceName ressi, Color color, int amount)
+	public void changeMaxRessource(ResourceName ressi, UColor color, int amount)
 	{
-		if(color == Color.white)
+		if(color == UColor.white)
 		{
 			if(ressi == ResourceName.GROWTH)
 			{
@@ -304,6 +304,111 @@ public class Board {
 		}
 		this.addMessageToBothPlayers(this.getResourcesUpdateMessage());
 	}
+	
+	public int getCurrentRessource(ResourceName ressi, UColor color)
+	{
+		if(color == UColor.white)
+		{
+			if(ressi == ResourceName.GROWTH)
+			{
+				return this.whitecurrentRessources[0];
+			}
+			if(ressi == ResourceName.ORDER)
+			{
+				return this.whitecurrentRessources[1];
+			}
+			if(ressi == ResourceName.ENERGY)
+			{
+				return this.whitecurrentRessources[2];
+			}
+			if(ressi == ResourceName.DECAY)
+			{
+				return this.whitecurrentRessources[3];
+			}
+			if(ressi == ResourceName.WILD)
+			{
+				return this.whitecurrentRessources[4];
+			}
+		}
+		else
+		{
+			if(ressi == ResourceName.GROWTH)
+			{
+				return this.blackcurrentRessources[0];
+			}
+			if(ressi == ResourceName.ORDER)
+			{
+				return this.blackcurrentRessources[1];
+			}
+			if(ressi == ResourceName.ENERGY)
+			{
+				return this.blackcurrentRessources[2];
+			}
+			if(ressi == ResourceName.DECAY)
+			{
+				return this.blackcurrentRessources[3];
+			}
+			if(ressi == ResourceName.WILD)
+			{
+				return this.blackcurrentRessources[4];
+			}
+		}
+		
+		return 0;
+	}
+	
+	public int getMaxRessource(ResourceName ressi, UColor color)
+	{
+		if(color == UColor.white)
+		{
+			if(ressi == ResourceName.GROWTH)
+			{
+				return this.whiteRessources[0];
+			}
+			if(ressi == ResourceName.ORDER)
+			{
+				return this.whiteRessources[1];
+			}
+			if(ressi == ResourceName.ENERGY)
+			{
+				return this.whiteRessources[2];
+			}
+			if(ressi == ResourceName.DECAY)
+			{
+				return this.whiteRessources[3];
+			}
+			if(ressi == ResourceName.WILD)
+			{
+				return this.whiteRessources[4];
+			}
+		}
+		else
+		{
+			if(ressi == ResourceName.GROWTH)
+			{
+				return this.blackRessources[0];
+			}
+			if(ressi == ResourceName.ORDER)
+			{
+				return this.blackRessources[1];
+			}
+			if(ressi == ResourceName.ENERGY)
+			{
+				return this.blackRessources[2];
+			}
+			if(ressi == ResourceName.DECAY)
+			{
+				return this.blackRessources[3];
+			}
+			if(ressi == ResourceName.WILD)
+			{
+				return this.blackRessources[4];
+			}
+		}
+		
+		return 0;
+	}
+	
 	
 	public void updatePlayer(Player p)
 	{
@@ -354,8 +459,8 @@ public class Board {
 			this.blackRessources[4]=100;
 		}
 		
-		this.whitePlayer.color = Color.white;
-		this.blackPlayer.color = Color.black;
+		this.whitePlayer.color = UColor.white;
+		this.blackPlayer.color = UColor.black;
 		this.whitePlayer.canMulligan=true;
 		this.blackPlayer.canMulligan=true;
 		this.whitePlayer.initGame =false;
@@ -375,8 +480,8 @@ public class Board {
 		//create idols
 		for(int i = 0; i<5; i++)
 		{
-			this.whiteIdols.add(new Minion(10, Color.white, i));
-			this.blackIdols.add(new Minion(10, Color.black, i));
+			this.whiteIdols.add(new Minion(10, UColor.white, i));
+			this.blackIdols.add(new Minion(10, UColor.black, i));
 		}
 		
 		this.serverip = InterThreadStuff.getInstance().usedServerIp;
@@ -384,13 +489,13 @@ public class Board {
 		//this.loadWhiteCards();
 	}
 	
-	public Minion[][] getPlayerField(Color col)
+	public Minion[][] getPlayerField(UColor col)
 	{
-		if(col == Color.white) return this.whiteField;
+		if(col == UColor.white) return this.whiteField;
 		return this.blackField;
 	}
 	
-	public ArrayList<Minion> getPlayerFieldList(Color col)
+	public ArrayList<Minion> getPlayerFieldList(UColor col)
 	{
 		Minion[][] mins =  getPlayerField(col);
 		ArrayList<Minion> alist = new ArrayList<Minion>();
@@ -494,11 +599,11 @@ public class Board {
 		return getAllRulesWithColorFirst(this.activePlayerColor);
 	}
 	
-	public ArrayList<Minion> getAllRulesWithColorFirst(Color first)
+	public ArrayList<Minion> getAllRulesWithColorFirst(UColor first)
 	{
 		ArrayList<Minion> alist = new ArrayList<Minion>();
-		Color c1 = first;
-		Color c2 = Board.getOpposingColor(c1);
+		UColor c1 = first;
+		UColor c2 = Board.getOpposingColor(c1);
 		
 		for(Minion m : this.getPlayerRules(c1))
 		{
@@ -514,46 +619,46 @@ public class Board {
 		return alist;
 	}
 	
-	public Player getPlayer(Color col)
+	public Player getPlayer(UColor col)
 	{
-		if(col == Color.white) return this.whitePlayer;
+		if(col == UColor.white) return this.whitePlayer;
 		return this.blackPlayer;
 	}
 	
-	public ArrayList<Minion> getPlayerHand(Color col)
+	public ArrayList<Minion> getPlayerHand(UColor col)
 	{
-		if(col == Color.white) return this.whiteHand;
+		if(col == UColor.white) return this.whiteHand;
 		return this.blackHand;
 	}
 	
-	public ArrayList<Minion> getPlayerDeck(Color col)
+	public ArrayList<Minion> getPlayerDeck(UColor col)
 	{
-		if(col == Color.white) return this.whiteDeck;
+		if(col == UColor.white) return this.whiteDeck;
 		return this.blackDeck;
 	}
 	
-	public ArrayList<Minion> getPlayerGrave(Color col)
+	public ArrayList<Minion> getPlayerGrave(UColor col)
 	{
-		if(col == Color.white) return this.whiteGrave;
+		if(col == UColor.white) return this.whiteGrave;
 		return this.blackGrave;
 	}
 	
-	public ArrayList<Minion> getPlayerRules(Color col)
+	public ArrayList<Minion> getPlayerRules(UColor col)
 	{
-		if(col == Color.white) return this.whiteRulesUpdates;
+		if(col == UColor.white) return this.whiteRulesUpdates;
 		return this.blackRulesUpdates;
 	}
 	
-	public ArrayList<Minion> getPlayerIdols(Color col)
+	public ArrayList<Minion> getPlayerIdols(UColor col)
 	{
-		if(col == Color.white) return this.whiteIdols;
+		if(col == UColor.white) return this.whiteIdols;
 		return this.blackIdols;
 	}
 	
-	public Minion getPlayerIdol(Color col, int index)
+	public Minion getPlayerIdol(UColor col, int index)
 	{
 		ArrayList<Minion> idols = this.whiteIdols;
-		if(col == Color.black) idols = this.blackIdols;
+		if(col == UColor.black) idols = this.blackIdols;
 		for(Minion m:idols)
 		{
 			if(m.position.row == index) return m;
@@ -568,7 +673,7 @@ public class Board {
 		for(Minion c : cards)
 		{
 			//System.out.println("added to white: "+ c.typeId + " " + c.cardID);
-			c.position.color = Color.white;
+			c.position.color = UColor.white;
 			this.whiteDeck.add(c);
 		}
 	}
@@ -578,12 +683,12 @@ public class Board {
 		for(Minion c : cards)
 		{
 			//System.out.println("added to black: "+ c.typeId + " " + c.cardID);
-			c.position.color = Color.black;
+			c.position.color = UColor.black;
 			this.blackDeck.add(c);
 		}
 	}
 	
-	public void drawCards(Color col, int howMany)
+	public void drawCards(UColor col, int howMany)
 	{
 		ArrayList<Minion> temphand = this.getPlayerHand(col);
 		ArrayList<Minion> tempDeck = this.getPlayerDeck(col);
@@ -630,9 +735,9 @@ public class Board {
 	
 	public void initGame()
 	{
-		this.activePlayerColor= Color.white;
-		drawCards(Color.white, 4);
-		drawCards(Color.black, 5);
+		this.activePlayerColor= UColor.white;
+		drawCards(UColor.white, 4);
+		drawCards(UColor.black, 5);
 		this.messagesToWhite.clear();
 		this.messagesToBlack.clear();
 	}
@@ -643,7 +748,7 @@ public class Board {
 		return "black"; 
 	}
 	
-	public String  getIdolsString(Color col)
+	public String  getIdolsString(UColor col)
 	{
 		//creates [{"color":"white","position":0,"hp":10,"maxHp":10},{"color":"white","position":1,"hp":10,"maxHp":10},{"color":"white","position":2,"hp":10,"maxHp":10},{"color":"white","position":3,"hp":10,"maxHp":10},{"color":"white","position":4,"hp":10,"maxHp":10}]
 		
@@ -653,7 +758,7 @@ public class Board {
 		String array = "[";
 		String color = "black";
 		ArrayList<Minion> idols = this.blackIdols;
-		if(col == Color.white) 
+		if(col == UColor.white) 
 		{
 			//idolHP = this.whiteIdolsHP;
 			//idolMaxHP = this.whiteIdolsMaxHP;
@@ -677,7 +782,7 @@ public class Board {
 		return array + "]";
 	}
 	
-	public String getTilesJson(Color col)
+	public String getTilesJson(UColor col)
 	{
 		//{"card":{"id":-1,"typeId":1,"tradable":true,"isToken":true,"level":0},"ap":4,"ac":2,"hp":18,"position":"0,0"},
 		// OR {"card":{"id":-1,"typeId":1,"tradable":true,"isToken":true,"level":0},"ap":4,"ac":2,"hp":6,"position":"1,1","buffs":[{"name":"Elan Vital","description":"","type":"BUFF"}]}
@@ -727,7 +832,7 @@ public class Board {
 		return s;
 	}
 	
-	public String assetMessageBuilder(Color col)
+	public String assetMessageBuilder(UColor col)
 	{
 		int[] curr = this.blackcurrentRessources;
 		int[] maxr= this.blackRessources;
@@ -735,7 +840,7 @@ public class Board {
 		int libsize = this.blackDeck.size();
 		int gravesize = this.blackGrave.size();
 		ArrayList<Minion> rules = this.blackRulesUpdates;
-		if(col == Color.white)
+		if(col == UColor.white)
 		{
 			curr=this.whitecurrentRessources;
 			maxr=this.whiteRessources;
@@ -763,12 +868,12 @@ public class Board {
 		//\"blackGameState\":{\"playerName\":\"Easy AI\",\"board\":{\"color\":\"black\",\"tiles\":[],\"idols\":[10,10,10,10,10]},\"mulliganAllowed\":true,\"assets\":{\"availableResources\":{\"DECAY\":0,\"ORDER\":0,\"ENERGY\":0,\"GROWTH\":0,\"SPECIAL\":0},\"outputResources\":{\"DECAY\":0,\"ORDER\":0,\"ENERGY\":0,\"GROWTH\":0,\"SPECIAL\":0},\"ruleUpdates\":[],\"handSize\":5,\"librarySize\":45,\"graveyardSize\":0}},
 		//\"activeColor\":\"white\",\"phase\":\"Init\",\"turn\":0,\"hasSacrificed\":false,\"secondsLeft\":-1,\"msg\":\"GameState\"}";
 		
-		String whiteTiles = getTilesJson(Color.white);
-		String blackTiles = getTilesJson(Color.black);
+		String whiteTiles = getTilesJson(UColor.white);
+		String blackTiles = getTilesJson(UColor.black);
 		String whiteIdolss=""+this.whiteIdols.get(0).Hp+","+this.whiteIdols.get(1).Hp+","+this.whiteIdols.get(2).Hp+","+this.whiteIdols.get(3).Hp+","+this.whiteIdols.get(4).Hp;
 		String blackIdolss=""+this.blackIdols.get(0).Hp+","+this.blackIdols.get(1).Hp+","+this.blackIdols.get(2).Hp+","+this.blackIdols.get(3).Hp+","+this.blackIdols.get(4).Hp;
-		String whiteAssets = this.assetMessageBuilder(Color.white);
-		String blackAssets = this.assetMessageBuilder(Color.black);
+		String whiteAssets = this.assetMessageBuilder(UColor.white);
+		String blackAssets = this.assetMessageBuilder(UColor.black);
 		
 		String s = 	"{\"whiteGameState\":{\"playerName\":\"" + this.whitePlayer.name + "\",\"board\":{\"color\":\"white\",\"tiles\":["+whiteTiles+"],\"idols\":["+whiteIdolss+"]},\"mulliganAllowed\":"+ Boolean.toString(this.whitePlayer.canMulligan) + ",\"assets\":"+whiteAssets+"},";
 		s+="\"blackGameState\":{\"playerName\":\"" + this.blackPlayer.name + "\",\"board\":{\"color\":\"black\",\"tiles\":["+blackTiles+"],\"idols\":["+blackIdolss+"]},\"mulliganAllowed\":"+ Boolean.toString(this.blackPlayer.canMulligan) + ",\"assets\":"+blackAssets+"},";
@@ -783,9 +888,9 @@ public class Board {
 	public String getPhaseString()
 	{
 		String phse = "Init";
-		if(this.GameState == 1) phse = "PreMain";
-		if(this.GameState == 2) phse = "Main";
-		if(this.GameState == 3) phse = "End";
+		if(this.gameState == GameState.PreMain) phse = "PreMain";
+		if(this.gameState == GameState.Main) phse = "Main";
+		if(this.gameState == GameState.Battle) phse = "End";
 		return phse;
 	}
 	
@@ -838,8 +943,8 @@ public class Board {
 		js+="\"nodeId\":\"" + this.serverip + "\",";//TODO change this?
 		js+="\"port\":" + this.port + ",";//TODO change this?
 		
-		js+="\"whiteIdols\":" + this.getIdolsString(Color.white)+ ",";
-		js+="\"blackIdols\":" + this.getIdolsString(Color.black)+ ",";
+		js+="\"whiteIdols\":" + this.getIdolsString(UColor.white)+ ",";
+		js+="\"blackIdols\":" + this.getIdolsString(UColor.black)+ ",";
 		
 		js+="\"refId\":" + 0 + ",";//for tutorial ... dunno
 		js+="\"maxTierRewardMultiplier\":0.5,";
@@ -864,7 +969,7 @@ public class Board {
 	public void mulligan(long playerid)
 	{
 		
-		if(this.GameState == 4) return; //game has ended
+		if(this.gameState == GameState.End) return; //game has ended
 		//is the user allowed to use the ability
 		
 		Player p = this.blackPlayer;
@@ -894,10 +999,10 @@ public class Board {
 		return "{\"effects\":[" + msg + "],\"msg\":\"NewEffects\"}";
 	}
 	
-	private String makeBigEffectMessage(Color col)
+	private String makeBigEffectMessage(UColor col)
 	{
 		ArrayList<String> msgs = this.messagesToBlack;
-		if(col==Color.white)msgs = this.messagesToWhite;
+		if(col==UColor.white)msgs = this.messagesToWhite;
 		String msg="";
 		for(String m : msgs)
 		{
@@ -909,7 +1014,7 @@ public class Board {
 	}
 	
 	
-	public String getHandUpdateMessage(Color col)
+	public String getHandUpdateMessage(UColor col)
 	{
 		ArrayList<Minion> hand = this.getPlayerHand(col);
 		//{"HandUpdate":{"profileId":68964,"maxScrollsForCycle":7,"cards":[{"id":25531674,"typeId":49,"tradable":false,"isToken":false,"level":0},{"id":24010900,"typeId":302,"tradable":true,"isToken":false,"level":0},{"id":25531701,"typeId":26,"tradable":false,"isToken":false,"level":0},{"id":20958502,"typeId":156,"tradable":true,"isToken":false,"level":0},{"id":23976035,"typeId":289,"tradable":true,"isToken":false,"level":2}]}}
@@ -927,21 +1032,21 @@ public class Board {
 		return s;
 	}
 	
-	public String getActiveRessourcesMessage(Color col)
+	public String getActiveRessourcesMessage(UColor col)
 	{
 		Player p = this.getPlayer(col);
 		String s = "{\"types\":["+p.activeRessis+"],\"msg\":\"ActiveResources\"}";
 		return s;
 	}
 	
-	public String getTurnMessage(Color col)
+	public String getTurnMessage(UColor col)
 	{
 		String colo = Board.colorToString(this.activePlayerColor);
 		String s ="{\"TurnBegin\":{\"color\":\""+ colo +"\",\"turn\":"+this.turnNumber+",\"secondsLeft\":"+maxRoundTimerSeconds+"}}";
 		return s;
 	}
 	
-	private void allMinionsOfASideCountDown(Color col, int ammount)
+	private void allMinionsOfASideCountDown(UColor col, int ammount)
 	{
 		Minion[][] ms = this.getPlayerField(col);
 		for(int i=0; i<5; i++)
@@ -964,7 +1069,7 @@ public class Board {
 				
 	}
 	
-	private void allMinionsOfASideResetCountDown(Color col)
+	private void allMinionsOfASideResetCountDown(UColor col)
 	{
 		Minion[][] ms = this.getPlayerField(col);
 		for(int i=0; i<5; i++)
@@ -1084,7 +1189,7 @@ public class Board {
 	}
 	
 	//all Rules are cound down
-	private void rulecountdowner(Color col)
+	private void rulecountdowner(UColor col)
 	{
 		ArrayList<Minion> rules = new ArrayList<Minion>(this.getPlayerRules(col));
 		for(Minion rule : rules)
@@ -1110,10 +1215,10 @@ public class Board {
 	}
 	
 	
-	private void refreshRessoures(Color col)
+	private void refreshRessoures(UColor col)
 	{
 		boolean sendupdate=false;
-		if(col == Color.white)
+		if(col == UColor.white)
 		{
 			
 			for(int i=0; i<this.whitecurrentRessources.length;i++)
@@ -1146,13 +1251,13 @@ public class Board {
 	}
 	
 	public String getResourcesUpdateMessage() {
-		String whiteAssets = this.assetMessageBuilder(Color.white);
-		String blackAssets = this.assetMessageBuilder(Color.black);
+		String whiteAssets = this.assetMessageBuilder(UColor.white);
+		String blackAssets = this.assetMessageBuilder(UColor.black);
 		String s="{\"ResourcesUpdate\":{\"whiteAssets\":"+whiteAssets+",\"blackAssets\":"+blackAssets+"}}";
 		return s;
 	}
 	
-	public String getCardStackUpdate(Color col)
+	public String getCardStackUpdate(UColor col)
 	{
 		ArrayList<Minion> lib = this.getPlayerDeck(col);
 		ArrayList<Minion> grave = this.getPlayerGrave(col);
@@ -1214,9 +1319,9 @@ public class Board {
 		//default attack:--------------------- (includes piercing + relentless)
 		String s = "";
 		
-		ArrayList<Position> posis = Board.getAttackPositions(m);
+		ArrayList<UPosition> posis = Board.getAttackPositions(m);
 		
-		Color opcol = Board.getOpposingColor(m.position.color);
+		UColor opcol = Board.getOpposingColor(m.position.color);
 		ArrayList<Minion> idols = this.getPlayerIdols(opcol);
 		ArrayList<Minion> targets = m.getTargets(defffield, posis, idols, this);
 
@@ -1300,14 +1405,14 @@ public class Board {
 		return s;
 	}
 	
-	private String getSiegeAttackMessage(Minion m, ArrayList<Position> posis)
+	private String getSiegeAttackMessage(Minion m, ArrayList<UPosition> posis)
 	{
 		//"{"SiegeAttackTiles":{"source":{"color":"white","position":"1,1"},"targets":[{"color":"black","position":"1,1"},{"color":"black","position":"1,0"},{"color":"black","position":"0,1"},{"color":"black","position":"2,1"}]}}",
 
 		String source=this.getSource(m);
 		String targets = "";
 		
-		for(Position pos : posis)
+		for(UPosition pos : posis)
 		{
 			if(!targets.equals("")) targets+=",";
 			//{"color":"white","position":"0,0"}
@@ -1337,9 +1442,9 @@ public class Board {
 	}
 	
 	
-	private void allMinionsOfASideAttacks(Color col)
+	private void allMinionsOfASideAttacks(UColor col)
 	{
-		Color otherColor = Board.getOpposingColor(col);
+		UColor otherColor = Board.getOpposingColor(col);
 		
 		Minion[][] attackfield = this.getPlayerField(col);
 		Minion[][] defffield = this.getPlayerField(otherColor);
@@ -1436,30 +1541,31 @@ public class Board {
 	{
 		//TODO end phase (except of "Init") automatically after some time
 		
-		if(this.GameState == 4) return; //game has ended
+		if(this.gameState == GameState.End) return; //game has ended
 		
 		//NOTE: gamestate is changed from 1 -> 2 and 2->1  AT THE START of the Phase-change, so, if we ask if we are in fight, then gamestate = 1 and not 2.
 		//Gamestate = 0 init
 		//gamestate = 2 main
 		//gamestate = 1 battle
 		
-		int phase = 0;
-		if(phse.equals("PreMain"))phase = 1;
-		if(phse.equals("Main"))phase = 2;
+		//phase client want to end can only have 3 states
+		GameState phase = GameState.Init;
+		if(phse.equals("PreMain"))phase = GameState.PreMain;
+		if(phse.equals("Main"))phase = GameState.Main;
 		
 		Player p = this.blackPlayer;
 		if(this.whitePlayer.profileId == playerid) p = this.whitePlayer;
-		System.out.println("endphase: "+ phase + " curretn:" + this.GameState);
-		if(phase == this.GameState)
+		System.out.println("endphase: "+ phase.toString() + " curretn:" + this.gameState.toString());
+		if(phase == this.gameState)
 		{
 			
-			if(phase==0)
+			if(phase==GameState.Init)
 			{
 				int rdyplayers = initPlayer(p);
 				
 				if(rdyplayers==2)
 				{
-					this.GameState +=1;
+					this.gameState = GameState.PreMain;
 					//init phase:
 				
 					this.initGame();//draw 4/5 cards
@@ -1469,13 +1575,13 @@ public class Board {
 					this.blackPlayer.sendMessgeToBattleServer(this.getGameStateMessage());
 					
 					//send handupdate
-					this.whitePlayer.sendMessgeToBattleServer(this.makeEffectMessage(this.getHandUpdateMessage(Color.white)));
-					this.blackPlayer.sendMessgeToBattleServer(this.makeEffectMessage(this.getHandUpdateMessage(Color.black)));
+					this.whitePlayer.sendMessgeToBattleServer(this.makeEffectMessage(this.getHandUpdateMessage(UColor.white)));
+					this.blackPlayer.sendMessgeToBattleServer(this.makeEffectMessage(this.getHandUpdateMessage(UColor.black)));
 					
 				
 					//send acctive ressis
-					this.whitePlayer.sendMessgeToBattleServer(this.getActiveRessourcesMessage(Color.white));
-					this.blackPlayer.sendMessgeToBattleServer(this.getActiveRessourcesMessage(Color.black));
+					this.whitePlayer.sendMessgeToBattleServer(this.getActiveRessourcesMessage(UColor.white));
+					this.blackPlayer.sendMessgeToBattleServer(this.getActiveRessourcesMessage(UColor.black));
 					
 					//send start turn
 					this.turnNumber++;
@@ -1497,17 +1603,20 @@ public class Board {
 				return;
 			}
 			
-			if(this.GameState == 2) 
+			if(this.gameState == GameState.Main) 
 			{
-				this.GameState =1;
+				this.gameState = GameState.Battle;
 			}
 			else
 			{
-				if(this.GameState >=1) this.GameState +=1;
+				if(this.gameState == GameState.PreMain) 
+				{
+					this.gameState = GameState.TurnStart;
+				}
 			}
 			 
 			
-			if(phase==1)//do turn starting stuff
+			if(phase==GameState.PreMain)//do turn starting stuff
 			{
 			
 				//TODO do effects of enchantments (like berserker) and other stuff!
@@ -1544,6 +1653,7 @@ public class Board {
 				//this.addMessageToBothPlayers(s);
 				
 				//send effect Messages!
+				this.gameState = GameState.Main;
 				
 				this.sendEffectMessagesToPlayers();
 				return;
@@ -1551,8 +1661,9 @@ public class Board {
 			}
 			
 			
-			if(phase==2)//do end-turn stuff
+			if(phase==GameState.Main)//do end-turn stuff
 			{
+				//this.gameState = GameState.Battle;//is done above
 				String s ="";
 				//TODO do attacking and endgame effects (like crimson bull)
 				//--- and do this first---...............................................
@@ -1562,7 +1673,7 @@ public class Board {
 				this.sendEffectMessagesToPlayers();
 
 				//reset Ac (=current count down) of minions with Ac<=0-----------------------------------------
-				
+				this.gameState = GameState.TurnEnd;//now we are in turn-end-phase
 				
 				this.allMinionsOfASideResetCountDown(this.activePlayerColor);
 				this.doTurnEndsTriggers();
@@ -1576,12 +1687,18 @@ public class Board {
 				this.turnNumber++;
 				this.hasSacrificed=false;
 				
+				this.gameState = GameState.PreMain;//now we are in premain-phase again (but the other guy :D)
+				
 				String trnm = this.makeEffectMessage(this.getTurnMessage(this.activePlayerColor));
 				this.setActivePlayerStuff();
 				
+				
+				
 				this.whitePlayer.sendMessgeToBattleServer(trnm);
 				this.blackPlayer.sendMessgeToBattleServer(trnm);
-
+				
+				
+				return;
 			}
 			
 		}
@@ -1602,13 +1719,13 @@ public class Board {
 		currentField = this.getPlayerField(this.activePlayerColor);
 		currentRuleupdates = this.getPlayerRules(this.activePlayerColor);
 		this.currentPlayer = this.getPlayer(this.activePlayerColor);
-		Color oppc = this.getOpposingColor(this.activePlayerColor);
+		UColor oppc = this.getOpposingColor(this.activePlayerColor);
 		this.opponentPlayer = this.getPlayer(oppc);
 		this.drawCorrodePossible = 0;
 	}
 
 	//return minion on specific position (null if not existing)
-	public Minion getMinionOnPosition(Position pos)
+	public Minion getMinionOnPosition(UPosition pos)
 	{
 		
 		for(Minion mnn : this.getPlayerFieldList(pos.color))
@@ -1623,9 +1740,9 @@ public class Board {
 	}
 	
 	//called from server to play a card
-	public void playCard(long cardid, ArrayList<Position> positions, long playerid)
+	public void playCard(long cardid, ArrayList<UPosition> positions, long playerid)
 	{
-		if(this.GameState == 4) return; //game has ended
+		if(this.gameState == GameState.End) return; //game has ended
 		
 		Player p = this.blackPlayer;
 		if(this.whitePlayer.profileId == playerid) p = this.whitePlayer;
@@ -1651,7 +1768,7 @@ public class Board {
 		//test if position is allowed:
 		
 		boolean allowedpos= true;
-		ArrayList<Position> allowedPosses = new ArrayList<Position>();
+		ArrayList<UPosition> allowedPosses = new ArrayList<UPosition>();
 		
 		//get all allowed positions!
 		if(card.card.cardKind == Kind.CREATURE || card.card.cardKind == Kind.STRUCTURE)
@@ -1670,10 +1787,10 @@ public class Board {
 		}
 		
 		//test if target position is allwed
-		for(Position poo : positions)
+		for(UPosition poo : positions)
 		{
 			boolean found = false;
-			for(Position pooo : allowedPosses)
+			for(UPosition pooo : allowedPosses)
 			{
 				if(pooo.isEqual(poo)) found=true;
 			}
@@ -1690,7 +1807,7 @@ public class Board {
 		//test if player has enough ressis
 		Boolean hasEnoughResources = false;
 		int[] cressis = this.blackcurrentRessources;
-		if(p.color == Color.white) 
+		if(p.color == UColor.white) 
 		{
 			cressis=this.whitecurrentRessources;
 		}
@@ -1763,7 +1880,7 @@ public class Board {
 		if(card.cardType == Kind.CREATURE || card.cardType == Kind.STRUCTURE )
 		{
 			System.out.println("creature is summoned");
-			Position posOfNewUnit = positions.get(0);
+			UPosition posOfNewUnit = positions.get(0);
 			this.summonUnitOnPosition(posOfNewUnit, card);
 			
 		}
@@ -1834,7 +1951,7 @@ public class Board {
 		return s;
 	}
 	
-	private String getSelectedTilesMessage(Minion card, ArrayList<Position> posis)
+	private String getSelectedTilesMessage(Minion card, ArrayList<UPosition> posis)
 	{
 		//{"SelectedTiles":{"card":{"id":17281,"typeId":261,"tradable":false,"isToken":false,"level":0},"tiles":[],"area":"UNDEFINED","color":"white"}}
 	
@@ -1848,7 +1965,7 @@ public class Board {
 		{
 			area = card.card.trgtAreaString;
 		}
-		for(Position pos : posis)
+		for(UPosition pos : posis)
 		{
 			if(!tiles.equals("")) tiles+=",";
 			//{"color":"white","position":"0,0"}
@@ -1861,13 +1978,13 @@ public class Board {
 		return s;
 	}
 	
-	public void summonUnitOnPosition(Position pos, Minion m)
+	public void summonUnitOnPosition(UPosition pos, Minion m)
 	{
 		summonUnitOnPosition( pos, m, true);
 	}
 	
 	
-	public void summonUnitOnPosition(Position pos, Minion m, Boolean dotriggers)
+	public void summonUnitOnPosition(UPosition pos, Minion m, Boolean dotriggers)
 	{
 		m.reset();
 		Minion before = this.getPlayerField(pos.color)[pos.row][pos.column];
@@ -1938,9 +2055,9 @@ public class Board {
 	
 	public void surrendering(long playerid)
 	{
-		if(this.GameState == 4) return; //game has ended
+		if(this.gameState == GameState.End) return; //game has ended
 		
-		this.GameState = 4;
+		this.gameState = GameState.End;
 		Player p = this.blackPlayer;
 		if(this.whitePlayer.profileId == playerid ) p = this.whitePlayer;
 		//send surrender effect to both
@@ -1976,7 +2093,7 @@ public class Board {
 		
 		//],"msg":"NewEffects"}
 		
-		Color winnercolor = Board.getOpposingColor(p.color);
+		UColor winnercolor = Board.getOpposingColor(p.color);
 		//TODO statistics :D
 		s= "{\"EndGame\":{\"winner\":\""+Board.colorToString(winnercolor)+"\",";
 		s+="\"whiteStats\":{\"profileId\":"+this.whitePlayer.profileId+",\"idolDamage\":0,\"unitDamage\":0,\"unitsPlayed\":0,\"spellsPlayed\":0,\"enchantmentsPlayed\":0,\"scrollsDrawn\":42,\"totalMs\":2433207,\"mostDamageUnit\":0},"; // TODO ,\"mostDamageUnitId\":8297
@@ -1999,7 +2116,7 @@ public class Board {
 	
 	public void handleCardInfoMessage(long cardId, long playerid)
 	{
-		if(this.GameState == 4) return; //game has ended
+		if(this.gameState == GameState.End) return; //game has ended
 		//{"card":{"id":23768093,"typeId":212,"tradable":true,"isToken":false,"level":0},"hasEnoughResources":false,"data":{"selectableTiles":{"tileSets":[[{"color":"white","position":"0,0"},{"color":"white","position":"1,0"},{"color":"white","position":"2,0"},{"color":"white","position":"3,0"},{"color":"white","position":"4,0"},{"color":"white","position":"0,1"},{"color":"white","position":"1,1"},{"color":"white","position":"2,1"},{"color":"white","position":"3,1"},{"color":"white","position":"4,1"},{"color":"white","position":"0,2"},{"color":"white","position":"1,2"},{"color":"white","position":"2,2"},{"color":"white","position":"3,2"},{"color":"white","position":"4,2"}]]},"targetArea":"TILE"},"alerts":["Not enough resources"],"msg":"CardInfo"}
 		Player p = this.blackPlayer;
 		if(this.whitePlayer.profileId == playerid ) p = this.whitePlayer;
@@ -2029,7 +2146,7 @@ public class Board {
 		
 		Boolean hasEnoughResources = false;
 		int[] cressis = this.blackcurrentRessources;
-		if(p.color == Color.white) 
+		if(p.color == UColor.white) 
 		{
 			cressis=this.whitecurrentRessources;
 		}
@@ -2071,9 +2188,9 @@ public class Board {
 		
 		if(card.card.cardKind == Kind.CREATURE || card.card.cardKind == Kind.STRUCTURE)
 		{
-			ArrayList<Position> posis = this.getFreePositions(p.color);
+			ArrayList<UPosition> posis = this.getFreePositions(p.color);
 			
-			for(Position pos : posis)
+			for(UPosition pos : posis)
 			{
 				if(!tilesets.equals("")) tilesets+=",";
 				//{"color":"white","position":"0,0"}
@@ -2096,10 +2213,10 @@ public class Board {
 			tileSelector fts= card.card.cardSim.getTileSelectorForFirstSelection(); 
 			if(fts!=tileSelector.None)
 			{
-				ArrayList<Position> tiles1 = getallLegalTargets(fts, card.position.color, card);
+				ArrayList<UPosition> tiles1 = getallLegalTargets(fts, card.position.color, card);
 				
 				String ts1="";
-				for(Position pos : tiles1)
+				for(UPosition pos : tiles1)
 				{
 					if(!ts1.equals("")) ts1+=",";
 					ts1 += pos.posToString();
@@ -2109,9 +2226,9 @@ public class Board {
 				tileSelector sts = card.card.cardSim.getTileSelectorForSecondSelection();
 				if(sts!=tileSelector.None)
 				{
-					ArrayList<Position> tiles2 = getallLegalTargets(sts, card.position.color, card);
+					ArrayList<UPosition> tiles2 = getallLegalTargets(sts, card.position.color, card);
 					String ts2="";
-					for(Position pos : tiles2)
+					for(UPosition pos : tiles2)
 					{
 						if(!ts2.equals("")) ts2+=",";
 						ts2 += pos.posToString();
@@ -2130,11 +2247,11 @@ public class Board {
 			{
 				//TODO get all sequentials!
 				
-				ArrayList<ArrayList<Position>> sequentials = getSequentialPositions(Color.white, card.card.cardSim.getTargetAreaGroup());
-				for(ArrayList<Position> sequals : sequentials)
+				ArrayList<ArrayList<UPosition>> sequentials = getSequentialPositions(UColor.white, card.card.cardSim.getTargetAreaGroup());
+				for(ArrayList<UPosition> sequals : sequentials)
 				{
 					String sequal = "";
-					for(Position po : sequals)
+					for(UPosition po : sequals)
 					{
 						if(!sequal.equals("")) sequal+=",";
 						sequal+=po.posToString();
@@ -2145,11 +2262,11 @@ public class Board {
 				}
 				
 				sequentials.clear();
-				sequentials = getSequentialPositions(Color.black, card.card.cardSim.getTargetAreaGroup());
-				for(ArrayList<Position> sequals : sequentials)
+				sequentials = getSequentialPositions(UColor.black, card.card.cardSim.getTargetAreaGroup());
+				for(ArrayList<UPosition> sequals : sequentials)
 				{
 					String sequal = "";
-					for(Position po : sequals)
+					for(UPosition po : sequals)
 					{
 						if(!sequal.equals("")) sequal+=",";
 						sequal+=po.posToString();
@@ -2176,9 +2293,9 @@ public class Board {
 		
 	}
 	
-	private ArrayList<Position> getallLegalTargets(tileSelector ts, Color ownColor, Minion card)
+	private ArrayList<UPosition> getallLegalTargets(tileSelector ts, UColor ownColor, Minion card)
 	{
-		ArrayList<Position> ret = new ArrayList<Position>();
+		ArrayList<UPosition> ret = new ArrayList<UPosition>();
 		
 		if(ts == tileSelector.None)
 		{
@@ -2192,8 +2309,8 @@ public class Board {
 			{
 				for(int j=0; j<3; j++)
 				{
-					ret.add(new Position(Color.white, i, j));
-					ret.add(new Position(Color.black, i, j));
+					ret.add(new UPosition(UColor.white, i, j));
+					ret.add(new UPosition(UColor.black, i, j));
 				}
 			}
 			return ret;
@@ -2210,7 +2327,7 @@ public class Board {
 					{
 						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
 						{
-							ret.add(new Position(Color.white, i, j));	
+							ret.add(new UPosition(UColor.white, i, j));	
 						}
 
 					}
@@ -2220,7 +2337,7 @@ public class Board {
 					{
 						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
 						{
-							ret.add(new Position(Color.black, i, j));
+							ret.add(new UPosition(UColor.black, i, j));
 						}
 					}
 				}
@@ -2239,7 +2356,7 @@ public class Board {
 					{
 						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
 						{
-						ret.add(new Position(Color.white, i, j));
+						ret.add(new UPosition(UColor.white, i, j));
 						}
 					}
 					
@@ -2248,7 +2365,7 @@ public class Board {
 					{
 						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
 						{
-						ret.add(new Position(Color.black, i, j));
+						ret.add(new UPosition(UColor.black, i, j));
 						}
 					}
 				}
@@ -2267,7 +2384,7 @@ public class Board {
 					{
 						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
 						{
-						ret.add(new Position(Color.white, i, j));
+						ret.add(new UPosition(UColor.white, i, j));
 						}
 					}
 					
@@ -2276,7 +2393,7 @@ public class Board {
 					{
 						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
 						{
-						ret.add(new Position(Color.black, i, j));
+						ret.add(new UPosition(UColor.black, i, j));
 						}
 					}
 				}
@@ -2295,7 +2412,7 @@ public class Board {
 					{
 						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
 						{
-						ret.add(new Position(Color.white, i, j));
+						ret.add(new UPosition(UColor.white, i, j));
 						}
 					}
 					
@@ -2304,7 +2421,7 @@ public class Board {
 					{
 						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
 						{
-						ret.add(new Position(Color.black, i, j));
+						ret.add(new UPosition(UColor.black, i, j));
 						}
 					}
 				}
@@ -2330,7 +2447,7 @@ public class Board {
 						{
 							if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
 							{
-								ret.add(new Position(Color.white, i, j));
+								ret.add(new UPosition(UColor.white, i, j));
 							}
 						}
 					}
@@ -2347,7 +2464,7 @@ public class Board {
 						{
 							if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
 							{
-								ret.add(new Position(Color.black, i, j));
+								ret.add(new UPosition(UColor.black, i, j));
 							}
 						}
 					}
@@ -2367,7 +2484,7 @@ public class Board {
 					{
 						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
 						{
-						ret.add(new Position(Color.white, i, j));
+						ret.add(new UPosition(UColor.white, i, j));
 						}
 					}
 					
@@ -2376,7 +2493,7 @@ public class Board {
 					{
 						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
 						{
-						ret.add(new Position(Color.black, i, j));
+						ret.add(new UPosition(UColor.black, i, j));
 						}
 					}
 				}
@@ -2395,7 +2512,7 @@ public class Board {
 					{
 						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
 						{
-						ret.add(new Position(Color.white, i, j));
+						ret.add(new UPosition(UColor.white, i, j));
 						}
 					}
 					
@@ -2404,7 +2521,7 @@ public class Board {
 					{
 						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
 						{
-						ret.add(new Position(Color.black, i, j));
+						ret.add(new UPosition(UColor.black, i, j));
 						}
 					}
 				}
@@ -2423,7 +2540,7 @@ public class Board {
 					{
 						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
 						{
-						ret.add(new Position(Color.white, i, j));
+						ret.add(new UPosition(UColor.white, i, j));
 						}
 					}
 					
@@ -2432,7 +2549,7 @@ public class Board {
 					{
 						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
 						{
-						ret.add(new Position(Color.black, i, j));
+						ret.add(new UPosition(UColor.black, i, j));
 						}
 					}
 				}
@@ -2449,13 +2566,13 @@ public class Board {
 					Minion m = this.whiteField[i][j];
 					if(m==null )
 					{
-						ret.add(new Position(Color.white, i, j));
+						ret.add(new UPosition(UColor.white, i, j));
 					}
 					
 					m = this.blackField[i][j];
 					if(m==null )
 					{
-						ret.add(new Position(Color.black, i, j));
+						ret.add(new UPosition(UColor.black, i, j));
 					}
 				}
 			}
@@ -2463,7 +2580,7 @@ public class Board {
 		}
 		
 		// opponent stuff----------------------------------------------
-		Color oppCol= Board.getOpposingColor(ownColor);
+		UColor oppCol= Board.getOpposingColor(ownColor);
 		
 		Minion[][] field = this.getPlayerField(oppCol);
 		
@@ -2473,7 +2590,7 @@ public class Board {
 			{
 				for(int j=0; j<3; j++)
 				{
-					ret.add(new Position(oppCol, i, j));
+					ret.add(new UPosition(oppCol, i, j));
 				}
 			}
 			return ret;
@@ -2490,7 +2607,7 @@ public class Board {
 					{
 						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
 						{
-						ret.add(new Position(oppCol, i, j));
+						ret.add(new UPosition(oppCol, i, j));
 						}
 					}
 					
@@ -2510,7 +2627,7 @@ public class Board {
 					{
 						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
 						{
-						ret.add(new Position(oppCol, i, j));
+						ret.add(new UPosition(oppCol, i, j));
 						}
 					}
 				}
@@ -2529,7 +2646,7 @@ public class Board {
 					{
 						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
 						{
-						ret.add(new Position(oppCol, i, j));
+						ret.add(new UPosition(oppCol, i, j));
 						}
 					}
 					
@@ -2547,7 +2664,7 @@ public class Board {
 					Minion m = field[i][j];
 					if(m==null )
 					{
-						ret.add(new Position(oppCol, i, j));
+						ret.add(new UPosition(oppCol, i, j));
 					}
 				}
 			}
@@ -2564,7 +2681,7 @@ public class Board {
 			{
 				for(int j=0; j<3; j++)
 				{
-					ret.add(new Position(oppCol, i, j));
+					ret.add(new UPosition(oppCol, i, j));
 				}
 			}
 			return ret;
@@ -2579,7 +2696,7 @@ public class Board {
 					Minion m = field[i][j];
 					if(m!=null )
 					{
-						ret.add(new Position(oppCol, i, j));
+						ret.add(new UPosition(oppCol, i, j));
 					}
 					
 				}
@@ -2596,7 +2713,7 @@ public class Board {
 					Minion m = field[i][j];
 					if(m!=null && (m.card.cardKind == Kind.CREATURE))
 					{
-						ret.add(new Position(oppCol, i, j));
+						ret.add(new UPosition(oppCol, i, j));
 					}
 				}
 			}
@@ -2612,7 +2729,7 @@ public class Board {
 					Minion m = field[i][j];
 					if(m!=null && (m.card.cardKind == Kind.CREATURE) && m.getSubTypes().contains(SubType.Beast))
 					{
-						ret.add(new Position(oppCol, i, j));
+						ret.add(new UPosition(oppCol, i, j));
 					}
 				}
 			}
@@ -2630,7 +2747,7 @@ public class Board {
 					Minion m = field[i][j];
 					if(m!=null && (m.card.cardKind == Kind.STRUCTURE))
 					{
-						ret.add(new Position(oppCol, i, j));
+						ret.add(new UPosition(oppCol, i, j));
 					}
 					
 				}
@@ -2647,7 +2764,7 @@ public class Board {
 					Minion m = field[i][j];
 					if(m==null )
 					{
-						ret.add(new Position(oppCol, i, j));
+						ret.add(new UPosition(oppCol, i, j));
 					}
 				}
 			}
@@ -2660,7 +2777,7 @@ public class Board {
 	
 	public void sacrificeCard(long cardid, String ressource, long playerid)
 	{
-		if(this.GameState == 4) return; //game has ended
+		if(this.gameState == GameState.End) return; //game has ended
 		//{"effects":[
 		//{"CardSacrificed":{"color":"white","resource":"GROWTH"}},
 		//{"ResourcesUpdate":{"whiteAssets":{"availableResources":{"DECAY":0,"ORDER":0,"ENERGY":0,"GROWTH":2,"SPECIAL":0},"outputResources":{"DECAY":0,"ORDER":0,"ENERGY":0,"GROWTH":2,"SPECIAL":0},"ruleUpdates":[],"handSize":4,"librarySize":44,"graveyardSize":2},"blackAssets":{"availableResources":{"DECAY":0,"ORDER":0,"ENERGY":0,"GROWTH":0,"SPECIAL":0},"outputResources":{"DECAY":0,"ORDER":0,"ENERGY":0,"GROWTH":0,"SPECIAL":0},"ruleUpdates":[],"handSize":6,"librarySize":44,"graveyardSize":0}}},
@@ -2695,7 +2812,7 @@ public class Board {
 		
 		int[] mressis = this.blackRessources;
 		int[] cressis = this.blackcurrentRessources;
-		if(p.color == Color.white) 
+		if(p.color == UColor.white) 
 		{
 			mressis=this.whiteRessources;
 			cressis=this.whitecurrentRessources;
@@ -2810,9 +2927,9 @@ public class Board {
 	}
 	
 	
-	public static String colorToString(Color col)
+	public static String colorToString(UColor col)
 	{
-		if(col == Color.white) return "white";
+		if(col == UColor.white) return "white";
 		return "black";
 	}
 	
@@ -2836,18 +2953,18 @@ public class Board {
 		return "MAGICAL";
 	}
 	
-	public static Color getOpposingColor(Color col)
+	public static UColor getOpposingColor(UColor col)
 	{
-		if(col == Color.white) return Color.black;
-		return Color.white;
+		if(col == UColor.white) return UColor.black;
+		return UColor.white;
 	}
 	
-	public ArrayList<Minion> getMinionsFromPositions(ArrayList<Position> ps)
+	public ArrayList<Minion> getMinionsFromPositions(ArrayList<UPosition> ps)
 	{
 		ArrayList<Minion> mins = new ArrayList<Minion>();
 		for(Minion m : this.getAllMinionOfField())
 		{
-			for(Position p : ps)
+			for(UPosition p : ps)
 			{
 				if(m.position.isEqual(p))
 				{
@@ -2859,27 +2976,27 @@ public class Board {
 	}
 	
 	
-	public  ArrayList<Position> getFreePositionsFromPosition(ArrayList<Position> tiles)
+	public  ArrayList<UPosition> getFreePositionsFromPosition(ArrayList<UPosition> tiles)
 	{
-		ArrayList<Position> posMoves = new ArrayList<Position>();
+		ArrayList<UPosition> posMoves = new ArrayList<UPosition>();
 		
-		for(Position p : tiles)
+		for(UPosition p : tiles)
 		{
 			Minion m = this.whiteField[p.row][p.column];
-			if(p.color == Color.black) m = this.blackField[p.row][p.column];
+			if(p.color == UColor.black) m = this.blackField[p.row][p.column];
 				
 				if(m == null )
 				{
-					posMoves.add(new Position(p));
+					posMoves.add(new UPosition(p));
 				}
 		}
 		
 		return posMoves;
 	}
 	
-	public  ArrayList<Position> getFreePositions(Color col)
+	public  ArrayList<UPosition> getFreePositions(UColor col)
 	{
-		ArrayList<Position> posMoves = new ArrayList<Position>();
+		ArrayList<UPosition> posMoves = new ArrayList<UPosition>();
 		
 		Minion[][] side = this.getPlayerField(col);
 		
@@ -2890,7 +3007,7 @@ public class Board {
 				Minion m = side[i][j];
 				if(m == null )
 				{
-					posMoves.add(new Position(col, i, j));
+					posMoves.add(new UPosition(col, i, j));
 				}
 			}
 		}
@@ -2899,16 +3016,16 @@ public class Board {
 	}
 	
 	
-	ArrayList<Position> dfsList= new ArrayList<Position>();//shared variable for DFS
-	ArrayList<Position> dfsSolutionList= new ArrayList<Position>();
+	ArrayList<UPosition> dfsList= new ArrayList<UPosition>();//shared variable for DFS
+	ArrayList<UPosition> dfsSolutionList= new ArrayList<UPosition>();
 	
-	public  ArrayList<ArrayList<Position>> getSequentialPositions(Color col, TargetAreaGroup tag)
+	public  ArrayList<ArrayList<UPosition>> getSequentialPositions(UColor col, TargetAreaGroup tag)
 	{
 		this.dfsList.clear();
 		
-		if(tag==TargetAreaGroup.own_creatures && col != this.activePlayerColor) return new ArrayList<ArrayList<Position>>();
+		if(tag==TargetAreaGroup.own_creatures && col != this.activePlayerColor) return new ArrayList<ArrayList<UPosition>>();
 		
-		Color markCol = Board.getOpposingColor(col);
+		UColor markCol = Board.getOpposingColor(col);
 		Minion[][] side = this.getPlayerField(col);
 		
 		for(int i=0; i<5; i++)
@@ -2918,25 +3035,25 @@ public class Board {
 				Minion m = side[i][j];
 				if(m != null )
 				{
-					if(tag==TargetAreaGroup.own_creatures && m.cardType == Kind.CREATURE) this.dfsList.add(new Position(col, i, j));
+					if(tag==TargetAreaGroup.own_creatures && m.cardType == Kind.CREATURE) this.dfsList.add(new UPosition(col, i, j));
 					
-					if(tag==TargetAreaGroup.all_units) this.dfsList.add(new Position(col, i, j));
+					if(tag==TargetAreaGroup.all_units) this.dfsList.add(new UPosition(col, i, j));
 					
 				}
 			}
 		}
-		Color opcol = Board.getOpposingColor(col);
+		UColor opcol = Board.getOpposingColor(col);
 
-		ArrayList<ArrayList<Position>> retval = new ArrayList<ArrayList<Position>>();
+		ArrayList<ArrayList<UPosition>> retval = new ArrayList<ArrayList<UPosition>>();
 
-		for(Position p1 : this.dfsList)
+		for(UPosition p1 : this.dfsList)
 		{
 			if(p1.color == markCol) continue;
 			this.dfsSolutionList.clear();
 			
 			this.deepFirstSearch(p1, markCol, tag);
 			
-			ArrayList<Position>blubb = new ArrayList<Position>(this.dfsSolutionList); //we can take the elements of dfsSol.list, they are created with new
+			ArrayList<UPosition>blubb = new ArrayList<UPosition>(this.dfsSolutionList); //we can take the elements of dfsSol.list, they are created with new
 			retval.add(blubb);
 		}
 		
@@ -2944,21 +3061,21 @@ public class Board {
 		return retval;
 	}
 	
-	private void deepFirstSearch(Position p, Color markCol, TargetAreaGroup tag)
+	private void deepFirstSearch(UPosition p, UColor markCol, TargetAreaGroup tag)
 	{
 		//add to sol.list + mark!
-		this.dfsSolutionList.add(new Position(p));
+		this.dfsSolutionList.add(new UPosition(p));
 		p.color = markCol;
 		
-		ArrayList<Position> neightbours = p.getNeightbours();
+		ArrayList<UPosition> neightbours = p.getNeightbours();
 		
-		for(Position p1 : this.dfsList)
+		for(UPosition p1 : this.dfsList)
 		{
 			if(p1.color == markCol) continue;
 			
 			//test if p1 is a neightbour of p
 			boolean isNeightbour= false;
-			for(Position pipi : neightbours)
+			for(UPosition pipi : neightbours)
 			{
 				if(pipi.column == p1.column && pipi.row == p1.row) isNeightbour=true; //we ignore color, cause p is marked
 			}
@@ -2973,13 +3090,13 @@ public class Board {
 	
 	
 	
-	public static ArrayList<Position> getAttackPositions(Minion m)
+	public static ArrayList<UPosition> getAttackPositions(Minion m)
 	{
 		targetArea area = m.card.trgtArea;
-		ArrayList<Position> posMoves = new ArrayList<Position>();
+		ArrayList<UPosition> posMoves = new ArrayList<UPosition>();
 		int attackerRow = m.position.row;
 		int attackerColumn = m.position.column;
-		Color col = Board.getOpposingColor(m.position.color);
+		UColor col = Board.getOpposingColor(m.position.color);
 		
 		//only forward and radius4 are legal
 		
@@ -2988,10 +3105,10 @@ public class Board {
 			int rowdi = attackerRow;
 			for(int i = 0; i<3; i++)
 			{
-				Position p = new Position(col, rowdi, i);
+				UPosition p = new UPosition(col, rowdi, i);
 				posMoves.add(p);
 			}
-			Position p = new Position(col, rowdi, 4);
+			UPosition p = new UPosition(col, rowdi, 4);
 			posMoves.add(p);
 		}
 		
@@ -3007,22 +3124,22 @@ public class Board {
 			
 			//tile after first tile
 			columndi++;
-			if(rowdi >=0 && rowdi <= 4 && columndi>=0 && columndi <=2) posMoves.add(new Position(col, rowdi, columndi));
+			if(rowdi >=0 && rowdi <= 4 && columndi>=0 && columndi <=2) posMoves.add(new UPosition(col, rowdi, columndi));
 			columndi--;
 			
 			//first tile
-			if(rowdi >=0 && rowdi <= 4 && columndi>=0 && columndi <=2) posMoves.add(new Position(col, rowdi, columndi));
+			if(rowdi >=0 && rowdi <= 4 && columndi>=0 && columndi <=2) posMoves.add(new UPosition(col, rowdi, columndi));
 			
 			//tile over first tile
 			if(attackerRow==1 || attackerRow==3) columndi++;
 			rowdi--;
-			if(rowdi >=0 && rowdi <= 4 && columndi>=0 && columndi <=2) posMoves.add(new Position(col, rowdi, columndi));
+			if(rowdi >=0 && rowdi <= 4 && columndi>=0 && columndi <=2) posMoves.add(new UPosition(col, rowdi, columndi));
 			if(attackerRow==1 || attackerRow==3) columndi--;
 			rowdi++;
 			
 			//tile under first tile
 			rowdi++;
-			if(rowdi >=0 && rowdi <= 4 && columndi>=0 && columndi <=2) posMoves.add(new Position(col, rowdi, columndi));
+			if(rowdi >=0 && rowdi <= 4 && columndi>=0 && columndi <=2) posMoves.add(new UPosition(col, rowdi, columndi));
 			
 		}
 		
@@ -3036,15 +3153,15 @@ public class Board {
 	
 	
 	
-	public ArrayList<Position> getMovePositions(Color col, int row, int column)
+	public ArrayList<UPosition> getMovePositions(UColor col, int row, int column)
 	{
-		Position pp = new Position(col, row, column);
-		ArrayList<Position> posMoves = pp.getNeightbours();
+		UPosition pp = new UPosition(col, row, column);
+		ArrayList<UPosition> posMoves = pp.getNeightbours();
 		
-		ArrayList<Position> posMoves2 = new ArrayList<Position>();
+		ArrayList<UPosition> posMoves2 = new ArrayList<UPosition>();
 		Minion[][] chosenField = this.getPlayerField(col);
 		
-		for(Position p : posMoves)
+		for(UPosition p : posMoves)
 		{
 			if((chosenField[p.row][p.column]) == null)
 			{
@@ -3056,11 +3173,11 @@ public class Board {
 	}
 	
 	
-	public String getPossibleMoveString(Color col, int row, int column)
+	public String getPossibleMoveString(UColor col, int row, int column)
 	{
 		String s ="";
 		//{\"color\":\"white\",\"position\":\"1,1\"},
-		for(Position p : this.getMovePositions(col, row, column))
+		for(UPosition p : this.getMovePositions(col, row, column))
 		{
 			if(s.equals(""))
 			{
@@ -3075,9 +3192,9 @@ public class Board {
 	}
 	 
 	
-	public void getAbilityInfo(String ability, Position posi , long playerid)
+	public void getAbilityInfo(String ability, UPosition posi , long playerid)
 	{
-		if(this.GameState == 4) return; //game has ended
+		if(this.gameState == GameState.End) return; //game has ended
 		
 		Player p = this.blackPlayer;
 		if(this.whitePlayer.profileId == playerid) p = this.whitePlayer;
@@ -3118,7 +3235,9 @@ public class Board {
 		else
 		{*/
 			ActiveAbility va = new ActiveAbility(ability, 0, 0, 0, 0, 0);
-			ArrayList<Position> pospositions = new ArrayList<Position>();
+			ArrayList<UPosition> pospositions = new ArrayList<UPosition>();
+			ArrayList<UPosition> pospositions2 = new ArrayList<UPosition>();
+			boolean needposi2 = false;
 			for(ActiveAbility aa : m.card.abilitys )
 			{
 				if(aa.id ==  va.id)
@@ -3126,16 +3245,30 @@ public class Board {
 					
 					ressis= aa.hasEnoughRessis(this, m);
 					pospositions.addAll(aa.getPositions(this, m));
-					playable = aa.isPlayAble(this, m, pospositions);
+					pospositions2.addAll(aa.getSecondPositions(this, m));
+					playable = aa.isPlayAble(this, m, pospositions, pospositions2);
+					needposi2 = aa.needPosition2(this, m);
 					break;
 				}
 			}
 			
 			tilesets = "";
-			for(Position popo : pospositions )
+			for(UPosition popo : pospositions )
 			{
 				if(!tilesets.equals("")) tilesets += ",";
 				tilesets += popo.posToString();
+			}
+			
+			if(needposi2)
+			{
+				tilesets+="],[";
+				String tilesets2 = "";
+				for(UPosition popo : pospositions2 )
+				{
+					if(!tilesets2.equals("")) tilesets2 += ",";
+					tilesets2 += popo.posToString();
+				}
+				tilesets+=tilesets2;
 			}
 			
 		//}
@@ -3158,9 +3291,9 @@ public class Board {
 	}
 
 	
-	public void activateAbility(String ability, Position unitPos, ArrayList<Position> poses, long playerid)
+	public void activateAbility(String ability, UPosition unitPos, ArrayList<UPosition> poses, long playerid)
 	{
-		if(this.GameState == 4) return; //game has ended
+		if(this.gameState == GameState.End) return; //game has ended
 		//is the user allowed to use the ability
 		
 		Player p = this.blackPlayer;
@@ -3182,9 +3315,11 @@ public class Board {
 		boolean playable = true;
 		boolean ressis = true;
 		boolean needposi = false;
+		boolean needposi2 = false;
 		
 		ActiveAbility va = new ActiveAbility(ability, 0, 0, 0, 0, 0);
-		ArrayList<Position> pospositions = new ArrayList<Position>();
+		ArrayList<UPosition> pospositions = new ArrayList<UPosition>();
+		ArrayList<UPosition> pospositions2 = new ArrayList<UPosition>();
 		for(ActiveAbility aa : m.card.abilitys )
 		{
 			if(aa.id ==  va.id)
@@ -3192,8 +3327,11 @@ public class Board {
 				va = aa;
 				ressis= aa.hasEnoughRessis(this, m);
 				pospositions.addAll(aa.getPositions(this, m));
-				playable = aa.isPlayAble(this, m, pospositions);
+				pospositions2.addAll(aa.getSecondPositions(this, m));
+				playable = aa.isPlayAble(this, m, pospositions, pospositions2);
+				
 				needposi = aa.needPosition(this, m);
+				needposi2 = aa.needPosition2(this, m);
 				break;
 			}
 		}
@@ -3204,7 +3342,7 @@ public class Board {
 			return;
 		}
 		
-		if(needposi && poses.size() ==0)
+		if((needposi && poses.size() ==0) || (needposi2 && poses.size() <=1) )
 		{
 			//TODO error (target position is needed, but not sended to us)
 			return;
@@ -3213,8 +3351,8 @@ public class Board {
 		if(needposi && poses.size() >=1 )
 		{
 			Boolean isinList = false;
-			Position tp = poses.get(0);
-			for(Position ppp : pospositions)
+			UPosition tp = poses.get(0);
+			for(UPosition ppp : pospositions)
 			{
 				if(tp.isEqual(ppp)) isinList=true;
 			}
@@ -3222,6 +3360,22 @@ public class Board {
 			if(!isinList) 
 			{
 				//TODO error (wrong position)
+				return;
+			}
+		}
+		
+		if(needposi2 && poses.size() >=2 )
+		{
+			Boolean isinList = false;
+			UPosition tp = poses.get(1);
+			for(UPosition ppp : pospositions2)
+			{
+				if(tp.isEqual(ppp)) isinList=true;
+			}
+			
+			if(!isinList) 
+			{
+				//TODO error (wrong position2)
 				return;
 			}
 		}
@@ -3234,7 +3388,7 @@ public class Board {
 		
 		if(ability.equals("Move"))
 		{
-			Position targ = poses.get(0);
+			UPosition targ = poses.get(0);
 			
 			m.movesThisTurn++;
 			this.unitChangesPlace(unitPos, targ);
@@ -3261,7 +3415,7 @@ public class Board {
 	}
 	
 	//with switching, minions change place
-	public void unitChangesPlace(Position ofrom, Position oto, Boolean doTrigger, Boolean isMove)
+	public void unitChangesPlace(UPosition ofrom, UPosition oto, Boolean doTrigger, Boolean isMove)
 	{
 		
 		
@@ -3271,8 +3425,8 @@ public class Board {
 			this.addMessageToBothPlayers(s);
 		}
 		
-		Position from  = new Position(ofrom);
-		Position to  = new Position(oto);
+		UPosition from  = new UPosition(ofrom);
+		UPosition to  = new UPosition(oto);
 		
 		Minion m = this.getPlayerField(from.color)[from.row][from.column];
 		if(m==null) return;//error?
@@ -3313,7 +3467,7 @@ public class Board {
 		if(doTrigger)doOnFieldChangedTriggers();
 	}
 	
-	public void unitChangesPlace(Position from, Position to)
+	public void unitChangesPlace(UPosition from, UPosition to)
 	{
 		unitChangesPlace( from,  to, true, true);
 	}
@@ -3389,17 +3543,17 @@ public class Board {
 	public class SummonItem
 	{
 		public Minion minion;
-		public Position pos;
+		public UPosition pos;
 		public int flags=0;
 		
-		public SummonItem(Minion a, Position p)
+		public SummonItem(Minion a, UPosition p)
 		{
 			this.minion=a;
 			this.pos = p;
 			this.flags=0;
 		}
 		
-		public SummonItem(Minion a, Position p, int flag)
+		public SummonItem(Minion a, UPosition p, int flag)
 		{
 			this.minion=a;
 			this.pos = p;
@@ -3447,7 +3601,7 @@ public class Board {
         			if(e.cardID>=0)
         			{
         				this.getPlayerGrave(e.position.color).add(e);
-        				if(e.position.color == Color.white) 
+        				if(e.position.color == UColor.white) 
         				{
         					graveWhiteChanged=true;
         				}
@@ -3506,8 +3660,8 @@ public class Board {
         
         if(died>=1)
         {
-        	if(graveWhiteChanged) this.addMessageToBothPlayers(this.getCardStackUpdate(Color.white));
-        	if(graveBlackChanged) this.addMessageToBothPlayers(this.getCardStackUpdate(Color.black));
+        	if(graveWhiteChanged) this.addMessageToBothPlayers(this.getCardStackUpdate(UColor.white));
+        	if(graveBlackChanged) this.addMessageToBothPlayers(this.getCardStackUpdate(UColor.black));
         }
         
         
@@ -3538,7 +3692,7 @@ public class Board {
 		else
 		{
 			this.getPlayerGrave(m.position.color).add(m);
-			if(m.position.color == Color.white) 
+			if(m.position.color == UColor.white) 
 			{
 				graveWhiteChanged=true;
 			}
@@ -3592,7 +3746,7 @@ public class Board {
 						rdmg = 0;
 					}
 					if(rdmg >=2 && target.hasPotionOfResistance(this)) rdmg = 1;
-					newHPDefender = Math.min(target.Hp , target.Hp + target.armor - rdmg); //defender is not healed if Armor > attack :D
+					newHPDefender = Math.min(target.Hp , target.Hp + target.getArmor(this) - rdmg); //defender is not healed if Armor > attack :D
 			}
 			
 			if(damageType == DamageType.MAGICAL)
@@ -3604,7 +3758,7 @@ public class Board {
 						rdmg = 0;
 					}
 					if(rdmg >=2 && target.hasPotionOfResistance(this)) rdmg = 1;
-					newHPDefender = Math.min(target.Hp , target.Hp + target.magicRessi - rdmg); //defender is not healed if Armor > attack :D
+					newHPDefender = Math.min(target.Hp , target.Hp + target.getMagicRessi(this) - rdmg); //defender is not healed if Armor > attack :D
 			}
 			
 			if(damageType == DamageType.POISON)
@@ -3715,7 +3869,7 @@ public class Board {
         	}
         	
         	//perform spiky-dmg from all sources (minion himself, enchantments + linger spells)
-        	int spikydmg = deffender.card.cardSim.getSpikyDamage(this, deffender);
+        	int spikydmg = deffender.card.cardSim.getSpikyDamage(this, deffender, deffender);
         	if(spikydmg>=1)
         	{
         		performDmg(attacker, deffender, AttackType.MELEE_COUNTER , DamageType.COMBAT, spikydmg);
@@ -3724,7 +3878,7 @@ public class Board {
         	for (Minion ench : deffender.getAttachedCards())
         	{
             
-        		spikydmg = ench.card.cardSim.getSpikyDamage(this, ench);
+        		spikydmg = ench.card.cardSim.getSpikyDamage(this, ench, deffender);
             	if(spikydmg>=1)
             	{
             		performDmg(attacker, deffender, AttackType.MELEE_COUNTER , DamageType.COMBAT, spikydmg);
@@ -3735,7 +3889,7 @@ public class Board {
         	for (Minion rule : this.getAllRulesWithColorFirst(deffender.position.color))
         	{
             
-        		spikydmg = rule.card.cardSim.getSpikyDamage(this, rule);
+        		spikydmg = rule.card.cardSim.getSpikyDamage(this, rule, deffender);
             	if(spikydmg>=1)
             	{
             		performDmg(attacker, deffender, AttackType.MELEE_COUNTER , DamageType.COMBAT, spikydmg);
@@ -3850,7 +4004,7 @@ public class Board {
     }
 
 	
-	private String getUnitAttackMessage(Minion m, ArrayList<Position> target)
+	private String getUnitAttackMessage(Minion m, ArrayList<UPosition> target)
 	{
 		//{"UnitAttackIdol":{"attacker":{"color":"white","position":"1,1"},"idol":1}},
 		//OR
@@ -3859,9 +4013,9 @@ public class Board {
 		String source=this.getSource(m);
 		String targets = "";
 		
-		Position tar = target.get(0);
+		UPosition tar = target.get(0);
 		int tarCol = tar.column;
-		for(Position mm : target)
+		for(UPosition mm : target)
 		{
 			int tarColt = mm.column;
 			
@@ -3994,7 +4148,7 @@ public class Board {
 		{
 			if(e.cardID>=0)
 			{
-				if(e.position.color == Color.white) 
+				if(e.position.color == UColor.white) 
 				{
 					graveWhiteChanged=true;
 				}
@@ -4013,8 +4167,8 @@ public class Board {
         doOnFieldChangedTriggers();
         this.getPlayerHand(m.position.color).add(m);
         this.addMessageToPlayer(m.position.color, this.getHandUpdateMessage(m.position.color));
-        if(graveWhiteChanged) this.addMessageToBothPlayers(this.getCardStackUpdate(Color.white));
-    	if(graveBlackChanged) this.addMessageToBothPlayers(this.getCardStackUpdate(Color.black));
+        if(graveWhiteChanged) this.addMessageToBothPlayers(this.getCardStackUpdate(UColor.white));
+    	if(graveBlackChanged) this.addMessageToBothPlayers(this.getCardStackUpdate(UColor.black));
         
 	}
 	
@@ -4035,7 +4189,7 @@ public class Board {
 		{
 			if(e.cardID>=0)
 			{
-				if(e.position.color == Color.white) 
+				if(e.position.color == UColor.white) 
 				{
 					graveWhiteChanged=true;
 				}
@@ -4053,7 +4207,7 @@ public class Board {
 		
         doOnFieldChangedTriggers();
         this.getPlayerDeck(m.position.color).add(0, m);
-        if(m.position.color == Color.white) 
+        if(m.position.color == UColor.white) 
         {
         	graveWhiteChanged=true;
         }
@@ -4061,8 +4215,8 @@ public class Board {
         {
         	graveBlackChanged=false;
         }
-        if(graveWhiteChanged) this.addMessageToBothPlayers(this.getCardStackUpdate(Color.white));
-    	if(graveBlackChanged) this.addMessageToBothPlayers(this.getCardStackUpdate(Color.black));
+        if(graveWhiteChanged) this.addMessageToBothPlayers(this.getCardStackUpdate(UColor.white));
+    	if(graveBlackChanged) this.addMessageToBothPlayers(this.getCardStackUpdate(UColor.black));
         
 	}
 	

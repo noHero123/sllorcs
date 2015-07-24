@@ -6,11 +6,11 @@ import BattleStuff.AttackType;
 import BattleStuff.Board;
 import BattleStuff.Card;
 import BattleStuff.CardDB;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 import BattleStuff.Board.SummonItem;
@@ -23,7 +23,7 @@ public class Necrogeddon_Sim extends Simtemplate {
 		return tileSelector.None;
 	}
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		//TODO: ignores resummon effects of own side! (seed of insurgent, illthorn seed, witchdoc...) (all tested)
 		
@@ -32,15 +32,15 @@ public class Necrogeddon_Sim extends Simtemplate {
 		{
 			if(m.cardType == Kind.CREATURE) all.add(m);
 		}
-		ArrayList<Position> poses = new ArrayList<Position>();
+		ArrayList<UPosition> poses = new ArrayList<UPosition>();
 		
 		for(Minion m : all)
 		{
-			poses.add(new Position(m.position));
+			poses.add(new UPosition(m.position));
 			//we do a clever trick: add a husk on that position before it is killed, do other summon effects wont work on that tile!
 			Card c = CardDB.getInstance().cardId2Card.get(163);
 			Minion ill = new Minion(c, -1, m.position.color);
-			b.summonList.add(b.new SummonItem(ill, new Position(m.position)));
+			b.summonList.add(b.new SummonItem(ill, new UPosition(m.position)));
 			b.destroyMinion(m, playedCard);
 		}
 		

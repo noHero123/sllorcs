@@ -3,10 +3,10 @@ package SimulationCards;
 import java.util.ArrayList;
 
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.tileSelector;
 
 public class ConcentrateFire_Sim extends Simtemplate
@@ -18,7 +18,7 @@ public class ConcentrateFire_Sim extends Simtemplate
 		return tileSelector.all_lobbers_or_ranged_units;
 	}
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
 		target.addCardAsEnchantment("ENCHANTMENT", "Concentrate Fire", playedCard.card.cardDescription, playedCard, b);
@@ -38,7 +38,7 @@ public class ConcentrateFire_Sim extends Simtemplate
 		m.removeEnchantment(self, true, b);
 		
 		//minion attacks a second time
-		Color otherColor = Board.getOpposingColor(m.position.color);
+		UColor otherColor = Board.getOpposingColor(m.position.color);
 		Minion[][] defffield = b.getPlayerField(otherColor);
 		b.unitAttacking(m, defffield, m.getAttack(), m.attackType, DamageType.COMBAT);
 		

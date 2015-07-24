@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
 import BattleStuff.ResourceName;
@@ -18,7 +18,7 @@ public class MetalWonder_Sim extends Simtemplate {
 		if(triggerEffectMinion.position.color == spell.position.color)  return; //opponent have to play the spell
 		
 		ArrayList<Minion> idols = new ArrayList<Minion>();
-		Color oppcol = Board.getOpposingColor(triggerEffectMinion.position.color);
+		UColor oppcol = Board.getOpposingColor(triggerEffectMinion.position.color);
 		for(Minion idol : b.getPlayerIdols(oppcol))
 		{
 			if(idol.Hp>=1) idols.add(idol);

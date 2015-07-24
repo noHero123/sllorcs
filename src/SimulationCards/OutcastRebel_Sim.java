@@ -2,7 +2,7 @@ package SimulationCards;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
 import BattleStuff.SubType;
@@ -26,7 +26,7 @@ public class OutcastRebel_Sim extends Simtemplate {
     }
 	
 	
-	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, Color turnEndColor)
+	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)
     {
 		
 		if(triggerEffectMinion.owner == null)

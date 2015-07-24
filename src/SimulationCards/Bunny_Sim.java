@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import BattleStuff.Board;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 
 public class Bunny_Sim extends Simtemplate {
@@ -27,7 +27,7 @@ public class Bunny_Sim extends Simtemplate {
 			return;
         }
 		
-		ArrayList<Position> nbrs = m.position.getNeightbours(); 
+		ArrayList<UPosition> nbrs = m.position.getNeightbours(); 
 		if(nbrs.size()==0) return;
 		
 		int rndm = b.getRandomNumber(0, nbrs.size()-1);

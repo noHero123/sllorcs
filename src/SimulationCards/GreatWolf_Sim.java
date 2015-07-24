@@ -10,7 +10,6 @@ public class GreatWolf_Sim extends Simtemplate {
 	//"id":38,"name":"Great Wolf","description":"Great Wolf gets +1 Attack for each other Wolf you control."
 	public  void getBattlecryEffect(Board b, Minion own, Minion target)
     {
-		own.isRelentless=true;
 		int buffs = 0;
 		for(Minion m : b.getPlayerFieldList(own.position.color))
 		{

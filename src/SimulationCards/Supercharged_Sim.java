@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.tileSelector;
 
 public class Supercharged_Sim extends Simtemplate 
@@ -22,11 +22,11 @@ public class Supercharged_Sim extends Simtemplate
 	
 	private Minion getRangedTarget(Board b, Minion m)
 	{
-		Color oppcol = Board.getOpposingColor(m.position.color);
+		UColor oppcol = Board.getOpposingColor(m.position.color);
 		
 		for(int i=0;i<3;i++)
 		{
-			Minion mnn = b.getMinionOnPosition(new Position(oppcol, m.position.row, i));
+			Minion mnn = b.getMinionOnPosition(new UPosition(oppcol, m.position.row, i));
 			if(mnn!=null) return mnn;
 		}
 		
@@ -34,7 +34,7 @@ public class Supercharged_Sim extends Simtemplate
 		return b.getPlayerIdol(oppcol, m.position.row);
 	}
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
 		target.addCardAsEnchantment("ENCHANTMENT", "Supercharged", playedCard.card.cardDescription, playedCard, b);
@@ -43,7 +43,7 @@ public class Supercharged_Sim extends Simtemplate
         return;
     }
 	
-	 public  void onTurnStartTrigger(Board b, Minion triggerEffectMinion, Color turnStartColor)
+	 public  void onTurnStartTrigger(Board b, Minion triggerEffectMinion, UColor turnStartColor)
 	 {
 		 b.doDmg(this.getRangedTarget(b, triggerEffectMinion), triggerEffectMinion, 1, AttackType.RANGED, DamageType.PHYSICAL);
 	     return;

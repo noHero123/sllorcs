@@ -40,7 +40,7 @@ public class Player {
 	//temp stuff for battle
 	public boolean isBattling = false;
 	public boolean canMulligan = true;
-	public Color color = Color.white;
+	public UColor color = UColor.white;
 	
 	public int goingToChallengeID = -1; //id of gallenged player
 	public String deckname = "growth"; //deck he uses in Next/current fight

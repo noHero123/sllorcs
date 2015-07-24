@@ -2,7 +2,7 @@ package SimulationCards;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
 import BattleStuff.ResourceName;
@@ -34,7 +34,7 @@ public class WetlandRanger_Sim extends Simtemplate {
 	     return;
 	 }
 	 
-	 public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, Color turnEndColor)
+	 public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)
 	 {
 			if(triggerEffectMinion.owner==null) return false;//its the minion, not the effect!
 			

@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 import BattleStuff.tileSelector;
 
@@ -21,7 +21,7 @@ public class Pother_Sim extends Simtemplate {
 		return tileSelector.all_units;
 	}
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		
 		//draw creature scroll
@@ -29,12 +29,12 @@ public class Pother_Sim extends Simtemplate {
 		Minion m = b.getMinionOnPosition(targets.get(0));
 		if(m != null)
 		{
-			Color opp = m.position.color;
+			UColor opp = m.position.color;
 			Minion[][] enemyb = b.getPlayerField(opp);
 			//move unit to random tile
-			ArrayList<Position> nbrs  = m.position.getNeightbours();
-			ArrayList<Position> freetiles  = new ArrayList<Position>();
-			for(Position ps : nbrs)
+			ArrayList<UPosition> nbrs  = m.position.getNeightbours();
+			ArrayList<UPosition> freetiles  = new ArrayList<UPosition>();
+			for(UPosition ps : nbrs)
 			{
 				if(enemyb[ps.row][ps.column] == null)
 				{

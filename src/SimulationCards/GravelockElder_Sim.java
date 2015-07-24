@@ -21,7 +21,7 @@ public class GravelockElder_Sim extends Simtemplate {
 	
 	public  void onMinionIsSummoned(Board b, Minion triggerEffectMinion, Minion summonedMinion)
     {
-		if(summonedMinion.position.color != triggerEffectMinion.position.color) return; //only buff opp. minions
+		if(summonedMinion.position.color != triggerEffectMinion.position.color) return; //only buff own minions
 		
 		if(summonedMinion.position.isEqual(triggerEffectMinion.position) ) return; //dont buff himself
 		

@@ -3,9 +3,9 @@ package SimulationCards;
 import java.util.ArrayList;
 
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.tileSelector;
 
 public class PotionOfResistance_Sim extends Simtemplate 
@@ -24,7 +24,7 @@ public class PotionOfResistance_Sim extends Simtemplate
     	return true;
     }
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
 		target.imuneToNextDmg=true;
@@ -33,7 +33,7 @@ public class PotionOfResistance_Sim extends Simtemplate
         return;
     }
 	
-	public  void onTurnStartTrigger(Board b, Minion triggerEffectMinion, Color turnStartColor)
+	public  void onTurnStartTrigger(Board b, Minion triggerEffectMinion, UColor turnStartColor)
     {
 		triggerEffectMinion.lingerDuration--;
 		if(triggerEffectMinion.lingerDuration ==0)

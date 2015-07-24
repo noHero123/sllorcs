@@ -10,7 +10,6 @@ public class Gravehawk_Sim extends Simtemplate {
 	//"id":4,"name":"Gravehawk","description":"Gravehawk gets +1 Attack for each Gravelock you control."
 	public  void getBattlecryEffect(Board b, Minion own, Minion target)
     {
-		own.isRelentless=true;
 		int buffs = 0;
 		for(Minion m : b.getPlayerFieldList(own.position.color))
 		{

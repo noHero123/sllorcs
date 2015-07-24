@@ -10,7 +10,6 @@ public class Harvester_Sim extends Simtemplate {
 	//"id":172,"name":"Harvester","description":"Does not count down. When a creature is destroyed, Harvester's Countdown is decreased by 1."
 	public  void getBattlecryEffect(Board b, Minion own, Minion target)
     {
-		own.isRelentless=true;
         return;
     }
 	

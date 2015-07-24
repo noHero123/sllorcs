@@ -3,9 +3,9 @@ package SimulationCards;
 import java.util.ArrayList;
 
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.tileSelector;
 
 public class PlateArmor_Sim extends Simtemplate 
@@ -18,16 +18,15 @@ public class PlateArmor_Sim extends Simtemplate
 		return tileSelector.all_units;
 	}
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
-		target.armor+= this.getArmor(b, playedCard);
 		target.buffMinionWithoutMessage(0, 1, 0, b);//status update is done in add card as enchantment
 		target.addCardAsEnchantment("ENCHANTMENT", "Plate Armor", playedCard.card.cardDescription, playedCard, b);
         return;
     }
 	
-	public int getArmor(Board b ,Minion m)
+	public int getArmor(Board b ,Minion triggerEffectMinion, Minion minion)
     {
     	return 1;
     }

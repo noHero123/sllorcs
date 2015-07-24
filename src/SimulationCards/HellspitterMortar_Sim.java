@@ -3,9 +3,9 @@ package SimulationCards;
 import java.util.ArrayList;
 
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 
 public class HellspitterMortar_Sim extends Simtemplate {
@@ -16,14 +16,14 @@ public class HellspitterMortar_Sim extends Simtemplate {
     	return true;
     }
 	
-	public ArrayList<Position> getSpecialAttackTarget(Board b, Minion m)
+	public ArrayList<UPosition> getSpecialAttackTarget(Board b, Minion m)
     {
 		//TODO: hellspitter is targeting field with minions at a higher rate?
-    	ArrayList<Position> posis = new ArrayList<Position>();
-    	Color c = Board.getOpposingColor(m.position.color);
+    	ArrayList<UPosition> posis = new ArrayList<UPosition>();
+    	UColor c = Board.getOpposingColor(m.position.color);
     	int row = b.getRandomNumber(0, 4);
     	int colu = b.getRandomNumber(0, 2);
-    	posis.add(new Position(c, row, colu));
+    	posis.add(new UPosition(c, row, colu));
     	return posis;
     }
 }

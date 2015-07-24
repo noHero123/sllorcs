@@ -1,7 +1,7 @@
 package SimulationCards;
 
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.Minion;
 import BattleStuff.ResourceName;
 import BattleStuff.SubType;

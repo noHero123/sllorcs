@@ -53,7 +53,7 @@ public class ActiveAbility {
 		int neededWild = 0;
 		//better:
 		int[] cressis = b.blackcurrentRessources;
-		if(m.position.color == Color.white) 
+		if(m.position.color == UColor.white) 
 		{
 			cressis= b.whitecurrentRessources;
 		}
@@ -121,7 +121,7 @@ public class ActiveAbility {
 		Boolean hasEnoughResources=false;
 		//better:
 		int[] cressis = b.blackcurrentRessources;
-		if(m.position.color == Color.white) 
+		if(m.position.color == UColor.white) 
 		{
 			cressis= b.whitecurrentRessources;
 		}
@@ -182,7 +182,7 @@ public class ActiveAbility {
 	}
 	
 	
-	public Boolean isPlayAble(Board b, Minion m, ArrayList<Position> poses)
+	public Boolean isPlayAble(Board b, Minion m, ArrayList<UPosition> poses, ArrayList<UPosition> poses2)
 	{
 		Boolean isp = false;
 		if(this.id == activeAbilitys.Move)
@@ -206,7 +206,7 @@ public class ActiveAbility {
 		if(this.id == activeAbilitys.GrowthRegenerateAbility)
 		{
 			int[] curE = b.whitecurrentRessources;
-			if(m.position.color == Color.black) 
+			if(m.position.color == UColor.black) 
 			{
 				curE = b.blackcurrentRessources;
 			}
@@ -264,6 +264,11 @@ public class ActiveAbility {
 			return false;
 		}
 		
+		if(this.id == activeAbilitys.Stitcher)
+		{
+			if(m.getAc() == 0 && poses.size()>=1 && poses2.size()>=1) return true;
+			return false;
+		}
 		
 		return isp;
 	}
@@ -323,14 +328,28 @@ public class ActiveAbility {
 		{
 			return false;
 		}
-		
+		if(this.id == activeAbilitys.Stitcher)
+		{
+			return true;
+
+		}
 		return false;
 	}
 	
-	public ArrayList<Position> getPositions(Board b, Minion m)
+	public Boolean needPosition2(Board b, Minion m)
 	{
-		ArrayList<Position> isp = new ArrayList<Position>();
-		Position mp = new Position(m.position);
+		if(this.id == activeAbilitys.Stitcher)
+		{
+			return true;
+
+		}
+		return false;
+	}
+	
+	public ArrayList<UPosition> getPositions(Board b, Minion m)
+	{
+		ArrayList<UPosition> isp = new ArrayList<UPosition>();
+		UPosition mp = new UPosition(m.position);
 		
 		if(this.id == activeAbilitys.Move)
 		{
@@ -342,10 +361,10 @@ public class ActiveAbility {
 		
 		if(this.id == activeAbilitys.SummonWolf)
 		{
-			ArrayList<Position> nbrs = mp.getNeightbours();
+			ArrayList<UPosition> nbrs = mp.getNeightbours();
 			ArrayList<Minion> mins = b.getMinionsFromPositions(nbrs);
 			
-			for(Position pp : nbrs)
+			for(UPosition pp : nbrs)
 			{
 				Boolean isEmpty = true;
 				for(Minion mi : mins)
@@ -373,7 +392,7 @@ public class ActiveAbility {
 			{
 				if(pp.cardType == Kind.STRUCTURE && pp.maxAc>=1)
 				{
-					isp.add(new Position(pp.position));
+					isp.add(new UPosition(pp.position));
 				}
 			}
 			return isp;
@@ -393,7 +412,7 @@ public class ActiveAbility {
 		{
 			for(Minion mm : b.getAllMinionOfField())
 			{
-				isp.add(new Position(mm.position));
+				isp.add(new UPosition(mm.position));
 			}
 			return isp;
 		}
@@ -407,7 +426,7 @@ public class ActiveAbility {
 		{
 			for(Minion mm : b.getAllMinionOfField())
 			{
-				isp.add(new Position(mm.position));
+				isp.add(new UPosition(mm.position));
 			}
 			return isp;
 		}
@@ -430,7 +449,7 @@ public class ActiveAbility {
 			{
 				if(pp.cardType == Kind.CREATURE)
 				{
-					isp.add(new Position(pp.position));
+					isp.add(new UPosition(pp.position));
 				}
 			}
 			return isp;
@@ -441,9 +460,41 @@ public class ActiveAbility {
 			return isp;
 		}
 		
+		if(this.id == activeAbilitys.Stitcher)
+		{
+			ArrayList<Minion> mins = b.getPlayerFieldList(m.position.color);
+			for(Minion pp : mins)
+			{
+				if(pp.cardType == Kind.CREATURE)
+				{
+					isp.add(new UPosition(pp.position));
+				}
+			}
+			return isp;
+		}
 		
 		return isp;
 	}
 	
+	
+	public ArrayList<UPosition> getSecondPositions(Board b, Minion m)
+	{
+		ArrayList<UPosition> isp = new ArrayList<UPosition>();
+		
+		if(this.id == activeAbilitys.Stitcher)
+		{
+			ArrayList<Minion> mins = b.getPlayerFieldList(m.position.color);
+			for(Minion pp : mins)
+			{
+				if(pp.cardType == Kind.CREATURE)
+				{
+					isp.add(new UPosition(pp.position));
+				}
+			}
+			return isp;
+		}
+		
+		return isp;
+	}
 	
 }

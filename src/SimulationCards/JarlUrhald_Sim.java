@@ -2,7 +2,7 @@ package SimulationCards;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
 import BattleStuff.SubType;
@@ -12,7 +12,6 @@ public class JarlUrhald_Sim extends Simtemplate {
 	//unique, relentless, inspiring +2 attack, pillage countdown to 0
 	public  void getBattlecryEffect(Board b, Minion own, Minion target)
     {
-		own.isRelentless=true;
 		for(Minion m : b.getPlayerFieldList(own.position.color))
 		{
 			if(m.typeId == 297) b.destroyMinion(m, own);
@@ -37,7 +36,7 @@ public class JarlUrhald_Sim extends Simtemplate {
         return true;
     }
 	
-	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, Color turnEndColor)
+	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)
     {
 		
 		if(triggerEffectMinion.owner == null)

@@ -9,7 +9,7 @@ import BattleStuff.CardDB;
 import BattleStuff.DamageType;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.SubType;
 
 public class EarthbornMystic_Sim extends Simtemplate {
@@ -27,7 +27,7 @@ public class EarthbornMystic_Sim extends Simtemplate {
         return;
     }
 	
-	public  void onAbilityIsActivated(Board b, Minion triggerEffectMinion, ArrayList<Position> targets )
+	public  void onAbilityIsActivated(Board b, Minion triggerEffectMinion, ArrayList<UPosition> targets )
     {
 		triggerEffectMinion.resetAcWithMessage(b);
 		b.doDmg(triggerEffectMinion, triggerEffectMinion, 1, AttackType.UNDEFINED, DamageType.SUPERIOR);
@@ -43,7 +43,7 @@ public class EarthbornMystic_Sim extends Simtemplate {
 						found=true;
 						b.currentHand.add(m);
 						deck.remove(i);
-						b.shuffleList(deck);
+						b.shuffleList(b.currentDeck);
 						break;
 					}
 				}
@@ -61,7 +61,7 @@ public class EarthbornMystic_Sim extends Simtemplate {
 							found=true;
 							b.currentHand.add(m);
 							deck.remove(i);
-							b.shuffleList(deck);
+							b.shuffleList(b.currentGrave);
 							break;
 						}
 					}

@@ -6,11 +6,11 @@ import BattleStuff.AttackType;
 import BattleStuff.Board;
 import BattleStuff.Card;
 import BattleStuff.CardDB;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.ResourceName;
 import BattleStuff.SubType;
 
@@ -18,7 +18,7 @@ public class LoyalDarkling_Sim extends Simtemplate {
 	//"id":162,"name":"Loyal Darkling","description":"When Countdown is 0, you may sacrifice Loyal Darkling."
 	
 	
-	public  void onAbilityIsActivated(Board b, Minion triggerEffectMinion, ArrayList<Position> targets )
+	public  void onAbilityIsActivated(Board b, Minion triggerEffectMinion, ArrayList<UPosition> targets )
     {
 		b.destroyMinion(triggerEffectMinion, triggerEffectMinion);
 

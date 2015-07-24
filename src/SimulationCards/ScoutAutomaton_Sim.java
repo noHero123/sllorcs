@@ -8,7 +8,7 @@ public class ScoutAutomaton_Sim extends Simtemplate {
 	//"id":227,"name":"Scout Automaton","description":"Other Automatons you control have +1 Attack."
 	
 	
-	 public int getArmor(Board b ,Minion m)
+	 public int getArmor(Board b ,Minion triggerEffectMinion, Minion minion)
 	    {
 	    	return 1;
 	    }

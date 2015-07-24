@@ -3,9 +3,9 @@ package SimulationCards;
 import java.util.ArrayList;
 
 import BattleStuff.Board;
-import BattleStuff.Color;
+import BattleStuff.UColor;
 import BattleStuff.Minion;
-import BattleStuff.Position;
+import BattleStuff.UPosition;
 import BattleStuff.ResourceName;
 import BattleStuff.tileSelector;
 
@@ -19,7 +19,7 @@ public class EnergySiphon_Sim extends Simtemplate
 		return tileSelector.all_creatures;
 	}
 	
-	public void onCardPlay(Board b, Color player , ArrayList<Position> targets, Minion playedCard)
+	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		b.changeCurrentRessource(ResourceName.ENERGY, playedCard.position.color, 3);
 		Minion target = b.getMinionOnPosition(targets.get(0));
