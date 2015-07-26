@@ -18,9 +18,9 @@ public class Harvester_Sim extends Simtemplate {
     	return true;
     }
 	
-	public  boolean doesCountDown(Board b, Minion m)
+	public  int doesCountDown(Board b, Minion m)
     {
-        return false;
+        return 0;
     }
 	
 	public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker, AttackType attackType, DamageType dmgtype)

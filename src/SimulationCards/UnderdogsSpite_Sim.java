@@ -23,7 +23,7 @@ public class UnderdogsSpite_Sim extends Simtemplate {
     {
 		for(Minion m : b.getPlayerFieldList(playedCard.position.color))
 		{
-			if(m.getAc()>=0 && m.cardType == Kind.CREATURE && m.getAttack() <=2)
+			if(m.getAc()>=0 && m.cardType == Kind.CREATURE && m.getAttack(b) <=2)
 			{
 				m.buffMinion(0, 0, -1, b);
 			}

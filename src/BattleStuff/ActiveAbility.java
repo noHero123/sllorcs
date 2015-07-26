@@ -270,6 +270,19 @@ public class ActiveAbility {
 			return false;
 		}
 		
+		if(this.id == activeAbilitys.FulminationConduit)
+		{
+			return true;//allways?
+			//return false;
+		}
+		
+		if(this.id == activeAbilitys.MarksmanAttack)
+		{
+			if(m.getAc() == 0 && poses.size()>=1) return true;
+			return false;
+		}
+		
+		
 		return isp;
 	}
 	
@@ -333,6 +346,18 @@ public class ActiveAbility {
 			return true;
 
 		}
+		
+		if(this.id == activeAbilitys.FulminationConduit)
+		{
+			return false;
+
+		}
+		
+		if(this.id == activeAbilitys.MarksmanAttack)
+		{
+			return true;
+		}
+		
 		return false;
 	}
 	
@@ -473,6 +498,24 @@ public class ActiveAbility {
 			return isp;
 		}
 		
+		if(this.id == activeAbilitys.FulminationConduit)
+		{
+			return isp;
+		}
+		
+		
+		if(this.id == activeAbilitys.MarksmanAttack)
+		{
+			ArrayList<Minion> mins = b.getAllMinionOfField();
+			for(Minion pp : mins)
+			{
+				if(pp.cardType == Kind.CREATURE)
+				{
+					isp.add(new UPosition(pp.position));
+				}
+			}
+			return isp;
+		}
 		return isp;
 	}
 	

@@ -40,7 +40,7 @@ public class ConcentrateFire_Sim extends Simtemplate
 		//minion attacks a second time
 		UColor otherColor = Board.getOpposingColor(m.position.color);
 		Minion[][] defffield = b.getPlayerField(otherColor);
-		b.unitAttacking(m, defffield, m.getAttack(), m.attackType, DamageType.COMBAT);
+		b.unitAttacking(m, defffield, m.getAttack(b), m.attackType, DamageType.COMBAT);
 		
     	return;
     }

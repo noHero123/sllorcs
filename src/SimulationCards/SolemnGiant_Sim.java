@@ -13,9 +13,9 @@ import BattleStuff.SubType;
 public class SolemnGiant_Sim extends Simtemplate {
 	//"id":204,"name":"Solemn Giant","description":"Does not count down. Pay 2 Energy to decrease Countdown by 2."
 	
-	public  boolean doesCountDown(Board b, Minion m)
+	public  int doesCountDown(Board b, Minion m)
     {
-        return false;
+        return 0;
     }
     
 	

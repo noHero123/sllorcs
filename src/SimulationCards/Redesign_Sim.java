@@ -21,7 +21,7 @@ public class Redesign_Sim extends Simtemplate
 	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
-		int attack = target.getAttack();
+		int attack = target.getAttack(b);
 		int hp = target.Hp;
 		int abuff = hp-attack;
 		int hbuff = attack-hp;

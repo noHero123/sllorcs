@@ -22,7 +22,7 @@ public class Minion {
 	public int moveChanges=0;
 	public int tempMove=0;
 	
-	public boolean hasPiercing = false; // it doesnt have to be on card, can also be enchantment!
+	//public boolean hasPiercing = false; // it doesnt have to be on card, can also be enchantment!
 	
 	public AttackType attackType = AttackType.MELEE;
 	//public int armor = 0;
@@ -59,6 +59,7 @@ public class Minion {
 	public int aoeDmgToDo=0;
 	public int desperationBuffs=0;
 	public boolean imuneToNextDmg=false;
+	public boolean imuneToDmg=false;
 	public boolean addToHandAfterDead = false;
 	
 	//TODO calculate attack/HP life? like getAP() -> loop through enchantments/buffs other minions and calculate the current attack?
@@ -72,7 +73,10 @@ public class Minion {
 	public boolean fangbear=false;
 	
 	//its used as a used variable for all minions... can only be changed by itself!
-	public int turnCounter = 0; //TODO replace that other counters with it! 
+	public int turnCounter = 0; //TODO replace that other counters with it!
+	//TODO use these for buffs
+	public int attackbuff = 0;
+	public int healthbuff = 0;
 	
 	public int getAc()
 	{
@@ -84,13 +88,16 @@ public class Minion {
 		this.Ap = a;
 	}
 	
-	public int getAttack()
+	public int getAttack(Board b)
 	{
+		int attack = this.Ap;
+		if(this.typeId == 299) attack += b.getCurrentRessource(ResourceName.ENERGY, this.position.color);
+		
 		for(Minion m : this.attachedCards)
 		{
 			if(m.typeId == 198) return 0;
 		}
-		return Math.max(0, this.Ap);
+		return Math.max(0, attack);
 	}
 	
 	public void resetAc()
@@ -148,6 +155,7 @@ public class Minion {
 		this.aoeDmgToDo=0;
 		didDmgToIdol=false;
 		fangbear=false;
+		imuneToDmg=false;
 	}
 	
 	public Minion getMinionToken()
@@ -172,6 +180,7 @@ public class Minion {
 		this.aoeDmgToDo=0;
 		didDmgToIdol=false;
 		fangbear=false;
+		imuneToDmg=false;
 	}
 	
 	public Minion (String type, String name, String description, Card c, UColor ownercolor)
@@ -186,6 +195,7 @@ public class Minion {
 		this.aoeDmgToDo=0;
 		didDmgToIdol=false;
 		fangbear=false;
+		imuneToDmg=false;
 	}
 	
 	/*public String getStatusUpdate()
@@ -244,6 +254,7 @@ public class Minion {
 		monstroCounter =0;
 		didDmgToIdol=false;
 		fangbear=false;
+		imuneToDmg=false;
 		
 	}
 	

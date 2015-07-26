@@ -36,46 +36,7 @@ public class ReapingMask_Sim extends Simtemplate
 		if(diedMinion != triggerEffectMinion.owner && attacker == triggerEffectMinion.owner && diedMinion.cardType == Kind.CREATURE)
 		{
 			//draw creature scroll
-			ArrayList<Minion> deck = new ArrayList<Minion>(b.currentDeck);
-			Boolean found = false;
-			for(int i=0; i<deck.size(); i++)
-			{
-				Minion m= deck.get(i);
-				if(m.card.cardKind == Kind.CREATURE)
-				{
-					found=true;
-					b.currentHand.add(m);
-					deck.remove(i);
-					b.shuffleList(b.currentDeck);
-					break;
-				}
-			}
-			
-			//look into graveyard
-			if(!found)
-			{
-				deck.clear();
-				deck.addAll(b.currentGrave);
-				for(int i=0; i<deck.size(); i++)
-				{
-					Minion m= deck.get(i);
-					if(m.card.cardKind == Kind.CREATURE)
-					{	
-						found=true;
-						b.currentHand.add(m);
-						deck.remove(i);
-						b.shuffleList(b.currentGrave);
-						break;
-					}
-				}
-			}
-			
-			if(found)
-			{
-				//hand+ cardstack update
-				b.addMessageToPlayer(b.activePlayerColor, b.getHandUpdateMessage(b.activePlayerColor));
-				b.addMessageToBothPlayers(b.getCardStackUpdate(b.activePlayerColor));
-			}
+			b.drawSpecialCard(triggerEffectMinion.position.color, Kind.CREATURE);
 			return;
 		}
 			

@@ -41,8 +41,11 @@ public class EssenceFeast_Sim extends Simtemplate {
 			}
 		}
 		
-		//draw creature scroll
-		ArrayList<Minion> deck = new ArrayList<Minion>(b.currentDeck);
+		//draw beast scroll
+		UColor col = playedCard.position.color;
+		ArrayList<Minion> playerdeck = b.getPlayerDeck(col);
+		ArrayList<Minion> hand = b.getPlayerHand(col);
+		ArrayList<Minion> deck = new ArrayList<Minion>(playerdeck);
 		Boolean found = false;
 		for(int i=0; i<deck.size(); i++)
 		{
@@ -50,9 +53,9 @@ public class EssenceFeast_Sim extends Simtemplate {
 			if(m.getSubTypes().contains(SubType.Beast))
 			{
 				found=true;
-				b.currentHand.add(m);
-				deck.remove(i);
-				b.shuffleList(b.currentDeck);
+				hand.add(m);
+				playerdeck.remove(m);
+				b.shuffleList(playerdeck);
 				break;
 			}
 		}
@@ -60,17 +63,19 @@ public class EssenceFeast_Sim extends Simtemplate {
 		//look into graveyard
 		if(!found)
 		{
+			playerdeck = b.getPlayerGrave(col);
 			deck.clear();
-			deck.addAll(b.currentGrave);
+			deck.addAll(playerdeck);
+			
 			for(int i=0; i<deck.size(); i++)
 			{
 				Minion m= deck.get(i);
 				if(m.getSubTypes().contains(SubType.Beast))
-				{	
+				{
 					found=true;
-					b.currentHand.add(m);
-					deck.remove(i);
-					b.shuffleList(b.currentGrave);
+					hand.add(m);
+					playerdeck.remove(m);
+					b.shuffleList(playerdeck);
 					break;
 				}
 			}
@@ -79,8 +84,8 @@ public class EssenceFeast_Sim extends Simtemplate {
 		if(found)
 		{
 			//hand+ cardstack update
-			b.addMessageToPlayer(b.activePlayerColor, b.getHandUpdateMessage(b.activePlayerColor));
-			b.addMessageToBothPlayers(b.getCardStackUpdate(b.activePlayerColor));
+			b.addMessageToPlayer(col, b.getHandUpdateMessage(col));
+			b.addMessageToBothPlayers(b.getCardStackUpdate(col));
 		}
 		
         return;

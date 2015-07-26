@@ -31,7 +31,7 @@ public class LeechingRing_Sim extends Simtemplate {
     {
 		if(attacker != triggerEffectMinion.owner) return;
 		
-		triggerEffectMinion.healMinion(triggerEffectMinion.getAttack(), b);
+		triggerEffectMinion.healMinion(triggerEffectMinion.getAttack(b), b);
         return;
     }
 	

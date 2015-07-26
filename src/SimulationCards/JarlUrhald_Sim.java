@@ -20,7 +20,7 @@ public class JarlUrhald_Sim extends Simtemplate {
 		for(Minion m : b.getMinionsFromPositions(own.position.getNeightbours()))
 		{
 			m.buffMinionWithoutMessage(2, 0, 0, b);
-			m.addnewEnchantments("BUFF", "Jarl Urhald", own.card.cardDescription, own.card, b, own.position.color);
+			m.addnewEnchantments("BUFF", "Inspired", "This unit's Attack is increased by 2 until end of turn.", own.card, b, own.position.color);
 		}
     }
 	
@@ -55,7 +55,8 @@ public class JarlUrhald_Sim extends Simtemplate {
 	
 	 public  void onMinionDidDmgTrigger(Board b, Minion triggerEffectMinion, Minion damagedMinion, Minion attacker, int dmgdone, AttackType attackType, DamageType dmgtype)
 	 {
-		 if(triggerEffectMinion.owner != null || triggerEffectMinion.owner != attacker || !damagedMinion.isIdol || dmgdone <=0 || dmgtype!=DamageType.COMBAT) return;
+		 if(triggerEffectMinion.owner != null || triggerEffectMinion != attacker || !damagedMinion.isIdol || dmgdone <=0 || dmgtype!=DamageType.COMBAT) return;
+		 
 		 
 		 triggerEffectMinion.didDmgToIdol=true;
 	     return;

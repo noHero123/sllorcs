@@ -724,6 +724,56 @@ public class Board {
 		
 	}
 	
+	public void drawSpecialCard(UColor col, Kind cardType)
+	{
+		ArrayList<Minion> playerdeck = this.getPlayerDeck(col);
+		ArrayList<Minion> hand = this.getPlayerHand(col);
+		ArrayList<Minion> deck = new ArrayList<Minion>(playerdeck);
+		Boolean found = false;
+		for(int i=0; i<deck.size(); i++)
+		{
+			Minion m= deck.get(i);
+			if(m.card.cardKind == cardType)
+			{
+				found=true;
+				hand.add(m);
+				playerdeck.remove(m);
+				this.shuffleList(playerdeck);
+				break;
+			}
+		}
+		
+		//look into graveyard
+		if(!found)
+		{
+			playerdeck = this.getPlayerGrave(col);
+			deck.clear();
+			deck.addAll(playerdeck);
+			
+			for(int i=0; i<deck.size(); i++)
+			{
+				Minion m= deck.get(i);
+				if(m.card.cardKind == cardType)
+				{
+					found=true;
+					hand.add(m);
+					playerdeck.remove(m);
+					this.shuffleList(playerdeck);
+					break;
+				}
+			}
+		}
+		
+		if(found)
+		{
+			//hand+ cardstack update
+			this.addMessageToPlayer(col, this.getHandUpdateMessage(col));
+			this.addMessageToBothPlayers(this.getCardStackUpdate(col));
+		}
+		
+	}
+	
+	
 	public int getRandomNumber(int min, int max)
 	{
 		//random number in [min, max]
@@ -817,12 +867,12 @@ public class Board {
 					
 					if(s.equals(""))
 					{
-						s = "{\"card\":{\"id\":"+m.cardID+",\"typeId\":" + m.typeId + ",\"tradable\":true,\"isToken\":"+Boolean.toString(m.isToken)+",\"level\":"+m.lvl+"},\"ap\":" + m.getAttack() + ",\"ac\":"+m.getAc()+",\"hp\":"+m.Hp+",\"position\":\""+ m.position.row +","+ m.position.column +"\"" + buffs + "}";
+						s = "{\"card\":{\"id\":"+m.cardID+",\"typeId\":" + m.typeId + ",\"tradable\":true,\"isToken\":"+Boolean.toString(m.isToken)+",\"level\":"+m.lvl+"},\"ap\":" + m.getAttack(this) + ",\"ac\":"+m.getAc()+",\"hp\":"+m.Hp+",\"position\":\""+ m.position.row +","+ m.position.column +"\"" + buffs + "}";
 						
 					}
 					else
 					{
-						s += ",{\"card\":{\"id\":"+m.cardID+",\"typeId\":" + m.typeId + ",\"tradable\":true,\"isToken\":"+Boolean.toString(m.isToken)+",\"level\":"+m.lvl+"},\"ap\":" + m.getAttack() + ",\"ac\":"+m.getAc()+",\"hp\":"+m.Hp+",\"position\":\""+ m.position.row +","+ m.position.column +"\"" + buffs + "}";
+						s += ",{\"card\":{\"id\":"+m.cardID+",\"typeId\":" + m.typeId + ",\"tradable\":true,\"isToken\":"+Boolean.toString(m.isToken)+",\"level\":"+m.lvl+"},\"ap\":" + m.getAttack(this) + ",\"ac\":"+m.getAc()+",\"hp\":"+m.Hp+",\"position\":\""+ m.position.row +","+ m.position.column +"\"" + buffs + "}";
 						
 					}
 				}
@@ -1057,17 +1107,24 @@ public class Board {
 				if(m != null)
 				{
 					
-					if(m.getAc() >=1 && m.card.cardSim.doesCountDown(this, m)) 
+					if(m.getAc() >=1 )
 					{
-							m.buffMinionWithoutMessage(0, 0, -1, this);
+						int countdown = m.card.cardSim.doesCountDown(this, m);
+						if(countdown!=0)
+						{
+							m.buffMinionWithoutMessage(0, 0, countdown, this);
 							String s = getStatusUpdateMessage(m);
 							this.addMessageToBothPlayers(s);
+						}
 					}
 				}
 			}
 		}
 				
 	}
+	
+	
+	
 	
 	private void allMinionsOfASideResetCountDown(UColor col)
 	{
@@ -1104,7 +1161,7 @@ public class Board {
 		
 		
 		
-		String s="{\"StatsUpdate\":{\"target\":"+m.position.posToString()+",\"hp\":"+ m.Hp +",\"ap\":"+ m.getAttack() +",\"ac\":"+ m.getAc() +",\"buffs\":[";
+		String s="{\"StatsUpdate\":{\"target\":"+m.position.posToString()+",\"hp\":"+ m.Hp +",\"ap\":"+ m.getAttack(this) +",\"ac\":"+ m.getAc() +",\"buffs\":[";
 		String buffs="";
 		for(Minion mm : m.getAttachedCards())
 		{
@@ -1290,7 +1347,7 @@ public class Board {
 		}
 		else
 		{
-			unitAttacking(m, defffield, m.getAttack(), m.attackType, DamageType.COMBAT);
+			unitAttacking(m, defffield, m.getAttack(this), m.attackType, DamageType.COMBAT);
 		}
 		//unit is ready
 		
@@ -1619,8 +1676,8 @@ public class Board {
 			if(phase==GameState.PreMain)//do turn starting stuff
 			{
 			
-				//TODO do effects of enchantments (like berserker) and other stuff!
-				//--- and do this first---
+				this.refreshRessoures(this.activePlayerColor);//first refresh resources (or topReaverTheas buff wont work)
+				
 				
 				this.doTurnStartsTriggers();
 				
@@ -1633,7 +1690,7 @@ public class Board {
 					m.turnsInplay++;
 				}
 				
-				this.refreshRessoures(this.activePlayerColor);
+				
 				
 				this.allMinionsOfASideCountDown(this.activePlayerColor, 1);
 				
@@ -2390,6 +2447,34 @@ public class Board {
 					
 					m = this.blackField[i][j];
 					if(m!=null && (m.attackType == AttackType.RANGED || m.attackType == AttackType.BALLISTIC) )
+					{
+						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
+						{
+						ret.add(new UPosition(UColor.black, i, j));
+						}
+					}
+				}
+			}
+			return ret;
+		}
+		
+		if(ts == tileSelector.all_ranged_creatures)
+		{
+			for(int i=0; i<5; i++)
+			{
+				for(int j=0; j<3; j++)
+				{
+					Minion m = this.whiteField[i][j];
+					if(m!=null && (m.attackType == AttackType.RANGED) )
+					{
+						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
+						{
+						ret.add(new UPosition(UColor.white, i, j));
+						}
+					}
+					
+					m = this.blackField[i][j];
+					if(m!=null && (m.attackType == AttackType.RANGED) )
 					{
 						if(!((m.cardType == Kind.ENCHANTMENT || m.cardType == Kind.SPELL) && m.hasWard(this) && m.position.color != ownColor))
 						{
@@ -3620,10 +3705,11 @@ public class Board {
         			rule.card.cardSim.onMinionDiedTrigger(this, rule, m, attacker, attacktype, dmgtype);
     			}
         		
+        		//for setting addToHandAfterDead to true for replicaton :D maybe we change this to true at battlecry?
+        		if(m.typeId == 287) m.addToHandAfterDead=true;
+        		
         		this.addMinionToGrave(m);//with triggers of enchantments
-        		
-        		
-        		
+        		//ondeathrattle have summon effects
         		m.card.cardSim.onDeathrattle(this, m, attacker, attacktype, dmgtype);
         		m.card.cardSim.onMinionLeavesBattleField(this, m);
         		
@@ -3740,7 +3826,7 @@ public class Board {
 			if(damageType == DamageType.COMBAT || damageType == DamageType.PHYSICAL)
 			{
 					int rdmg = target.curse + dmg;
-					if(rdmg >=1 && target.imuneToNextDmg) 
+					if(rdmg >=1 && (target.imuneToNextDmg || target.imuneToDmg)) 
 					{
 						target.imuneToNextDmg=false;
 						rdmg = 0;
@@ -3752,7 +3838,7 @@ public class Board {
 			if(damageType == DamageType.MAGICAL)
 			{
 					int rdmg = dmg;
-					if(rdmg >=1 && target.imuneToNextDmg) 
+					if(rdmg >=1 && (target.imuneToNextDmg || target.imuneToDmg)) 
 					{
 						target.imuneToNextDmg=false;
 						rdmg = 0;
@@ -3770,7 +3856,7 @@ public class Board {
 						rdmg += rule.card.cardSim.getPoisonBonus(this, rule);
 					}
 					
-					if(rdmg >=1 && target.imuneToNextDmg) 
+					if(rdmg >=1 && (target.imuneToNextDmg || target.imuneToDmg)) 
 					{
 						target.imuneToNextDmg=false;
 						rdmg = 0;
@@ -3782,7 +3868,12 @@ public class Board {
 			if(damageType == DamageType.SUPERIOR)
 			{
 					int rdmg = dmg;
-					//TODO is pure dmg nilled by plating?
+					//TODO is pure dmg nilled by plating?--- yes!
+					if(rdmg >=1 && (target.imuneToNextDmg || target.imuneToDmg)) 
+					{
+						target.imuneToNextDmg=false;
+						rdmg = 0;
+					}
 					//if(target.hasPotionOfResistance()) rdmg = 1;//TODO is pure-dmg affected by potionOfResistance-effects?
 					newHPDefender = Math.min(target.Hp , target.Hp - rdmg); //defender is not healed if Armor > attack :D
 			}
@@ -3851,7 +3942,7 @@ public class Board {
 	private void performDmgTriggers(Minion attacker, Minion deffender, AttackType attackType, DamageType damageType , int dmgdone, int newHp)
     {
 
-        int attackAP = attacker.getAttack();
+        int attackAP = attacker.getAttack(this);
         int attackHP = attacker.Hp;
         int defferHP = deffender.Hp;
         int attackerAc = attacker.getAc();

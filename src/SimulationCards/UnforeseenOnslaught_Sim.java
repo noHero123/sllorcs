@@ -25,7 +25,7 @@ public class UnforeseenOnslaught_Sim extends Simtemplate {
     {
 		for(Minion m : b.getPlayerFieldList(playedCard.position.color))
 		{
-			if(m.getAttack()<=1 && m.cardType == Kind.CREATURE)
+			if(m.getAttack(b)<=1 && m.cardType == Kind.CREATURE)
 			{
 				m.addnewEnchantments("BUFF", "Unforeseen Onslaught", playedCard.card.cardDescription, playedCard.card, b, playedCard.position.color);
 			}

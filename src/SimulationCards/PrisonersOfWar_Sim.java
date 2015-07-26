@@ -24,7 +24,10 @@ public class PrisonersOfWar_Sim extends Simtemplate {
     {
 		
 		//draw creature scroll
-		ArrayList<Minion> deck = new ArrayList<Minion>(b.currentDeck);
+		UColor col = playedCard.position.color;
+		ArrayList<Minion> playerdeck = b.getPlayerDeck(col);
+		ArrayList<Minion> hand = b.getPlayerHand(col);
+		ArrayList<Minion> deck = new ArrayList<Minion>(playerdeck);		
 		Boolean foundg = false;
 		Boolean foundd = false;
 		Boolean founde = false;
@@ -36,22 +39,22 @@ public class PrisonersOfWar_Sim extends Simtemplate {
 				if(m.card.costDecay>=1 && !foundd)
 				{
 					foundd=true;
-					b.currentHand.add(m);
-					deck.remove(i);
+					hand.add(m);
+					playerdeck.remove(m);
 					continue;
 				}
 				if(m.card.costGrowth>=1 && !foundg)
 				{
 					foundg=true;
-					b.currentHand.add(m);
-					deck.remove(i);
+					hand.add(m);
+					playerdeck.remove(m);
 					continue;
 				}
 				if(m.card.costEnergy>=1 && !founde)
 				{
 					founde=true;
-					b.currentHand.add(m);
-					deck.remove(i);
+					hand.add(m);
+					playerdeck.remove(m);
 					continue;
 				}
 				
@@ -59,13 +62,15 @@ public class PrisonersOfWar_Sim extends Simtemplate {
 		}
 		if(foundg || foundd || founde)
 		{
-			b.shuffleList(b.currentDeck);
+			b.shuffleList(playerdeck);
 		}
 		//look into graveyard for more
 		if(!foundg || !foundd ||! founde)
 		{
+			playerdeck = b.getPlayerGrave(col);
 			deck.clear();
-			deck.addAll(b.currentGrave);
+			deck.addAll(playerdeck);
+			
 			for(int i=0; i<deck.size(); i++)
 			{
 				Minion m= deck.get(i);
@@ -74,32 +79,29 @@ public class PrisonersOfWar_Sim extends Simtemplate {
 					if(m.card.costDecay>=1 && !foundd)
 					{
 						foundd=true;
-						b.currentHand.add(m);
-						deck.remove(i);
-						b.shuffleList(deck);
+						hand.add(m);
+						playerdeck.remove(m);
 						continue;
 					}
 					if(m.card.costGrowth>=1 && !foundg)
 					{
 						foundg=true;
-						b.currentHand.add(m);
-						deck.remove(i);
-						b.shuffleList(deck);
+						hand.add(m);
+						playerdeck.remove(m);
 						continue;
 					}
 					if(m.card.costEnergy>=1 && !founde)
 					{
 						founde=true;
-						b.currentHand.add(m);
-						deck.remove(i);
-						b.shuffleList(deck);
+						hand.add(m);
+						playerdeck.remove(m);
 						continue;
 					}
 					
 				}
 			}
 			
-			b.shuffleList(b.currentGrave);
+			b.shuffleList(playerdeck);
 		}
 		
 		if(foundg || foundd || founde)

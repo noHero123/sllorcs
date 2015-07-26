@@ -18,7 +18,7 @@ public class WetlandRanger_Sim extends Simtemplate {
 	
 	 public  void onMinionDidDmgTrigger(Board b, Minion triggerEffectMinion, Minion damagedMinion, Minion attacker, int dmgdone, AttackType attackType, DamageType dmgtype)
 	 {
-		 if(triggerEffectMinion.owner != null || triggerEffectMinion.owner != attacker || !damagedMinion.isIdol || dmgdone <=0 || dmgtype!=DamageType.COMBAT) return;
+		 if(triggerEffectMinion.owner != null || triggerEffectMinion != attacker || !damagedMinion.isIdol || dmgdone <=0 || dmgtype!=DamageType.COMBAT) return;
 		 
 		 for(Minion mnn : b.getPlayerFieldList(triggerEffectMinion.position.color))
 		 {

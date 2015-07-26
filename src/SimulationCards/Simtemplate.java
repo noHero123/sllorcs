@@ -108,9 +108,9 @@ public class Simtemplate {
         return true;
     }
     
-    public  boolean doesCountDown(Board b, Minion m)
+    public int doesCountDown(Board b, Minion m)
     {
-        return true;
+        return -1; //-1 per round is default -> 0= dont count down, 1=count up (Fulmination Conduit)
     }
     
     
@@ -304,40 +304,6 @@ public class Simtemplate {
     
     //TODO add function that rebuffs the minion (effects only) for deleting the enchantments-effects: create new minion and redo its effects
     
-    
-    //not yet used!
-    
-    public  void onAMinionGotHealedTrigger(Board p, Minion triggerEffectMinion, boolean ownerOfMinionGotHealed)
-    {
-        return;
-    }
-
-    public  void onAHeroGotHealedTrigger(Board p, Minion triggerEffectMinion, boolean ownerOfHeroGotHealed)
-    {
-        return;
-    }
-
-    
-
-
-    
-
-    public  void onMinionWasSummoned(Board p, Minion triggerEffectMinion, Minion summonedMinion)
-    {
-        return;
-    }
-
-    
-
-    public  void onCardIsGoingToBePlayed(Board p, Card c, boolean wasOwnCard, Minion triggerEffectMinion)
-    {
-        return;
-    }
-
-    public  void onCardWasPlayed(Board p, Card c, boolean wasOwnCard, Minion triggerEffectMinion)
-    {
-        return;
-    }
     
     
     public static Simtemplate intToSimtemplate(int id)//only called once per card on carddbcreation
@@ -668,7 +634,22 @@ public class Simtemplate {
     	if(id == 309) return new NurusNeedle_Sim();
     	if(id == 319) return new ReapingMask_Sim();
     	
-    	
+    	//energy set 5
+    	if(id == 262) return new PiercingProjectile_Sim();
+    	if(id == 277) return new FulminationConduit_Sim();
+    	if(id == 281) return new HiredSmuggler_Sim();
+    	if(id == 282) return new PowerTrip_Sim();
+    	if(id == 283) return new AshRunner_Sim();
+    	if(id == 284) return new Echomaton_Sim();
+    	if(id == 285) return new BoomReaver_Sim();
+    	if(id == 286) return new IroncladReaver_Sim();
+    	if(id == 287) return new Replicaton_Sim();
+    	if(id == 288) return new SuddenEruption_Sim();
+    	if(id == 299) return new TempestReaver_Sim();
+    	if(id == 300) return new HiredMarksman_Sim();
+    	if(id == 301) return new ViciousStrike_Sim();
+    	if(id == 317) return new Electrify_Sim();
+    	if(id == 318) return new TopReaverThea_Sim();
     	
     	
     	//decay set 6 :D

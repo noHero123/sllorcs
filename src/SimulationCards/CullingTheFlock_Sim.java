@@ -25,7 +25,7 @@ public class CullingTheFlock_Sim extends Simtemplate {
     {
 		
 		Minion target = b.getMinionOnPosition(targets.get(0));
-		int attack = target.getAttack();
+		int attack = target.getAttack(b);
 		b.destroyMinion(target, playedCard);
 		
 		for(Minion m: b.getPlayerFieldList(playedCard.position.color))
