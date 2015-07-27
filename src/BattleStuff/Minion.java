@@ -71,10 +71,12 @@ public class Minion {
 	public int cullingCounter =0;
 	public boolean didDmgToIdol=false;
 	public boolean fangbear=false;
+	public int oumLaseGuardAttackCounter=0;
+	public int oumLaseGuardMoveCounter=0;
 	
 	//its used as a used variable for all minions... can only be changed by itself!
-	public int turnCounter = 0; //TODO replace that other counters with it!
-	//TODO use these for buffs
+	public int turnCounter = 0; //TODO replace that other counters with it! (not all are possible)
+	//TODO use these for entchantments!
 	public int attackbuff = 0;
 	public int healthbuff = 0;
 	
@@ -156,6 +158,9 @@ public class Minion {
 		didDmgToIdol=false;
 		fangbear=false;
 		imuneToDmg=false;
+		
+		oumLaseGuardAttackCounter=0;
+		oumLaseGuardMoveCounter=0;
 	}
 	
 	public Minion getMinionToken()
@@ -255,6 +260,8 @@ public class Minion {
 		didDmgToIdol=false;
 		fangbear=false;
 		imuneToDmg=false;
+		oumLaseGuardAttackCounter=0;
+		oumLaseGuardMoveCounter=0;
 		
 	}
 	
@@ -402,15 +409,33 @@ public class Minion {
 				return targets;
 			}
 			
+			
+			boolean hasSlithering = false;
+			for(Minion ench : this.attachedCards)
+			{
+				if(ench.typeId == 380) hasSlithering=true;
+			}
+			
 			for(UPosition posi : posis)
 			{
 				if(posi.row>=0 && posi.row <=4 && posi.column>=0 && posi.column <=2)
 				{
 					Minion m = enemyField[posi.row][posi.column];
-					if(m!=null && m.Hp>=1)
+					if(hasSlithering)
 					{
-						targets.add(m);
-						return targets;
+						if(m!=null && m.Hp>=1 && m.cardType != Kind.STRUCTURE)
+						{
+							targets.add(m);
+							return targets;
+						}
+					}
+					else
+					{
+						if(m!=null && m.Hp>=1)
+						{
+							targets.add(m);
+							return targets;
+						}	
 					}
 				}
 			}

@@ -306,6 +306,17 @@ public class BattleServerThread extends Thread{
 			return;
 		}
 		
+		if(mssgtype.equals("SiftCard"))
+    	{
+			//we got {"cardId" : 27380,"msg" : "SiftCard"}
+			//we send {"SiftClose":{}} + resource + handupdate
+			long cardid = jo.getLong("cardId"); //remove that card
+			this.playedBoard.siftCard(cardid, this.ownPlayer.profileId);
+			return;
+    	}
+		
+		
+		
 		
 	}
 	

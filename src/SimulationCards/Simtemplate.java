@@ -168,7 +168,7 @@ public class Simtemplate {
     	return 0;
     }
     
-    public int getIdolDamageBonus(Board b ,Minion m)
+    public int getIdolDamageBonus(Board b ,Minion m, AttackType attackType, DamageType damageType)
     {
     	return 0;
     }
@@ -220,6 +220,11 @@ public class Simtemplate {
     }
     
     public boolean reduceDmgToOne(Board b ,Minion m)
+    {
+    	return false;
+    }
+    
+    public boolean isImuneToDmg(Board b, Minion triggerEffectMinion, Minion m, Minion attacker, AttackType attackType, DamageType damageType)
     {
     	return false;
     }
@@ -653,7 +658,22 @@ public class Simtemplate {
     	
     	
     	//decay set 6 :D
+    	if(id == 332) return new VoidGate_Sim();
     	if(id == 342) return new SanctuaryOfTheLost_Sim();
+    	if(id == 343) return new HallsOfOumLasa_Sim();
+    	if(id == 344) return new ForbiddenRuins_Sim();
+    	if(id == 345) return new InvocationSentry_Sim();
+    	if(id == 349) return new Revenant_Sim();
+    	if(id == 350) return new SlayerVestige_Sim();
+    	if(id == 351) return new MudoFighter_Sim();
+    	if(id == 352) return new FleshAnimator_Sim();
+    	if(id == 353) return new AnimaConduit_Sim();
+    	if(id == 362) return new RattleHymn_Sim();
+    	if(id == 380) return new SlitheringForm_Sim();
+    	if(id == 381) return new OumLasaHighGuard_Sim();
+    	if(id == 382) return new IrvaVoiceOfTheDead_Sim();
+    	if(id == 540) return new OmenOfDamnation_Sim();
+    	
     	
     	return new Simtemplate();
     }

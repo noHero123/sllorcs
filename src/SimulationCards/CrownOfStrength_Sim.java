@@ -27,6 +27,7 @@ public class CrownOfStrength_Sim extends Simtemplate {
 
 		target.addSubtype(SubType.Knight, b);
 		target.addCardAsEnchantment("ENCHANTMENT", "Crown of Strength", playedCard.card.cardDescription, playedCard, b);
+		target.addnewEnchantments("STARTBUFF", "Knight", "This unit has the Knight subtype.", playedCard.card, b, playedCard.position.color);
         return;
     }
 	

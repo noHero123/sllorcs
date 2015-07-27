@@ -1,5 +1,6 @@
 package BattleStuff;
 
+import java.awt.Color;
 import java.lang.management.MemoryType;
 import java.util.ArrayList;
 import java.util.Random;
@@ -56,6 +57,8 @@ public class Board {
 	public ArrayList<Minion> whiteIdols = new ArrayList<Minion>();
 	public ArrayList<Minion> blackIdols = new ArrayList<Minion>();
 	
+	public ArrayList<SiftItem> whiteShiftCards = new ArrayList<SiftItem>();
+	public ArrayList<SiftItem> blackShiftCards = new ArrayList<SiftItem>();
 	
 	public int[] whiteRessources = {0,0,0,0,0}; //GROWTH, ORDER, ENERGy, DECAY, SPECIAL
 	public int[] blackRessources = {0,0,0,0,0}; 
@@ -1571,6 +1574,107 @@ public class Board {
 		
 	}
 	
+	public String getSiftMessage(UColor col)
+	{
+		Player p = this.getPlayer(col);
+		//{"SiftUpdate":{"profileId":68964,"cards":[{"id":23448,"typeId":343,"tradable":false,"isToken":false,"level":0},{"id":23442,"typeId":16,"tradable":false,"isToken":false,"level":0},{"id":23446,"typeId":343,"tradable":false,"isToken":false,"level":0}],"maxScrollsForCycle":7}}
+		String s ="{\"SiftUpdate\":{\"profileId\":"+p.profileId+",\"cards\":[";
+		ArrayList<SiftItem> siftcards = this.whiteShiftCards;
+		if(col == UColor.black) siftcards = this.blackShiftCards;
+		String cards = "";
+		for(SiftItem si : siftcards)
+		{
+			if(!cards.equals("")) cards+=",";
+			cards+="{\"id\":"+si.minion.cardID+",\"typeId\":"+si.minion.typeId+",\"tradable\":false,\"isToken\":"+Boolean.toString(si.minion.isToken)+",\"level\":"+si.minion.lvl+"}";
+		}
+		s+= cards + "],\"maxScrollsForCycle\":"+ this.maxScrollsForCycle+"}}";
+		return s;
+	}
+	
+	public void siftCard(long cardid, long profileid)
+	{
+		
+		Player p = this.blackPlayer;
+		if(this.whitePlayer.profileId == profileid) p = this.whitePlayer;
+		
+		if(p.color != this.activePlayerColor) return; //TODO error not your turn
+		
+		ArrayList<SiftItem> siftcards = this.whiteShiftCards;
+	 	if(p.color == UColor.black) siftcards = this.blackShiftCards;
+		
+	 	if(siftcards.size() == 0) return; //TODO you cant sift! CHEATER!
+	 	
+	 	SiftItem target = siftcards.get(0);
+	 	
+	 	for(int i = 0 ; i < siftcards.size(); i++ )
+	 	{
+	 		SiftItem si = siftcards.get(i);
+	 		if(si.minion.cardID == cardid)
+	 		{
+	 			target = si;
+	 			siftcards.remove(i);
+	 			break;
+	 		}
+	 	}
+	 	
+	 	boolean addedToDeck = false;
+	 	boolean addedToGrave = false;
+	 	ArrayList<Minion> deck = this.getPlayerDeck(p.color);
+	 	ArrayList<Minion> grave = this.getPlayerGrave(p.color);
+		//re-add the sifted cards...
+	 	for(int i = 0 ; i < siftcards.size(); i++ )
+	 	{
+	 		SiftItem si = siftcards.get(i);
+	 		if(si.minion.cardID != cardid)
+	 		{
+	 			if(si.from == SiftPlace.LIBRARY)
+	 			{
+	 				addedToDeck=true;
+	 				deck.add(si.minion);
+	 			}
+	 			
+	 			if(si.from == SiftPlace.GRAVEYARD)
+	 			{
+	 				addedToDeck=true;
+	 				grave.add(si.minion);
+	 			}
+	 		}
+	 	}
+	 	
+	 	siftcards.clear();//remove all items from siftcards
+	 	
+	 	if(addedToDeck) this.shuffleList(deck);
+	 	if(addedToDeck) this.shuffleList(grave);
+	 	
+		
+		String s = "{\"SiftClose\":{}}";
+		this.addMessageToBothPlayers(s);
+		//resource update
+		s= this.getResourcesUpdateMessage();
+		this.addMessageToBothPlayers(s);
+		
+		//add the sifted target to hand...
+		if(target.whereToAdd==SiftPlace.HAND)
+		{
+			this.getPlayerHand(p.color).add(target.minion);
+		
+			s=this.getHandUpdateMessage(p.color);
+			this.addMessageToPlayer(p.color, s);
+		
+			s=this.getCardStackUpdate(p.color);
+			this.addMessageToBothPlayers(s);
+		}
+		
+		if(target.whereToAdd==SiftPlace.LIBRARY)
+		{
+			this.getPlayerDeck(p.color).add(0,target.minion);//ADD TO FIRST PLACE!
+
+			s=this.getCardStackUpdate(p.color);
+			this.addMessageToBothPlayers(s);
+		}
+		
+		this.sendEffectMessagesToPlayers();
+	}
 	
 	public void doTurnEndsTriggers()
 	{
@@ -1676,13 +1780,15 @@ public class Board {
 			if(phase==GameState.PreMain)//do turn starting stuff
 			{
 			
-				this.refreshRessoures(this.activePlayerColor);//first refresh resources (or topReaverTheas buff wont work)
-				
-				
-				this.doTurnStartsTriggers();
-				
+				//ruleupdate -> resources -> starturn-> 
 				//lower AC
-				this.rulecountdowner(this.activePlayerColor);
+				this.rulecountdowner(this.activePlayerColor);//count down before linger can act (tested)
+				
+				this.refreshRessoures(this.activePlayerColor);//first refresh resources (or topReaverTheas buff wont work)
+
+				this.doTurnStartsTriggers();//before a card is drawn! (tested with halls of oum lasa)
+				
+				
 				
 				//to know that death of vaettr will reduce current growth
 				for(Minion m : this.getPlayerFieldList(this.activePlayerColor))
@@ -1697,8 +1803,8 @@ public class Board {
 				//draw a card
 				this.drawCards(this.activePlayerColor, 1);
 				
-				String s = this.getResourcesUpdateMessage();
-				this.addMessageToBothPlayers(s);
+				//String s = this.getResourcesUpdateMessage(); //automatically
+				//this.addMessageToBothPlayers(s);
 				//this.addMessageToPlayer(this.activePlayerColor, this.getHandUpdateMessage(this.activePlayerColor));
 				
 				//send handupdate to the active player
@@ -3805,17 +3911,26 @@ public class Board {
 		int dmg = odmg;
 		for(Minion target : targets)
 		{
+			dmg = odmg;
 			if(odmg == -100) //aoe dmg :D
 			{
 				dmg = target.aoeDmgToDo;
 				target.aoeDmgToDo=0;
 			}
 			
-			if(target.isIdol)
+			//is target immune to damage?
+			boolean immuneToDmg = false;
+			for(Minion ench : target.getAttachedCards())
+			{
+				immuneToDmg = immuneToDmg || ench.card.cardSim.isImuneToDmg(this, ench, target, attacker, attackType, damageType);
+			}
+			if(immuneToDmg) dmg = 0;
+			
+			if(target.isIdol && dmg >=1)
 			{
 				for(Minion rule : this.getAllRules())//get bonus form lingering spells
 				{
-					dmg += rule.card.cardSim.getIdolDamageBonus(this, rule);
+					dmg += rule.card.cardSim.getIdolDamageBonus(this, rule, attackType, damageType);
 				}
 			}
 			
@@ -3896,11 +4011,26 @@ public class Board {
 			
 			overAttack2=overAttack;
 			
-			target.Hp = newHPDefender;
 			
-			this.getDmgUnitMessage(attacker, target, dmgdone, realdmgDone, attackType, damageType, iskill);
 			
-			this.dmgregister.add(new DmgRegisterUnit(attacker, target, attackType, damageType, dmgdone, newHPDefender));
+			if((damageType == DamageType.COMBAT || damageType == DamageType.PHYSICAL) && target.typeId == 332)
+			{
+				
+				overAttack2=0;
+				//dont do dmg to voidgate
+				this.getDmgUnitMessage(attacker, target, 0, 0, attackType, damageType, false);
+				this.dmgregister.add(new DmgRegisterUnit(attacker, target, attackType, damageType, 0, newHPDefender));
+				
+				//lead dmg to idol
+				Minion idol = this.getPlayerIdol(target.position.color, target.position.row);
+				this.doDmg(idol, attacker, realdmgDone, attackType, damageType);
+			}
+			else
+			{
+				target.Hp = newHPDefender;
+				this.getDmgUnitMessage(attacker, target, dmgdone, realdmgDone, attackType, damageType, iskill);
+				this.dmgregister.add(new DmgRegisterUnit(attacker, target, attackType, damageType, dmgdone, newHPDefender));
+			}
 			
 		}
 		
@@ -4080,6 +4210,14 @@ public class Board {
         	for (Minion ench :attacker.getAttachedCards())
         	{
         		ench.card.cardSim.onMinionDidDmgTrigger(this, ench, deffender, attacker, dmgdone, attackType, damageType);
+            }
+        	
+        	for (Minion mnn : this.getAllMinionOfField())
+        	{
+        		if(mnn != attacker)
+        		{
+        			mnn.card.cardSim.onMinionDidDmgTrigger(this, mnn, deffender, attacker, dmgdone, attackType, damageType);
+        		}
             }
         	
         	for (Minion rule : this.getAllRulesWithColorFirst(attacker.position.color))

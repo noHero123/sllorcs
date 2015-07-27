@@ -29,7 +29,7 @@ public class Arthritis_Sim extends Simtemplate {
 	
 	public void onMinionDidDmgTrigger(Board b, Minion triggerEffectMinion, Minion damagedMinion, Minion attacker, int dmgdone, AttackType attackType, DamageType dmgtype)
     {
-		if(attacker != triggerEffectMinion.owner) return;
+		if(attacker != triggerEffectMinion.owner || dmgdone <=0) return;
 		int dmg = attacker.maxAc;
 		b.doDmg(attacker, triggerEffectMinion, dmg, AttackType.UNDEFINED, DamageType.MAGICAL);
         return;

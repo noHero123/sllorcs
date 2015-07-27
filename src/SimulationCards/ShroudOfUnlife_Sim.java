@@ -22,13 +22,14 @@ public class ShroudOfUnlife_Sim extends Simtemplate {
 		return tileSelector.all_creatures;
 	}
 	
-	
+	//{"name":"Undead","description":"This unit has the Undead subtype.","type":"STARTBUFF"}
 	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
 	
 		target.addSubtype(SubType.Undead, b);
 		target.addCardAsEnchantment("ENCHANTMENT", "Shroud of Unlife", "", playedCard, b);
+		target.addnewEnchantments("STARTBUFF", "Undead", "This unit has the Undead subtype.", playedCard.card, b, playedCard.position.color);
         return;
     }
 	

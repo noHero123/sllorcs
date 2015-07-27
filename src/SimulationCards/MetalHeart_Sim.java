@@ -39,6 +39,8 @@ public class MetalHeart_Sim extends Simtemplate {
 		
 		target.addSubtype(SubType.Automaton,b);
 		target.addCardAsEnchantment("ENCHANTMENT", "Metal Heart", playedCard.card.cardDescription, playedCard, b);
+		target.addnewEnchantments("STARTBUFF", "Automaton", "This unit has the Automaton subtype.", playedCard.card, b, playedCard.position.color);
+        
 	
         return;
     }
