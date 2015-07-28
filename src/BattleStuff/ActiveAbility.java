@@ -282,6 +282,24 @@ public class ActiveAbility {
 			return false;
 		}
 		
+
+		if(this.id == activeAbilitys.Uhu)
+		{
+			if(m.getAc() == 0)
+			{
+				return true;
+			}
+			return false;
+		}
+		
+		if(this.id == activeAbilitys.SnarglOmelette)
+		{
+			if(b.getPlayerHand(m.position.color).size()==0)
+			{
+				return true;
+			}
+			return false;
+		}
 		
 		return isp;
 	}
@@ -356,6 +374,17 @@ public class ActiveAbility {
 		if(this.id == activeAbilitys.MarksmanAttack)
 		{
 			return true;
+		}
+		
+		if(this.id == activeAbilitys.Uhu)
+		{
+
+			return false;
+		}
+		
+		if(this.id == activeAbilitys.SnarglOmelette)
+		{
+			return false;
 		}
 		
 		return false;
@@ -516,6 +545,18 @@ public class ActiveAbility {
 			}
 			return isp;
 		}
+		
+		if(this.id == activeAbilitys.Uhu)
+		{
+
+			return isp;
+		}
+		
+		if(this.id == activeAbilitys.SnarglOmelette)
+		{
+			return isp;
+		}
+		
 		return isp;
 	}
 	

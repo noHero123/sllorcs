@@ -60,8 +60,9 @@ public class Board {
 	public ArrayList<SiftItem> whiteShiftCards = new ArrayList<SiftItem>();
 	public ArrayList<SiftItem> blackShiftCards = new ArrayList<SiftItem>();
 	
-	public int[] whiteRessources = {0,0,0,0,0}; //GROWTH, ORDER, ENERGy, DECAY, SPECIAL
-	public int[] blackRessources = {0,0,0,0,0}; 
+	//change whiteRessources only with function (changeMaxRessis)!
+	private int[] whiteRessources = {0,0,0,0,0}; //GROWTH, ORDER, ENERGy, DECAY, Special
+	private int[] blackRessources = {0,0,0,0,0}; 
 	public int[] whitecurrentRessources = {0,0,0,0,0}; 
 	public int[] blackcurrentRessources = {0,0,0,0,0}; 
 	
@@ -306,6 +307,13 @@ public class Board {
 			}
 		}
 		this.addMessageToBothPlayers(this.getResourcesUpdateMessage());
+		for(Minion m : this.getPlayerFieldList(color))
+		{
+			for(Minion ench : m.getAttachedCards())
+			{
+				if(ench.typeId==369) ench.card.cardSim.onEnergyChanged(this, ench, color, ressi);
+			}
+		}
 	}
 	
 	public int getCurrentRessource(ResourceName ressi, UColor color)
@@ -1184,7 +1192,7 @@ public class Board {
 	}
 	
 	//Rules are cound down
-	public void addRule(Minion rule)
+	public boolean addRule(Minion rule)
 	{
 		//if new rule:
 		//{"RuleAdded":{"card":{"id":25869,"typeId":261,"tradable":false,"isToken":false,"level":0},"color":"white","roundsLeft":5}}
@@ -1222,6 +1230,7 @@ public class Board {
 				this.addMinionToGrave(rule);
 			}
 			
+			return isNewOne;
 	}
 	
 	public void ruleCountDown(Minion rule, int value)
@@ -1243,6 +1252,7 @@ public class Board {
 		if(removerules!=null)
 		{
 			this.addMinionToGrave(removerules);
+			removerules.card.cardSim.onDeathrattle(this, removerules, removerules, AttackType.UNDEFINED, DamageType.TERMINAL);
 			rules.remove(removerules);
 		}
 		
@@ -2080,6 +2090,22 @@ public class Board {
 				{
 					e.card.cardSim.onPlayerPlayASpell(this, e, card);
 				}*/
+				
+				//TODO did i miss a spell-cathegory? (tested thundersurge destroy him, when it is targeted, frostwind not)
+				if(m.typeId==366 && positions.size()>=1 && ( card.cardType == Kind.ENCHANTMENT || ((card.card.trgtArea != targetArea.TILE || card.card.trgtArea == targetArea.UNDEFINED || card.card.trgtArea == targetArea.SEQUENTIAL)) ) )
+				{
+					boolean targetIt = false;
+					for(UPosition up : positions)
+					{
+						if(up.isEqual(m.position))
+						{
+							targetIt=true;
+						}
+					}
+					if(targetIt) this.destroyMinion(m, m);
+				}
+				
+				
 			}
 			
 		}
@@ -3041,33 +3067,33 @@ public class Board {
 			}
 			//we can sac:
 			
-			mressis[4]++;
-			cressis[4]++;
+			this.changeCurrentRessource(ResourceName.WILD, p.color, 1);
+			this.changeMaxRessource(ResourceName.WILD, p.color, 1);
 			
 		}
 		
 		if(ressource.equals("GROWTH"))
 		{
-			mressis[0]++;
-			cressis[0]++;
+			this.changeCurrentRessource(ResourceName.GROWTH, p.color, 1);
+			this.changeMaxRessource(ResourceName.GROWTH, p.color, 1);
 		}
 		
 		if(ressource.equals("ORDER"))
 		{
-			mressis[1]++;
-			cressis[1]++;
+			this.changeCurrentRessource(ResourceName.ORDER, p.color, 1);
+			this.changeMaxRessource(ResourceName.ORDER, p.color, 1);
 		}
 		
 		if(ressource.equals("ENERGY"))
 		{
-			mressis[2]++;
-			cressis[2]++;
+			this.changeCurrentRessource(ResourceName.ENERGY, p.color, 1);
+			this.changeMaxRessource(ResourceName.ENERGY, p.color, 1);
 		}
 		
 		if(ressource.equals("DECAY"))
 		{
-			mressis[3]++;
-			cressis[3]++;
+			this.changeCurrentRessource(ResourceName.DECAY, p.color, 1);
+			this.changeMaxRessource(ResourceName.DECAY, p.color, 1);
 		}
 		
 		Minion sacCard = this.currentHand.get(0);

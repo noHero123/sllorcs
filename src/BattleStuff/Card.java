@@ -36,7 +36,7 @@ public class Card {
 	public String trgtAreaString = "UNDEFINED";
 	public ArrayList<String> passiveAbilitys = new ArrayList<String>();
 	public Simtemplate cardSim = new Simtemplate();
-	
+	public boolean hasPillage = false;
 	
 	public AttackType getAttackType()
 	{

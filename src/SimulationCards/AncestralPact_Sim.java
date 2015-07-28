@@ -28,7 +28,7 @@ public class AncestralPact_Sim extends Simtemplate {
 	 
 	 public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
 	 {
-		b.addRule(playedCard);
+		boolean isNew = b.addRule(playedCard);
 	    return;
 	 }
 	 

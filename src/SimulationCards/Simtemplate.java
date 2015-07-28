@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import BattleStuff.AttackType;
 import BattleStuff.Board;
 import BattleStuff.Card;
+import BattleStuff.ResourceName;
 import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
@@ -77,6 +78,10 @@ public class Simtemplate {
         return;
     }
     
+    public  void onEnergyChanged(Board b, Minion triggerEffectMinion, UColor player, ResourceName ressi)
+    {
+        return;
+    }
     
     public  void onMinionMoved(Board b, Minion triggerEffectMinion, Minion movedMinion)
     {
@@ -673,6 +678,23 @@ public class Simtemplate {
     	if(id == 381) return new OumLasaHighGuard_Sim();
     	if(id == 382) return new IrvaVoiceOfTheDead_Sim();
     	if(id == 540) return new OmenOfDamnation_Sim();
+    	
+    	//energy set 6 :D
+    	if(id == 322) return new OculusCannon_Sim();
+    	if(id == 339) return new GravelockBurrows_Sim();
+    	if(id == 340) return new FodderPit_Sim();
+    	if(id == 341) return new SkullShrine_Sim();
+    	if(id == 347) return new StoneEnigma_Sim();
+    	if(id == 363) return new UhuLongnose_Sim();
+    	if(id == 364) return new GravelockFreak_Sim();
+    	if(id == 365) return new GravelockGuard_Sim();
+    	if(id == 366) return new LocklingBrood_Sim();
+    	if(id == 367) return new Snargl_Sim();
+    	if(id == 368) return new GraveGruel_Sim();
+    	if(id == 369) return new SnarglBrain_Sim();
+    	if(id == 379) return new SnarglHunter_Sim();
+    	if(id == 383) return new SnarglOmelette_Sim();
+    	if(id == 385) return new FeedbackJolt_Sim();
     	
     	
     	return new Simtemplate();

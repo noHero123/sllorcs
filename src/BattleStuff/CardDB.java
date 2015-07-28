@@ -123,7 +123,7 @@ public class CardDB {
                     abilitys.add(aab);
                 }
             }
-            
+            boolean pillage = false;
             ArrayList<String> passivs = new ArrayList<String>();
             if (ct.has("passiveRules"))
             {
@@ -134,6 +134,7 @@ public class CardDB {
                 	JSONObject abs = pp.getJSONObject(ii);
 
                 	String abid = abs.getString("displayName");
+                	if(abid.startsWith("Pillage:")) pillage=true;
                     passivs.add(abid);
                 }
             }
@@ -166,6 +167,7 @@ public class CardDB {
             ncard.subtypes = subTypes;
             
             ncard.trgtAreaString = area;
+            ncard.hasPillage = pillage;
             
             if(area.equals("FORWARD")) {ncard.trgtArea  = targetArea.FORWARD;}
             if(area.equals("RADIUS_7")) {ncard.trgtArea  = targetArea.RADIUS_7;}

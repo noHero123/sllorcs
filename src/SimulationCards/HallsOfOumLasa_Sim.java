@@ -48,11 +48,12 @@ public class HallsOfOumLasa_Sim extends Simtemplate {
 		 	
 		 	for(int i = 0; i< iter; i++)
 		 	{
-		 		if(grave.size() == 0) break;
+		 		if(grave.size()>=i)break;
 		 		int rand = b.getRandomNumber(0, grave.size()-1);
 		 		SiftItem si = new SiftItem(grave.get(rand), SiftPlace.GRAVEYARD, SiftPlace.HAND);
 		 		siftcards.add(si);
 		 		grave.remove(rand);
+		 		i--;
 		 	}
 		 	
 		 	//send cardstack update
