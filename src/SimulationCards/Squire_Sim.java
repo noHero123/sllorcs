@@ -67,7 +67,8 @@ public class Squire_Sim extends Simtemplate {
 			{
 				int change = 0;
 				if(field[i][j]==null) continue;
-				int diff = royalcount - field[i][j].squireCounter;
+				if(field[i][j].typeId==358) change =1;
+				int diff = royalcount - field[i][j].squireCounter - change;
 				
 				if(diff > 0)
 				{

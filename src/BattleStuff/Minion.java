@@ -67,6 +67,9 @@ public class Minion {
 	public int pillarCounter=0;//cant be replaced
 	public int monstroCounter =0; //cant be replaced
 	public int squireCounter =0; //cant be replaced
+	public int fieldsOfStrifeCounter=0;
+	public int groundsOfTheFallenCounter=0;
+	
 	public boolean didDmgToIdol=false;
 	public boolean fangbear=false;
 	public int oumLaseGuardAttackCounter=0;

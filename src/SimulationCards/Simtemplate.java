@@ -720,12 +720,15 @@ public class Simtemplate {
     	
     	//order set 6
     	if(id == 320) return new EternalSword_Sim();
+    	if(id == 333) return new FieldsOfStrife_Sim();
+    	if(id == 337) return new GroundsOfTheFallen_Sim();
     	if(id == 338) return new CaravansOfTheExpanse_Sim();
     	if(id == 346) return new BannerOfOrdinance_Sim();
     	if(id == 354) return new RelorasLordKnight_Sim();
     	if(id == 355) return new KnightSergeant_Sim();
     	if(id == 356) return new Stormknight_Sim();
     	if(id == 357) return new Arbalestier_Sim();
+    	if(id == 358) return new Squire_Sim();
     	if(id == 359) return new RoyalInspiration_Sim();
     	if(id == 360) return new WingsSorceress_Sim();
     	if(id == 361) return new EffigyOfTheQueen_Sim();

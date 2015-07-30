@@ -37,8 +37,8 @@ public class Board {
 	public Minion[][] whiteField = new Minion[5][3];
 	public Minion[][] blackField = new Minion[5][3];
 	
-	public ArrayList<Minion> whiteRulesUpdates = new ArrayList<Minion>();//linger stuff
-	public ArrayList<Minion> blackRulesUpdates = new ArrayList<Minion>();//linger stuff
+	private ArrayList<Minion> whiteRulesUpdates = new ArrayList<Minion>();//linger stuff
+	private ArrayList<Minion> blackRulesUpdates = new ArrayList<Minion>();//linger stuff
 	
 	public ArrayList<Minion> whiteHand = new ArrayList<Minion>();
 	public ArrayList<Minion> blackHand = new ArrayList<Minion>();
@@ -618,17 +618,8 @@ public class Board {
 		UColor c1 = first;
 		UColor c2 = Board.getOpposingColor(c1);
 		
-		for(Minion m : this.getPlayerRules(c1))
-		{
-			if(m.lingerDuration>=1) alist.add(m);
-		}
-		
-		for(Minion m : this.getPlayerRules(c2))
-		{
-			if(m.lingerDuration>=1) alist.add(m);
-		}
-		
-		
+		alist.addAll(this.getPlayerRules(c1));
+		alist.addAll(this.getPlayerRules(c2));
 		return alist;
 	}
 	
@@ -658,8 +649,21 @@ public class Board {
 	
 	public ArrayList<Minion> getPlayerRules(UColor col)
 	{
-		if(col == UColor.white) return this.whiteRulesUpdates;
-		return this.blackRulesUpdates;
+		ArrayList<Minion>  rules = new ArrayList<Minion>();
+		if(col == UColor.white) 
+		{
+			for(Minion r : this.whiteRulesUpdates)
+			{
+				if(r.lingerDuration>=1) rules.add(r);
+			}
+			return rules;
+		}
+			
+		for(Minion r : this.blackRulesUpdates)
+		{
+			if(r.lingerDuration>=1) rules.add(r);
+		}
+		return rules;
 	}
 	
 	public ArrayList<Minion> getPlayerIdols(UColor col)
@@ -1244,19 +1248,29 @@ public class Board {
 		{
 			if(rul.typeId != rule.typeId) continue;
 			
-			if(rule.lingerDuration>=1) rule.lingerDuration-=value;
-			String s = getRuleMessage(rule);
-			this.addMessageToBothPlayers(s);
+			if(rule.lingerDuration>=1) 
+			{
+				rule.lingerDuration-=value;
+				String s = getRuleMessage(rule);
+				this.addMessageToBothPlayers(s);
+			}
 			if(rule.lingerDuration<=0) removerules=rule;
 			break;
 		}
 		
+		
+		
 		if(removerules!=null)
 		{
 			this.addMinionToGrave(removerules);
+			
 			removerules.card.cardSim.onDeathrattle(this, removerules, removerules, AttackType.UNDEFINED, DamageType.TERMINAL);
 			removerules.card.cardSim.onMinionLeavesBattleField(this, removerules);
-			rules.remove(removerules);
+			
+			//remove rule from orginal list!
+			ArrayList<Minion> orules = this.whiteRulesUpdates;
+			if(rule.position.color == UColor.black) orules = this.blackRulesUpdates;
+			orules.remove(removerules);
 		}
 		
 	}
@@ -1264,7 +1278,7 @@ public class Board {
 	//all Rules are cound down
 	private void rulecountdowner(UColor col)
 	{
-		ArrayList<Minion> rules = new ArrayList<Minion>(this.getPlayerRules(col));
+		ArrayList<Minion> rules = this.getPlayerRules(col);
 		for(Minion rule : rules)
 		{
 			ruleCountDown(rule, 1);
@@ -3892,7 +3906,7 @@ public class Board {
         	}
         }
         
-        doOnFieldChangedTriggers();
+        if(died>=1) doOnFieldChangedTriggers();//TODO do it allways?
         
         //TODO consider conenctrate fire for summon items!
         
