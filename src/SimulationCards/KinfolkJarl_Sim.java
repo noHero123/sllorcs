@@ -1,6 +1,8 @@
 package SimulationCards;
 
+import BattleStuff.AttackType;
 import BattleStuff.Board;
+import BattleStuff.DamageType;
 import BattleStuff.UColor;
 import BattleStuff.Minion;
 import BattleStuff.UPosition;
@@ -8,10 +10,11 @@ import BattleStuff.SubType;
 
 public class KinfolkJarl_Sim extends Simtemplate {
 	//"id":42,"name":"Kinfolk Jarl","description":"Kinfolk Jarl has +1 Attack for each adjacent creature."
+	//inspiring (comes in to play) +1 attack to adjacent units
 	public  void getBattlecryEffect(Board b, Minion own, Minion target)
     {
 		//buff existing minions
-		for(Minion m : b.getPlayerFieldList(own.position.color))
+		for(Minion m : b.getMinionsFromPositions(own.position.getNeightbours()))
 		{
 			if(m.getAc()>=0)
 			{
@@ -54,11 +57,14 @@ public class KinfolkJarl_Sim extends Simtemplate {
 
 		if(triggerEffectMinion.owner == null) return false;//its the minion, not the buff!
 		//if(turnEndColor != triggerEffectMinion.color) return false; //frostbeard lasts until our next turn
-		if(triggerEffectMinion.owner.getAc()>=0)
-		{
-			triggerEffectMinion.owner.buffMinionWithoutMessage(-1, 0, 0, b);
-		}
         return true;//buff is removed, so we return true
+    }
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	m.owner.buffMinionWithoutMessage(-1, 0, 0, b);
+        return;
     }
 	
 }

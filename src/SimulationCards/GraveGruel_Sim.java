@@ -15,7 +15,7 @@ public class GraveGruel_Sim extends Simtemplate
 {
 	
 	//"id":368,"name":"Grave Gruel","description":""
-	//"Surge: rause current wild by x"
+	//"Surge: raise current wild by x"
 	
 	public tileSelector getTileSelectorForFirstSelection()
 	{

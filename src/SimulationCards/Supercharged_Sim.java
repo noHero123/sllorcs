@@ -48,6 +48,12 @@ public class Supercharged_Sim extends Simtemplate
 		 b.doDmg(this.getRangedTarget(b, triggerEffectMinion), triggerEffectMinion, 1, AttackType.RANGED, DamageType.PHYSICAL);
 	     return;
 	 }
+	 
+		public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+	    {
+		 	if(m.owner== null) return;
+	        return;
+	    }
 	
 	
 	

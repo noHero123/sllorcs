@@ -28,14 +28,13 @@ public class OutcastRebel_Sim extends Simtemplate {
 	
 	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)
     {
-		
-		if(triggerEffectMinion.owner == null)
-		{
-			return false;
-		}
-		
-		triggerEffectMinion.owner.buffMinionWithoutMessage(-1, 0, 0, b);
         return true;//buff is removed, so we return true
     }
 	 
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	m.owner.buffMinionWithoutMessage(-1, 0, 0, b);
+        return;
+    }
 }

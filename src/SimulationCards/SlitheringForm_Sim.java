@@ -37,4 +37,10 @@ public class SlitheringForm_Sim extends Simtemplate
     	return false;
     }
 	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+        return;
+    }
+	
 }

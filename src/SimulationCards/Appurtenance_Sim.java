@@ -70,4 +70,17 @@ public class Appurtenance_Sim extends Simtemplate {
 		 }
 		 return;
 	 }
+	 
+	 public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+	    {
+		 	if(m.owner== null) return;
+		 	Minion target = m.owner;
+			int buff =0;
+			for(Minion mnn : b.getPlayerFieldList(target.position.color))
+			{
+				if(mnn.getSubTypes().contains(SubType.Beast)) buff++;
+			}
+			target.buffMinionWithoutMessage(0, -buff, 0, b);
+	        return;
+	    }
 }

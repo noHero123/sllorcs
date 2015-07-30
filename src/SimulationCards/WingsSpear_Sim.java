@@ -15,14 +15,9 @@ public class WingsSpear_Sim extends Simtemplate {
 	
 	 public int getSpikyDamage(Board b ,Minion m, Minion defender)
 	 {
-		 for(Minion idol : b.getPlayerIdols(Board.getOpposingColor(m.position.color)))
-		 {
-				if(idol.Hp<=0)
-				{
-					return 4;
-				}
-		 }
-	    	return 2;
+		 if(b.isDominionActive(m.position.color)) return 4;
+
+		 return 2;
 	 }
 	
 	 

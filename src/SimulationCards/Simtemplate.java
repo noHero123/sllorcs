@@ -140,6 +140,20 @@ public class Simtemplate {
     	return;
     }
     
+    //possible with caravans of the Expanse! (minion has to check it himself)
+    //activated even if minion has not/losed the dominion effect allready
+    public void onDominonGoesAway(Board b , Minion triggerEffectMinion)
+    {
+    	return;
+    }
+    //activated, even if dominion effect is allready active! (minion has to check it himself)
+    public void onDominonOccours(Board b , Minion triggerEffectMinion)
+    {
+		
+    	return;
+    }
+    
+    
     //for effects like aging knight + Automaton forge + the other forge :D are done this way
     public void onAttackDone(Board b , Minion m, Minion self)
     {
@@ -276,6 +290,13 @@ public class Simtemplate {
     {
         return;
     }
+    
+    //need to delete effect of Enchantment
+    public  void onEffectIsRemoved(Board b, Minion triggerEffectMinion)
+    {
+        return;
+    }
+    
     
     //the field changed (like unit moved, died, new summoned)
     public void onFieldChanged(Board b, Minion triggerEffectMinion)
@@ -695,6 +716,30 @@ public class Simtemplate {
     	if(id == 379) return new SnarglHunter_Sim();
     	if(id == 383) return new SnarglOmelette_Sim();
     	if(id == 385) return new FeedbackJolt_Sim();
+    	
+    	
+    	//order set 6
+    	if(id == 320) return new EternalSword_Sim();
+    	if(id == 338) return new CaravansOfTheExpanse_Sim();
+    	if(id == 346) return new BannerOfOrdinance_Sim();
+    	if(id == 354) return new RelorasLordKnight_Sim();
+    	if(id == 355) return new KnightSergeant_Sim();
+    	if(id == 356) return new Stormknight_Sim();
+    	if(id == 357) return new Arbalestier_Sim();
+    	if(id == 359) return new RoyalInspiration_Sim();
+    	if(id == 360) return new WingsSorceress_Sim();
+    	if(id == 361) return new EffigyOfTheQueen_Sim();
+    	if(id == 384) return new AdvantageousOutlook_Sim();
+    	if(id == 541) return new AescalonSpires_Sim();
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
     	
     	
     	return new Simtemplate();

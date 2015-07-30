@@ -2,7 +2,9 @@ package SimulationCards;
 
 import java.util.ArrayList;
 
+import BattleStuff.AttackType;
 import BattleStuff.Board;
+import BattleStuff.DamageType;
 import BattleStuff.UColor;
 import BattleStuff.Minion;
 import BattleStuff.UPosition;
@@ -23,6 +25,13 @@ public class BindingRoot_Sim extends Simtemplate
 		target.moveChanges-=2;
 		target.addCardAsEnchantment("ENCHANTMENT", "Binding Root", playedCard.card.cardDescription, playedCard, b);
         
+        return;
+    }
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	m.owner.moveChanges+=2;
         return;
     }
 	

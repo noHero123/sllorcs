@@ -36,6 +36,14 @@ public class JarlUrhald_Sim extends Simtemplate {
         return true;
     }
 	
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	m.owner.buffMinionWithoutMessage(-2, 0, 0, b);
+        return;
+    }
+	
 	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)
     {
 		
@@ -49,7 +57,6 @@ public class JarlUrhald_Sim extends Simtemplate {
 			return false;
 		}
 		
-		triggerEffectMinion.owner.buffMinionWithoutMessage(-2, 0, 0, b);
         return true;//buff is removed, so we return true
     }
 	

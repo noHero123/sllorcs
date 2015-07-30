@@ -2,7 +2,9 @@ package SimulationCards;
 
 import java.util.ArrayList;
 
+import BattleStuff.AttackType;
 import BattleStuff.Board;
+import BattleStuff.DamageType;
 import BattleStuff.UColor;
 import BattleStuff.Minion;
 import BattleStuff.UPosition;
@@ -29,6 +31,12 @@ public class Untainted_Sim extends Simtemplate
 	    {
 		 	if(m.owner==null) return false;
 	    	return true;
+	    }
+	 
+		public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+	    {
+		 	if(m.owner== null) return;
+	        return;
 	    }
 	
 }

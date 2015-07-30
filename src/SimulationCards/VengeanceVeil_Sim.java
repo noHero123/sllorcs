@@ -2,7 +2,9 @@ package SimulationCards;
 
 import java.util.ArrayList;
 
+import BattleStuff.AttackType;
 import BattleStuff.Board;
+import BattleStuff.DamageType;
 import BattleStuff.UColor;
 import BattleStuff.Minion;
 import BattleStuff.UPosition;
@@ -43,4 +45,9 @@ public class VengeanceVeil_Sim extends Simtemplate
         return;
     }
 	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+        return;
+    }
 }

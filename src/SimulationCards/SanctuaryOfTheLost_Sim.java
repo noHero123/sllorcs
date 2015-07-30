@@ -15,7 +15,7 @@ import BattleStuff.tileSelector;
 public class SanctuaryOfTheLost_Sim extends Simtemplate {
 	//"id":342,"name":"Sanctuary of the Lost","description":"Undead creatures have [Ward] and [Magic resistance] 1."
 	//linger 5
-
+	//ward is done in minion-> hasward
 	
 	public tileSelector getTileSelectorForFirstSelection()
 	{

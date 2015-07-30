@@ -27,8 +27,7 @@ public class LoyalDarkling_Sim extends Simtemplate {
     }
 	
 	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
-    {
-		
+	{
 		Minion target = b.getPlayerIdol(Board.getOpposingColor(m.position.color), m.position.row);
 		b.doDmg(target, m, 2, AttackType.UNDEFINED, DamageType.SUPERIOR);
         return;

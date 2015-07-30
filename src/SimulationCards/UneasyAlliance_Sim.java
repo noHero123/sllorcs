@@ -33,6 +33,7 @@ public class UneasyAlliance_Sim extends Simtemplate
 		boolean destroy =false;
 		for(Minion e : diedMinion.getAttachedCards())
 		{
+			if(e==diedMinion) continue;
 			if(e.typeId == 251)
 			{
 				destroy=true;
@@ -42,5 +43,13 @@ public class UneasyAlliance_Sim extends Simtemplate
 		b.destroyMinion(triggerEffectMinion.owner, triggerEffectMinion);
         return;
     }
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	m.owner.buffMinionWithoutMessage(-2, 0, 0, b);
+        return;
+    }
+	
 	
 }

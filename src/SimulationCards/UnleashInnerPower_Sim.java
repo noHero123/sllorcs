@@ -2,7 +2,9 @@ package SimulationCards;
 
 import java.util.ArrayList;
 
+import BattleStuff.AttackType;
 import BattleStuff.Board;
+import BattleStuff.DamageType;
 import BattleStuff.UColor;
 import BattleStuff.Minion;
 import BattleStuff.UPosition;
@@ -22,10 +24,21 @@ public class UnleashInnerPower_Sim extends Simtemplate
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
 		int hp = target.Hp;
+		playedCard.attackbuff = hp;
+		playedCard.healthbuff = 2-target.maxHP;
+		
 		target.buffMinionWithoutMessage(hp, 0, 0, b);//status update is done in add card as enchantment
 		target.Hp = 2; 
 		target.maxHP = 2;
 		target.addCardAsEnchantment("ENCHANTMENT", "Unleash Inner Power", playedCard.card.cardDescription, playedCard, b);
+        return;
+    }
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	
+	 	m.owner.buffMinionWithoutMessage(-m.attackbuff, -m.healthbuff, 0, b);
         return;
     }
 	

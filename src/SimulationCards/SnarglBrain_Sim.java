@@ -2,7 +2,9 @@ package SimulationCards;
 
 import java.util.ArrayList;
 
+import BattleStuff.AttackType;
 import BattleStuff.Board;
+import BattleStuff.DamageType;
 import BattleStuff.ResourceName;
 import BattleStuff.UColor;
 import BattleStuff.Minion;
@@ -38,6 +40,15 @@ public class SnarglBrain_Sim extends Simtemplate
     	{
     		triggerEffectMinion.owner.buffMinionWithoutMessage(0, 3, 0, b);
     	}
+        return;
+    }
+    
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	int buff=0;
+	 	if(b.getMaxRessource(ResourceName.ENERGY, m.position.color) >= 4) buff = 3;
+	 	m.owner.buffMinionWithoutMessage(-1, -buff, 0, b);
         return;
     }
 	

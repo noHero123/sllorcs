@@ -13,7 +13,7 @@ public class Callback_Sim extends Simtemplate
 {
 
 	//"id":23,"name":"Callback","description":"Target unit you control is returned to your hand, and your [current] Order is increased by the unit's cost."
-	
+	//TODO cant target TOKENS!
 	public tileSelector getTileSelectorForFirstSelection()
 	{
 		return tileSelector.own_units;

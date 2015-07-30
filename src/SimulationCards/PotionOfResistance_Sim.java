@@ -2,7 +2,9 @@ package SimulationCards;
 
 import java.util.ArrayList;
 
+import BattleStuff.AttackType;
 import BattleStuff.Board;
+import BattleStuff.DamageType;
 import BattleStuff.UColor;
 import BattleStuff.Minion;
 import BattleStuff.UPosition;
@@ -27,28 +29,34 @@ public class PotionOfResistance_Sim extends Simtemplate
 	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
-		target.imuneToNextDmg=true;
 		target.addCardAsEnchantment("ENCHANTMENT", "Plating", playedCard.card.cardDescription, playedCard, b);
-		playedCard.lingerDuration = 3;
+		playedCard.turnCounter = 3;
         return;
     }
 	
 	public  void onTurnStartTrigger(Board b, Minion triggerEffectMinion, UColor turnStartColor)
     {
-		triggerEffectMinion.lingerDuration--;
-		if(triggerEffectMinion.lingerDuration ==0)
+		triggerEffectMinion.turnCounter--;
+		if(triggerEffectMinion.turnCounter ==0)
 		{
 			//remove!
 			triggerEffectMinion.owner.removeEnchantment(triggerEffectMinion, false, b);
 		}
 		else
 		{
-			String txt = "For " + triggerEffectMinion.lingerDuration + " rounds, damage dealt to enchanted unit is reduced to 1.";
+			String txt = "For " + triggerEffectMinion.turnCounter + " rounds, damage dealt to enchanted unit is reduced to 1.";
 			triggerEffectMinion.buffDescription = txt;
 		}
 		
 		//update minion in both cases //is done automatically in onTurnStart!
 		
+        return;
+    }
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	m.owner.turnCounter=0;
         return;
     }
 	

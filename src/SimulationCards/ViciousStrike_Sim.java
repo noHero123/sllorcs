@@ -45,10 +45,15 @@ public class ViciousStrike_Sim extends Simtemplate
 	
 	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)
     {
-		//if()
-		triggerEffectMinion.owner.buffMinionWithoutMessage(-triggerEffectMinion.turnCounter, 0, 0, b);
-		triggerEffectMinion.turnCounter=0;
         return true;//buff is removed, so we return true
+    }
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	m.owner.buffMinionWithoutMessage(-m.turnCounter, 0, 0, b);
+		m.turnCounter=0;
+        return;
     }
 	
 }

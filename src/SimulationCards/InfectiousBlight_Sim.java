@@ -28,6 +28,11 @@ public class InfectiousBlight_Sim extends Simtemplate
         return;
     }
 	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+        return;
+    }
 	
 	public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker, AttackType attackType, DamageType dmgtype)
     {
@@ -51,7 +56,7 @@ public class InfectiousBlight_Sim extends Simtemplate
 			
 			creatures.get(randomint).addCardAsEnchantment("ENCHANTMENT", "Infectious Blight", playedCard.card.cardDescription, playedCard, b);
 			//remove enchantment of dieing minion, so that infectious is not added to grave!
-			triggerEffectMinion.cardID=-1;
+			triggerEffectMinion.cardID = -1;
 			
 		}
 			

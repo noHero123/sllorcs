@@ -70,4 +70,10 @@ public class Corrode_Sim extends Simtemplate {
 
         return true;//buff is removed, so we return true
     }
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+        return;
+    }
 }

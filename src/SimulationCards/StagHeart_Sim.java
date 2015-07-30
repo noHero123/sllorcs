@@ -44,18 +44,27 @@ public class StagHeart_Sim extends Simtemplate
 	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
     {
 		//unbuff other minions!
+		if(m.owner== null) return;
+		int buff=1;
 		for(Minion mnn : b.getPlayerFieldList(m.owner.position.color))
 		{
+			if(mnn == m.owner) continue;
 			for(Minion e : mnn.getAttachedCards())
 			{
 				if(e.typeId == 208)
 				{
 					mnn.buffMinion(-1, -1, 0, b);
+					buff++;
+					//unly unbuff the minion once!(we are loosing only one stagheart
+					break;
 				}
 			}
 		}
+		m.owner.buffMinionWithoutMessage(-buff, -buff, 0, b);
 		
         return;
     }
+	
+
 	
 }

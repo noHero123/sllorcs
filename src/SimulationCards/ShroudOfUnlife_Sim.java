@@ -29,7 +29,7 @@ public class ShroudOfUnlife_Sim extends Simtemplate {
 	
 		target.addSubtype(SubType.Undead, b);
 		target.addCardAsEnchantment("ENCHANTMENT", "Shroud of Unlife", "", playedCard, b);
-		target.addnewEnchantments("STARTBUFF", "Undead", "This unit has the Undead subtype.", playedCard.card, b, playedCard.position.color);
+		target.addnewEnchantments("STARTBUFF", "Undead", "This unit has the Undead subtype.", new Card(), b, playedCard.position.color);
         return;
     }
 	
@@ -41,9 +41,16 @@ public class ShroudOfUnlife_Sim extends Simtemplate {
 		{
 			Card c = CardDB.getInstance().cardId2Card.get(163);
 			Minion ill = new Minion(c, -1, diedMinion.position.color);
-			b.summonList.add(b.new SummonItem(ill, diedMinion.position));
+			b.addItemToSummonList(b.new SummonItem(ill, diedMinion.position, 0));
 		}
 			
+        return;
+    }
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	m.owner.removeSubtype(SubType.Undead, b);
         return;
     }
 	

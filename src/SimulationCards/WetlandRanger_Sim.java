@@ -40,7 +40,6 @@ public class WetlandRanger_Sim extends Simtemplate {
 			
 			if(triggerEffectMinion.turnCounter <= 0)
 			{
-				triggerEffectMinion.owner.buffMinionWithoutMessage(-1, 0, 0, b);
 				return true;//buff is removed, so we return true
 			}
 			else
@@ -49,5 +48,13 @@ public class WetlandRanger_Sim extends Simtemplate {
 				return false;
 			}
 	 }
+	 
+		public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+	    {
+		 	if(m.owner== null) return;
+		 	m.owner.buffMinionWithoutMessage(-1, 0, 0, b);
+		 	m.turnCounter=0;
+	        return;
+	    }
 	 
 }

@@ -2,7 +2,9 @@ package SimulationCards;
 
 import java.util.ArrayList;
 
+import BattleStuff.AttackType;
 import BattleStuff.Board;
+import BattleStuff.DamageType;
 import BattleStuff.UColor;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
@@ -42,10 +44,14 @@ public class SickeningFumes_Sim extends Simtemplate {
 	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)
     {
 		if(turnEndColor == triggerEffectMinion.position.color) return false; //has to be the opponent turn, of the enchantment
-		if(triggerEffectMinion.owner.getAc()>=0)
-		{
-			triggerEffectMinion.owner.buffMinionWithoutMessage(3, 0, 0, b);
-		}
         return true;//buff is removed, so we return true
     }
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	m.owner.buffMinionWithoutMessage(2, 0, 0, b);
+        return;
+    }
+	
 }

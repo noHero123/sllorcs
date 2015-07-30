@@ -45,4 +45,10 @@ public class MireCurse_Sim extends Simtemplate
 		}
 	}
 	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+        return;
+    }
+	
 }

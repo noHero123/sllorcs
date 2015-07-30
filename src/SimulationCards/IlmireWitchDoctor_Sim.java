@@ -20,7 +20,7 @@ public class IlmireWitchDoctor_Sim extends Simtemplate {
 		{
 			Card c = CardDB.getInstance().cardId2Card.get(163);
 			Minion ill = new Minion(c, -1, diedMinion.position.color);
-			b.summonList.add(b.new SummonItem(ill, diedMinion.position));
+			b.addItemToSummonList(b.new SummonItem(ill, diedMinion.position));
 		}
 			
         return;

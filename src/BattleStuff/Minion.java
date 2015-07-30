@@ -57,18 +57,16 @@ public class Minion {
 	public int currentAttackPlus = 0; // for kinfolk jarl 
 	public int turnsInplay=0;
 	public int aoeDmgToDo=0;
-	public int desperationBuffs=0;
 	public boolean imuneToNextDmg=false;
 	public boolean imuneToDmg=false;
 	public boolean addToHandAfterDead = false;
 	
 	//TODO calculate attack/HP life? like getAP() -> loop through enchantments/buffs other minions and calculate the current attack?
-	public int frostbeardCounter=0;
-	public int ducalInfCounter=0;
-	public int royalInfCounter=0;
-	public int pillarCounter=0;
-	public int monstroCounter =0;
-	public int cullingCounter =0;
+	public int ducalInfCounter=0;//cant be replaced
+	public int royalInfCounter=0;//cant be replaced!
+	public int pillarCounter=0;//cant be replaced
+	public int monstroCounter =0; //cant be replaced
+	public int squireCounter =0; //cant be replaced
 	public boolean didDmgToIdol=false;
 	public boolean fangbear=false;
 	public int oumLaseGuardAttackCounter=0;
@@ -88,6 +86,13 @@ public class Minion {
 	public void setAttack(int a)
 	{
 		this.Ap = a;
+	}
+	
+	public int getAttackForCalc(Board b)
+	{
+		int attack = this.Ap;
+		if(this.typeId == 299) attack += b.getCurrentRessource(ResourceName.ENERGY, this.position.color);
+		return Math.max(0, attack);
 	}
 	
 	public int getAttack(Board b)
@@ -150,7 +155,6 @@ public class Minion {
 		{
 			this.subtypes.add(s);
 		}
-		frostbeardCounter=0;
 		ducalInfCounter=0;
 		royalInfCounter=0;
 		monstroCounter =0;
@@ -247,14 +251,12 @@ public class Minion {
 		currentAttackPlus = 0; // for kinfolk jarl 
 		turnsInplay=0;
 		aoeDmgToDo=0;
-		desperationBuffs=0;
 		imuneToNextDmg=false;
 		addToHandAfterDead = false;
 		this.attachedCards.clear();
 		this.owner = null;
 		
-		frostbeardCounter=0;
-		ducalInfCounter=0;
+		ducalInfCounter=0;//cant be removed!
 		royalInfCounter=0;
 		monstroCounter =0;
 		didDmgToIdol=false;
@@ -349,6 +351,11 @@ public class Minion {
 			ret += e.card.cardSim.getMagicResistance(b ,e, this);
 		}
 		
+		for(Minion mnn : b.getMinionsFromPositions(this.position.getNeightbours()))
+		{
+			if(mnn.typeId == 361 ) ret += 2;
+		}
+		
 		if(this.subtypes.contains(SubType.Undead) && this.cardType == Kind.CREATURE)
 		{
 			for(Minion rule : b.getAllRules())
@@ -357,6 +364,7 @@ public class Minion {
 				if(rule.typeId == 342) ret += rule.card.cardSim.getMagicResistance(b ,rule, this);
 			}
 		}
+		
 		return ret;
 	}
 	
@@ -490,12 +498,12 @@ public class Minion {
 		
 	}
 	
-	public void addnewEnchantments(String type, String name, String description, Card c, Board b, UColor owner)
+	public Minion addnewEnchantments(String type, String name, String description, Card c, Board b, UColor owner)
 	{
-		addnewEnchantments( type,  name,  description,  c,  b,  owner, 0);
+		return addnewEnchantments( type,  name,  description,  c,  b,  owner, 0);
 	}
 	
-	public void addnewEnchantments(String type, String name, String description, Card c, Board b, UColor owner, int turnCounter)
+	public Minion addnewEnchantments(String type, String name, String description, Card c, Board b, UColor owner, int turnCounter)
 	{
 		Minion buff = new Minion(type, name, description, c, owner);
 		
@@ -503,6 +511,7 @@ public class Minion {
 		buff.owner = this;//to know the owner of this card
 		this.turnCounter = 0;
 		addEnchantmentToList(buff, b);
+		return buff;
 	}
 	
 	public void addnewPoison(Board b, UColor owner)
@@ -528,6 +537,11 @@ public class Minion {
 	
 	public void buffMinionWithoutMessage(int APbuff, int HPbuff, int ACbuff, Board b)
 	{
+		if(this.Hp <=0 )
+		{
+			return;
+		}
+		
 		int oldAc=this.Ac;
 		this.Ap +=APbuff;
 		this.Hp += HPbuff;
@@ -536,11 +550,28 @@ public class Minion {
 		if(this.Ac<=0 && this.maxAc >=1) this.Ac=0;
 		//b.addMessageToBothPlayers(b.getStatusUpdateMessage(this));
 		
-		if(this.Ac==0 && oldAc>=1) this.card.cardSim.onCountdownReachesZero(b, this);
+		if(this.Hp <=0 )
+		{
+			
+			String s= "{\"RemoveUnit\":{\"tile\":"+this.position.posToString()+",\"removalType\":\"DESTROY\"}}";
+			b.addMessageToBothPlayers(s);
+			b.addMinionToGrave(this);
+		}
+		else
+		{
+			if(this.Ac==0 && oldAc>=1) this.card.cardSim.onCountdownReachesZero(b, this);
+		}
+		
+		
 	}
 	
 	public void buffMinion(int APbuff, int HPbuff, int ACbuff, Board b)
 	{
+		if(this.Hp <=0 )
+		{
+			return;
+		}
+		
 		int oldAc=this.Ac;
 		this.Ap +=APbuff;
 		this.Hp += HPbuff;
@@ -680,6 +711,7 @@ public class Minion {
 		{
 			b.addMessageToBothPlayers(b.getStatusUpdateMessage(this));
 		}
+		
 		e.owner=null;
 		
 		boolean end = this.hasEnchantment();

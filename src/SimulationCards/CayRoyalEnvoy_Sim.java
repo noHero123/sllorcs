@@ -23,11 +23,8 @@ public class CayRoyalEnvoy_Sim extends Simtemplate {
 	
 	 public boolean hasWard(Board b ,Minion m)
 	 {
-		 for(Minion idol : b.getPlayerIdols(Board.getOpposingColor(m.position.color)))
-		 {
-			 if(idol.Hp<=0) return true;
-		 }
-		 return false;
+
+		 return b.isDominionActive(m.position.color);
 	 }
 	
 	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)

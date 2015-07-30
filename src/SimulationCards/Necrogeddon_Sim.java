@@ -40,7 +40,7 @@ public class Necrogeddon_Sim extends Simtemplate {
 			//we do a clever trick: add a husk on that position before it is killed, do other summon effects wont work on that tile!
 			Card c = CardDB.getInstance().cardId2Card.get(163);
 			Minion ill = new Minion(c, -1, m.position.color);
-			b.summonList.add(b.new SummonItem(ill, new UPosition(m.position)));
+			b.addItemToSummonList(b.new SummonItem(ill, new UPosition(m.position)));
 			b.destroyMinion(m, playedCard);
 		}
 		

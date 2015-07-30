@@ -15,16 +15,13 @@ public class WingsCleaver_Sim extends Simtemplate {
 	
 	public  void getBattlecryEffect(Board b, Minion own, Minion target)
 	{
+
 		own.turnCounter=0;
-		for(Minion idol : b.getPlayerIdols(Board.getOpposingColor(own.position.color)))
+		if(b.isDominionActive(own.position.color))
 		{
-			if(own.turnCounter==0 && idol.Hp<=0)
-			{
-				own.turnCounter=1;
-				 
-				own.maxAc-=1;
-				own.buffMinion(3, 0, 0, b);
-			}
+			own.turnCounter=1;
+			own.maxAc-=1;
+			own.buffMinion(3, 0, 0, b);
 		}
 		
     }
@@ -34,16 +31,38 @@ public class WingsCleaver_Sim extends Simtemplate {
 		 return true;
 	 }
 	 
+	 public void onDominonGoesAway(Board b , Minion triggerEffectMinion)
+	    {
+			if(triggerEffectMinion.turnCounter==1)
+			 {
+				 triggerEffectMinion.turnCounter=0;
+				 triggerEffectMinion.maxAc+=1;
+				 triggerEffectMinion.buffMinion(-3, 0, 0, b);
+			 }
+	    	return;
+	    }
+	 
+	 public void onDominonOccours(Board b , Minion triggerEffectMinion)
+	    {
+			if(triggerEffectMinion.turnCounter==0)
+			 {
+				 triggerEffectMinion.turnCounter=1;
+				 triggerEffectMinion.maxAc-=1;
+				 triggerEffectMinion.buffMinion(3, 0, 0, b);
+			 }
+	    	return;
+	    }
 	
 	 
 	 public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker, AttackType attackType, DamageType dmgtype)
 	 {
-		 if(!diedMinion.isIdol || triggerEffectMinion.turnCounter>=1) return;
-		 triggerEffectMinion.turnCounter=1;
+		 if(diedMinion.isIdol && diedMinion.position.color != triggerEffectMinion.position.color && triggerEffectMinion.turnCounter==0)
+		 {
+			 triggerEffectMinion.turnCounter=1;
 		 
-		 triggerEffectMinion.maxAc-=1;
-		 triggerEffectMinion.buffMinion(3, 0, 0, b);
-		 
+			 triggerEffectMinion.maxAc-=1;
+			 triggerEffectMinion.buffMinion(3, 0, 0, b);
+		 }
 	      return;
 	 }
 	 

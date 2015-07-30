@@ -2,6 +2,7 @@ package SimulationCards;
 
 import java.util.ArrayList;
 
+import BattleStuff.AttackType;
 import BattleStuff.Board;
 import BattleStuff.UColor;
 import BattleStuff.DamageType;
@@ -43,6 +44,12 @@ public class ConcentrateFire_Sim extends Simtemplate
 		b.unitAttacking(m, defffield, m.getAttack(b), m.attackType, DamageType.COMBAT);
 		
     	return;
+    }
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+        return;
     }
 	
 }

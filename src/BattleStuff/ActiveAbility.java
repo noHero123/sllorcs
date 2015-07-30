@@ -301,6 +301,18 @@ public class ActiveAbility {
 			return false;
 		}
 		
+		if(this.id == activeAbilitys.BannerOfOrdinance)
+		{
+			if(m.getAc() == 0) return true;
+			return false;
+		}
+		
+		if(this.id == activeAbilitys.WingsSorceress)
+		{
+			if(m.getAc() == 0 && poses.size()>=1) return true;
+			return false;
+		}
+		
 		return isp;
 	}
 	
@@ -385,6 +397,17 @@ public class ActiveAbility {
 		if(this.id == activeAbilitys.SnarglOmelette)
 		{
 			return false;
+		}
+		
+		if(this.id == activeAbilitys.BannerOfOrdinance)
+		{
+			return false;
+		}
+		
+		if(this.id == activeAbilitys.WingsSorceress)
+		{
+			return true;
+
 		}
 		
 		return false;
@@ -554,6 +577,22 @@ public class ActiveAbility {
 		
 		if(this.id == activeAbilitys.SnarglOmelette)
 		{
+			return isp;
+		}
+		
+		if(this.id == activeAbilitys.BannerOfOrdinance)
+		{
+			return isp;
+		}
+		
+		
+		if(this.id == activeAbilitys.WingsSorceress)
+		{
+			
+			for(Minion mm : b.getAllMinionOfField())
+			{
+				isp.add(new UPosition(mm.position));
+			}
 			return isp;
 		}
 		

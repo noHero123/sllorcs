@@ -2,7 +2,9 @@ package SimulationCards;
 
 import java.util.ArrayList;
 
+import BattleStuff.AttackType;
 import BattleStuff.Board;
+import BattleStuff.DamageType;
 import BattleStuff.UColor;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
@@ -41,11 +43,14 @@ public class CrimsonBull_Sim extends Simtemplate {
 	
 	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)
     {
-		//if()
-		if(triggerEffectMinion.owner.getAc()>=0)
-		{
-			triggerEffectMinion.owner.buffMinionWithoutMessage(-2, 0, 0, b);
-		}
+
         return true;//buff is removed, so we return true
+    }
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	m.owner.buffMinionWithoutMessage(-2, 0, 0, b);
+        return;
     }
 }

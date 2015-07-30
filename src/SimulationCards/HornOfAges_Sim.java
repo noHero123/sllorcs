@@ -2,7 +2,9 @@ package SimulationCards;
 
 import java.util.ArrayList;
 
+import BattleStuff.AttackType;
 import BattleStuff.Board;
+import BattleStuff.DamageType;
 import BattleStuff.UColor;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
@@ -44,8 +46,15 @@ public class HornOfAges_Sim extends Simtemplate {
 		//if()
 		if(triggerEffectMinion.owner.position.color == turnEndColor)
 		{
-			triggerEffectMinion.owner.moveChanges+=1;
+			return true;
 		}
-        return true;//buff is removed, so we return true
+        return false;//buff is removed, so we return true
+    }
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	m.owner.moveChanges+=1;
+        return;
     }
 }

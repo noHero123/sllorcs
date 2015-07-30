@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import BattleStuff.AttackType;
 import BattleStuff.Board;
+import BattleStuff.Card;
 import BattleStuff.UColor;
 import BattleStuff.DamageType;
 import BattleStuff.Minion;
@@ -27,15 +28,15 @@ public class CrownOfStrength_Sim extends Simtemplate {
 
 		target.addSubtype(SubType.Knight, b);
 		target.addCardAsEnchantment("ENCHANTMENT", "Crown of Strength", playedCard.card.cardDescription, playedCard, b);
-		target.addnewEnchantments("STARTBUFF", "Knight", "This unit has the Knight subtype.", playedCard.card, b, playedCard.position.color);
+		target.addnewEnchantments("STARTBUFF", "Knight", "This unit has the Knight subtype.", new Card(), b, playedCard.position.color);
         return;
     }
 	
-	// TODO we do a special onDeathrattle only for enchantments in addMinionToGrave!
 	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
     {
 		//remove attack of others metelhearted minions
-		m.removeSubtype(SubType.Knight, b);
+		m.owner.buffMinionWithoutMessage(-1, -2, 0, b);
+		m.owner.removeSubtype(SubType.Knight, b);
         return;
     }
 	

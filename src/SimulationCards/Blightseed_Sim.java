@@ -2,7 +2,9 @@ package SimulationCards;
 
 import java.util.ArrayList;
 
+import BattleStuff.AttackType;
 import BattleStuff.Board;
+import BattleStuff.DamageType;
 import BattleStuff.UColor;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
@@ -40,6 +42,12 @@ public class Blightseed_Sim extends Simtemplate {
 		b.drawCards(triggerEffectMinion.position.color, 2);
 		b.changeCurrentRessource(ResourceName.DECAY, triggerEffectMinion.position.color, 2);
 		triggerEffectMinion.owner.removeEnchantment(triggerEffectMinion, true, b);
+        return;
+    }
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
         return;
     }
 

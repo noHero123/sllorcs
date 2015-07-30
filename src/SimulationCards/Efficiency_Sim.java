@@ -44,24 +44,26 @@ public class Efficiency_Sim extends Simtemplate {
 	
 	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)
     {
-		triggerEffectMinion.aoeDmgToDo = 0;
-		//if()
-		if(triggerEffectMinion.owner.getAc()>=0)
-		{
-			triggerEffectMinion.owner.buffMinionWithoutMessage(-2, 0, 0, b);
-		}
         return true;//buff is removed, so we return true
     }
 	
 	
 	public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker, AttackType attackType, DamageType dmgtype)
     {
-		if(triggerEffectMinion.owner == diedMinion || triggerEffectMinion.aoeDmgToDo == 1) return;
+		if(triggerEffectMinion.owner == diedMinion || triggerEffectMinion.turnCounter == 1) return;
 		if(triggerEffectMinion.owner == attacker)
 		{
 			b.changeMaxRessource(ResourceName.ENERGY, triggerEffectMinion.position.color, 1);
-			triggerEffectMinion.aoeDmgToDo = 1;
+			triggerEffectMinion.turnCounter = 1;
 		}
+        return;
+    }
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	m.turnCounter = 0;
+	 	m.owner.buffMinionWithoutMessage(-2, 0, 0, b);
         return;
     }
 }

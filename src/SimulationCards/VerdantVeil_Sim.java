@@ -2,7 +2,9 @@ package SimulationCards;
 
 import java.util.ArrayList;
 
+import BattleStuff.AttackType;
 import BattleStuff.Board;
+import BattleStuff.DamageType;
 import BattleStuff.UColor;
 import BattleStuff.Minion;
 import BattleStuff.UPosition;
@@ -22,14 +24,22 @@ public class VerdantVeil_Sim extends Simtemplate
     {
 		Minion target = b.getMinionOnPosition(targets.get(0));
 		target.buffMinionWithoutMessage(0, 3, 0, b);//status update is done in add card as enchantment
-		target.addCardAsEnchantment("ENCHANTMENT", "Bear Paw", playedCard.card.cardDescription, playedCard, b);
+		target.addCardAsEnchantment("ENCHANTMENT", "Verdant Veil", playedCard.card.cardDescription, playedCard, b);
         return;
     }
 	
 	public boolean hasWard(Board b ,Minion m)
     {
-		if(m.Hp>=m.card.hp) return true;
+		if(m.owner== null) return false;
+		if(m.owner.Hp>=m.owner.card.hp) return true;
     	return false;
+    }
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	m.owner.buffMinionWithoutMessage(0, -3, 0, b);
+        return;
     }
 	
 }

@@ -11,7 +11,7 @@ import BattleStuff.SubType;
 
 public class ProximityCharge_Sim extends Simtemplate {
 	//"id":90,"name":"Proximity Charge","description":"When destroyed in [melee combat], attacking unit is dealt 4 [physical damage]. When Proximity Charge comes into play, a copy is summoned adjacent to it."
-	
+	//dmg done in dmgtriggers
 	//tested: its dmg is done before spiky dmg: "attackType":"UNDEFINED","damageType":"COMBAT"
 	
 	public  void getBattlecryEffect(Board b, Minion own, Minion target)

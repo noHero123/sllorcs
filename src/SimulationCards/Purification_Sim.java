@@ -17,6 +17,7 @@ public class Purification_Sim extends Simtemplate
 		return tileSelector.all_units;
 	}
 	
+	//TODO make it right?
 	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 

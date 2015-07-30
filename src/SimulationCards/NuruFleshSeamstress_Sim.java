@@ -25,18 +25,12 @@ public class NuruFleshSeamstress_Sim extends Simtemplate {
 		}
 		
 		own.turnCounter=0;
-		for(Minion idol : b.getPlayerIdols(Board.getOpposingColor(own.position.color)))
+		if(b.isDominionActive(own.position.color))
 		{
-			if(own.turnCounter==0 && idol.Hp<=0)
-			{
-				own.turnCounter=1;
-			}
-		}
-		
-		if(own.turnCounter==1)
-		{
+			own.turnCounter=1;
 			buffOtherUndead(b.getPlayerFieldList(own.position.color), b);
 		}
+		
 		
     }
 	
@@ -85,7 +79,7 @@ public class NuruFleshSeamstress_Sim extends Simtemplate {
 		
 		if(freepos.size() ==0) 
 		{
-			ill.addnewEnchantments("BUFF", "Nuru, Flesh-seamstress", m.card.cardDescription, m.card, b, m.position.color);
+			ill.turnCounter = 99;//99 for husks-> kill after attacking
 			ill.buffMinion(0, 0, -100, b);
 			return;
 		}
@@ -93,46 +87,31 @@ public class NuruFleshSeamstress_Sim extends Simtemplate {
 		randint = b.getRandomNumber(0, freepos.size()-1);
 		b.summonUnitOnPosition(freepos.get(randint), ill2);
 		
-		ill.addnewEnchantments("BUFF", "Nuru, Flesh-seamstress", m.card.cardDescription, m.card, b, m.position.color);
+		ill.turnCounter = 99;
 		ill.buffMinion(0, 0, -100, b);
-		ill2.addnewEnchantments("BUFF", "Nuru, Flesh-seamstress", m.card.cardDescription, m.card, b, m.position.color);
+		ill2.turnCounter = 99;
 		ill2.buffMinion(0, 0, -100, b);
 		
     	return;
     }
 	 
-	public Boolean isEffect(Minion m)
-    {
-		if(m.owner!=null) return true;
-        return false;
-    }
 	
 	 public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker, AttackType attackType, DamageType dmgtype)
 	 {
-		 if(triggerEffectMinion.owner!=null) return; //the enchantment that the husk dies!
-		 if(!diedMinion.isIdol || triggerEffectMinion.turnCounter>=1) return;
-		 triggerEffectMinion.turnCounter=1;
-		//dominion is now active, buff all undead!
-		 this.buffOtherUndead(b.getPlayerFieldList(triggerEffectMinion.position.color), b);
+		 if(triggerEffectMinion.owner!=null) return;
+		 
+		 if(diedMinion.isIdol && diedMinion.position.color != triggerEffectMinion.position.color && triggerEffectMinion.turnCounter==0)
+		 {
+			 triggerEffectMinion.turnCounter=1;
+			 //dominion is now active, buff all undead!
+			 this.buffOtherUndead(b.getPlayerFieldList(triggerEffectMinion.position.color), b);
+		 }
 		
 		 
 	      return;
 	 }
 	 
-	 public void onAttackDone(Board b , Minion m, Minion self)
-	 {
-		
-		 if(self.owner == null) return;
-		 
-			if(m.getAc() != 0 || m!=self)
-	        {
-				return;
-	        }
-			
-			b.destroyMinion(m, self);
-			
-	    	return;
-	 }
+	 
 	 
 	 public  void onMinionLeavesBattleField(Board b, Minion auraendminion)
 	    {
@@ -148,6 +127,40 @@ public class NuruFleshSeamstress_Sim extends Simtemplate {
 				}
 			}
 	        return;
+	    }
+	 
+	 
+	 public void onDominonOccours(Board b , Minion triggerEffectMinion)
+	    {
+
+		 if(triggerEffectMinion.turnCounter==1) return;
+		 triggerEffectMinion.turnCounter=1;
+			for(Minion m : b.getPlayerFieldList(triggerEffectMinion.position.color))
+			{
+				if(m.getSubTypes().contains(SubType.Undead))
+				{
+					m.buffMinion(2, 0, 0, b);
+				}
+			}
+			
+	    	return;
+	    }
+	 
+	 
+	 public void onDominonGoesAway(Board b , Minion triggerEffectMinion)
+	    {
+
+		 	if(triggerEffectMinion.turnCounter==0) return;
+		 	triggerEffectMinion.turnCounter=0;
+			for(Minion m : b.getPlayerFieldList(triggerEffectMinion.position.color))
+			{
+				if(m.getSubTypes().contains(SubType.Undead))
+				{
+					m.buffMinion(-2, 0, 0, b);
+				}
+			}
+			
+	    	return;
 	    }
 	 
 }

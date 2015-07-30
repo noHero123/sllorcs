@@ -34,6 +34,18 @@ public class Pestis_Sim extends Simtemplate {
         return;
     }
 
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	int buff =0;
+		for(Minion mnn : b.getPlayerFieldList(m.position.color))
+		{
+			if(mnn.getSubTypes().contains(SubType.Rat)) buff++;
+		}
+	 	m.owner.buffMinionWithoutMessage(-buff, 0, 0, b);
+        return;
+    }
+	
 	
 	public  void onMinionIsSummoned(Board b, Minion triggerEffectMinion, Minion summonedMinion)
     {

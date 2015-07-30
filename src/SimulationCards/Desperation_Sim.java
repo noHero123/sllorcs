@@ -27,8 +27,9 @@ public class Desperation_Sim extends Simtemplate {
 		Minion target = b.getMinionOnPosition(targets.get(0));
 		int buff=0;
 		target.buffMinionWithoutMessage(2*buff, 0, 0, b);//status update is done in add card as enchantment
-		target.addnewEnchantments("BUFF", "Desperation", playedCard.card.cardDescription, playedCard.card, b, playedCard.position.color);
-		target.desperationBuffs += buff;
+		Minion ench = target.addnewEnchantments("BUFF", "Desperation", playedCard.card.cardDescription, playedCard.card, b, playedCard.position.color);
+		ench.turnCounter += buff;
+		b.doDmg(target, playedCard, 1, AttackType.UNDEFINED, DamageType.MAGICAL);
         return;
     }
 	
@@ -40,14 +41,15 @@ public class Desperation_Sim extends Simtemplate {
 	
 	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)
     {
-		//if()
-		if(triggerEffectMinion.owner.getAc()>=0)
-		{
-			triggerEffectMinion.owner.buffMinionWithoutMessage(-2*triggerEffectMinion.owner.desperationBuffs, 0, 0, b);
-			triggerEffectMinion.owner.desperationBuffs=0;
-			//so its is only debuffed once (with all desperation buffs on it), but deal dmg to amount of desperation Buffs!
-			b.doDmg(triggerEffectMinion.owner, triggerEffectMinion, 1, AttackType.UNDEFINED, DamageType.MAGICAL);
-		}
+		
         return true;//buff is removed, so we return true
+    }
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	m.owner.buffMinionWithoutMessage(-2*m.turnCounter, 0, 0, b);
+	 	m.turnCounter=0;
+        return;
     }
 }

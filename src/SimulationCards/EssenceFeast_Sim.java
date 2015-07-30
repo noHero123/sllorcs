@@ -2,7 +2,9 @@ package SimulationCards;
 
 import java.util.ArrayList;
 
+import BattleStuff.AttackType;
 import BattleStuff.Board;
+import BattleStuff.DamageType;
 import BattleStuff.UColor;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
@@ -91,15 +93,17 @@ public class EssenceFeast_Sim extends Simtemplate {
         return;
     }
 	
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	m.owner.buffMinionWithoutMessage(-2, 0, 0, b);
+        return;
+    }
+	
 	public Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)
     {
-
-		/*if(triggerEffectMinion.owner.Ac>=0 && triggerEffectMinion.owner.subtypes.contains(subType.Beast))
-		{
-			triggerEffectMinion.owner.buffMinionWithoutMessage(-2, 0, 0, b);
-		}*/
-		
-		triggerEffectMinion.owner.buffMinionWithoutMessage(-2, 0, 0, b);
+		if(triggerEffectMinion.owner== null) return false;
         return true;//buff is removed, so we return true
     }
 }

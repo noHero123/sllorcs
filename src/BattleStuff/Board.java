@@ -89,6 +89,8 @@ public class Board {
 	
 	public int drawCorrodePossible = 0;
 	
+	public boolean doAdvantageousOutlookEffect = false;
+	
 	public synchronized int initPlayer(Player p) 
 	{
 		int rdyplayers = 0;
@@ -1253,6 +1255,7 @@ public class Board {
 		{
 			this.addMinionToGrave(removerules);
 			removerules.card.cardSim.onDeathrattle(this, removerules, removerules, AttackType.UNDEFINED, DamageType.TERMINAL);
+			removerules.card.cardSim.onMinionLeavesBattleField(this, removerules);
 			rules.remove(removerules);
 		}
 		
@@ -1682,6 +1685,22 @@ public class Board {
 			s=this.getCardStackUpdate(p.color);
 			this.addMessageToBothPlayers(s);
 		}
+		
+		if(this.doAdvantageousOutlookEffect && target.minion.cardType == Kind.SPELL)
+		{
+			Card card = CardDB.getInstance().cardId2Card.get(163);
+			for(Minion m:this.getPlayerFieldList(this.activePlayerColor))
+			{
+				if(m.getSubTypes().contains(SubType.Knight))
+				{
+					m.buffMinionWithoutMessage(2, 0, 0, this);
+					m.addnewEnchantments("BUFF", "Advantageous Outlook", "Knights you control get +2 Attack until end of turn.", card, this, this.activePlayerColor);
+				}
+			}
+			
+			
+		}
+		this.doAdvantageousOutlookEffect=false;
 		
 		this.sendEffectMessagesToPlayers();
 	}
@@ -2167,13 +2186,13 @@ public class Board {
 		return s;
 	}
 	
-	public void summonUnitOnPosition(UPosition pos, Minion m)
+	public boolean summonUnitOnPosition(UPosition pos, Minion m)
 	{
-		summonUnitOnPosition( pos, m, true);
+		return summonUnitOnPosition( pos, m, true);
 	}
 	
 	
-	public void summonUnitOnPosition(UPosition pos, Minion m, Boolean dotriggers)
+	public boolean summonUnitOnPosition(UPosition pos, Minion m, Boolean dotriggers)
 	{
 		m.reset();
 		Minion before = this.getPlayerField(pos.color)[pos.row][pos.column];
@@ -2181,7 +2200,7 @@ public class Board {
 		if(before != null && before.Hp>=1) 
 		{
 			System.out.println("summon error, field full " + pos.posToString());
-			return; //we also allow to add the minino if it has hp<=0 (maybe throud deathrattles it is replaced but not jet removed)
+			return false; //we also allow to add the minino if it has hp<=0 (maybe throud deathrattles it is replaced but not jet removed)
 		}
 		
 		m.position.color = pos.color;
@@ -2230,7 +2249,7 @@ public class Board {
 		
 		//add minion to battlefield!
 		this.getPlayerField(m.position.color)[m.position.row][m.position.column] = m;
-		
+		return true;
 	}
 	
 	
@@ -3778,7 +3797,22 @@ public class Board {
 		}
 	}
 	
-	public ArrayList<SummonItem> summonList = new ArrayList<SummonItem>(); 
+	public boolean isDominionActive(UColor mySide)
+	{
+		for(Minion rule : this.getAllRules())
+		{
+			if(rule.typeId == 338) return true;
+		}
+		
+		for(Minion idol : this.getPlayerIdols(Board.getOpposingColor(mySide)))
+		{
+			if(idol.Hp<=0) return true;
+		}
+		
+		return false;
+	}
+	
+	private ArrayList<SummonItem> summonList = new ArrayList<SummonItem>(); 
 	
 	public void doDeathRattles2(Minion attacker, int overdmg, AttackType attacktype, DamageType dmgtype )
 	{
@@ -3807,6 +3841,11 @@ public class Board {
             		
         		}
         		
+        		//do triggers for linger (they are triggered BEFORE enchantments (tested aescalon spires VS ilthorn seed, aescalon wins always (regardless of order of play))
+        		for(Minion rule : this.getAllRulesWithColorFirst(m.position.color))
+    			{
+        			rule.card.cardSim.onMinionDiedTrigger(this, rule, m, attacker, attacktype, dmgtype);
+    			}
 
         		//do triggers for enchantments
         		for(Minion e : m.getAttachedCards())
@@ -3831,14 +3870,17 @@ public class Board {
         		}
         		//m.attachedCards.clear();
         		
-        		//do triggers for linger
-        		for(Minion rule : this.getAllRulesWithColorFirst(m.position.color))
-    			{
-        			rule.card.cardSim.onMinionDiedTrigger(this, rule, m, attacker, attacktype, dmgtype);
-    			}
+        		
         		
         		//for setting addToHandAfterDead to true for replicaton :D maybe we change this to true at battlecry?
-        		if(m.typeId == 287) m.addToHandAfterDead=true;
+        		if(m.typeId == 287)
+        		{
+        			m.addToHandAfterDead=false;
+        			if(this.getCurrentRessource(ResourceName.ENERGY, m.position.color)>=2)
+        			{
+        				m.addToHandAfterDead=true;
+        			}
+        		}
         		
         		this.addMinionToGrave(m);//with triggers of enchantments
         		//ondeathrattle have summon effects
@@ -3863,12 +3905,18 @@ public class Board {
         		Minion before = this.getPlayerField(si.pos.color)[si.pos.row][si.pos.column];
         		if(before==null || before.Hp<=0)
         		{
-        			this.summonUnitOnPosition(si.pos, si.minion);
-        			if(si.flags == 1)
+        			boolean summoned = this.summonUnitOnPosition(si.pos, si.minion);
+        			if(summoned && si.flags == 1)
         			{
         				Minion after = this.getPlayerField(si.pos.color)[si.pos.row][si.pos.column];
         				int buff = 1-after.getAc();
         				after.buffMinion(0, 0, buff, this);
+        			}
+        			
+        			if(summoned && si.minion.cardID>=0)
+        			{
+        				//it has a cardId-> it is resummoned!
+        				
         			}
         		}
         	}
@@ -3884,6 +3932,17 @@ public class Board {
         
         
 	}
+	
+	public boolean addItemToSummonList(SummonItem si)
+	{
+		for(SummonItem s : this.summonList)
+		{
+			if(s.pos.isEqual(si.pos)) return false;
+		}
+		this.summonList.add(si);
+		return true;
+	}
+	
 	
 	private Boolean graveWhiteChanged=false;
 	private Boolean graveBlackChanged=false;

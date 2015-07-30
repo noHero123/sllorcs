@@ -13,7 +13,7 @@ public class Replicaton_Sim extends Simtemplate {
 	
 	 public  void getBattlecryEffect(Board b, Minion own, Minion target)
 	    {
-		 	own.addToHandAfterDead=true;
+		 	//own.addToHandAfterDead=true;//we have to check the energy...(done in doDeathrattles2
 	        return;
 	    }
 	

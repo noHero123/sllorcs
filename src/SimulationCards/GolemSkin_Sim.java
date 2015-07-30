@@ -39,10 +39,18 @@ public class GolemSkin_Sim extends Simtemplate
 		}
 		
 		target.addCardAsEnchantment("ENCHANTMENT", "Golem Skin", playedCard.card.cardDescription, playedCard, b);//TODO is carddescription realy so long=?
-		
+		playedCard.turnCounter = buff;
 		
 		b.doDmg(all, playedCard, 1, AttackType.UNDEFINED, DamageType.MAGICAL);
 		
+        return;
+    }
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	m.owner.buffMinionWithoutMessage(-m.turnCounter, -m.turnCounter, 0, b);
+	 	m.turnCounter=0;
         return;
     }
 	

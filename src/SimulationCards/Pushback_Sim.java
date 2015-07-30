@@ -11,6 +11,7 @@ import BattleStuff.tileSelector;
 public class Pushback_Sim extends Simtemplate 
 {
 
+	//TODO dont target tokens?
 	//"id":48,"name":"Pushback","description":"Target unit is returned to its owner's hand."
 	
 	public tileSelector getTileSelectorForFirstSelection()

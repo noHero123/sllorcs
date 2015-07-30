@@ -14,14 +14,8 @@ public class BladeHusk_Sim extends Simtemplate {
 	
 	 public boolean isRelentless(Board b ,Minion m)
 	 {
-		 for(Minion idol : b.getPlayerIdols(Board.getOpposingColor(m.position.color)))
-		 {
-				if(idol.Hp<=0)
-				{
-					return true;
-				}
-		 }
-	    	return false;
+
+	    	return b.isDominionActive(m.position.color);
 	 }
 	 
 	

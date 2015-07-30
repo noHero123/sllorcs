@@ -32,4 +32,11 @@ public class Regeniture_Sim extends Simtemplate
         return;
     }
 	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	m.owner.buffMinionWithoutMessage(0, -2, 0, b);
+        return;
+    }
+	
 }

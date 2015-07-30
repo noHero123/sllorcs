@@ -42,4 +42,10 @@ public class SearingShackles_Sim extends Simtemplate
 		 b.doDmg(movedMinion, triggerEffectMinion, 2, AttackType.UNDEFINED, DamageType.MAGICAL);
 		 return;
 	 }
+	 
+		public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+	    {
+		 	if(m.owner== null) return;
+	        return;
+	    }
 }

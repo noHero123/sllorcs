@@ -32,19 +32,14 @@ public class CullingTheFlock_Sim extends Simtemplate {
 		{
 			if(m.cardType == Kind.CREATURE && m.getSubTypes().contains(SubType.Beast))
 			{
+				m.buffMinionWithoutMessage(attack, 0, 0, b);
+				Minion ench = m.addnewEnchantments("BUFF", "Culling the Flock", playedCard.card.cardDescription, playedCard.card, b, playedCard.position.color);
 				if(m.Hp>=1 && m.Hp<m.maxHP)
 				{
-					m.buffMinionWithoutMessage(attack, 0, 0, b);
-					m.addnewEnchantments("BUFF", "Culling the Flock", playedCard.card.cardDescription, playedCard.card, b, playedCard.position.color);
-				
 					m.healMinion(m.maxHP-m.Hp, b);
 				}
-				else
-				{
-					m.buffMinionWithoutMessage(attack, 0, 0, b);
-					m.addnewEnchantments("BUFF", "Culling the Flock", playedCard.card.cardDescription, playedCard.card, b, playedCard.position.color);
-				}
-				m.cullingCounter+=attack;
+				
+				ench.turnCounter+=attack;
 			}
 		}
 		
@@ -62,9 +57,16 @@ public class CullingTheFlock_Sim extends Simtemplate {
 	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)
     {
 		//if()
-		triggerEffectMinion.owner.buffMinionWithoutMessage( -triggerEffectMinion.owner.cullingCounter, 0, 0, b);
-		triggerEffectMinion.owner.cullingCounter = 0;
+		
         return true;//buff is removed, so we return true
+    }
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	m.owner.buffMinionWithoutMessage( -m.turnCounter, 0, 0, b);
+		m.turnCounter = 0;
+        return;
     }
 	
 }

@@ -13,17 +13,25 @@ public class Frostbeard_Sim extends Simtemplate {
 	
 	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
     {
-		
-		if(b.activePlayerColor == m.position.color) return; //opponent turn!
-		
-		for(Minion mnn : b.getPlayerFieldList(m.position.color))
+		if(m.owner==null)
 		{
+			//minion dies
+			if(b.activePlayerColor == m.position.color) return; //opponent turn!
+		
+			for(Minion mnn : b.getPlayerFieldList(m.position.color))
+			{
 			if(mnn.getAc()>=0)
 			{
 				mnn.buffMinionWithoutMessage(2, 0, 0, b);
 				mnn.addnewEnchantments("BUFF", "Frostbeard", m.card.cardDescription, m.card, b, m.position.color);
 				//mnn.frostbeardCounter = 1;
 			}
+			}
+		}
+		else
+		{
+			//buff dies
+			m.owner.buffMinionWithoutMessage(-2, 0, 0, b);
 		}
 		
         return;
@@ -34,19 +42,10 @@ public class Frostbeard_Sim extends Simtemplate {
 		if(triggerEffectMinion.owner==null) return false;//its the minion, not the effect!
 		if(turnEndColor != triggerEffectMinion.owner.position.color) return false; //not your end of turn
 		//we dont have to count, because its always enemys turn, when your minions are buffed!
-		triggerEffectMinion.owner.buffMinionWithoutMessage(-2, 0, 0, b);
+		
 		return true;
-		/*
-		if(triggerEffectMinion.owner.frostbeardCounter == 0)
-		{
-			triggerEffectMinion.owner.buffMinionWithoutMessage(-2, 0, 0, b);
-			return true;//buff is removed, so we return true
-		}
-		else
-		{
-			triggerEffectMinion.owner.frostbeardCounter-=1;
-			return false;
-		}*/
+		
+
     }
 	
 	public Boolean isEffect(Minion m)

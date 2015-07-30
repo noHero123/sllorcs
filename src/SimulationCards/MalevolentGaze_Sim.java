@@ -36,7 +36,13 @@ public class MalevolentGaze_Sim extends Simtemplate {
 	
 	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)
     {
-		triggerEffectMinion.owner.moveChanges+=2;
         return true;//buff is removed, so we return true
+    }
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	m.owner.moveChanges+=2;
+        return;
     }
 }

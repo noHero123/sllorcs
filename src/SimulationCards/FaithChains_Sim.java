@@ -50,5 +50,11 @@ public class FaithChains_Sim extends Simtemplate {
         return;
     }
 	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+        return;
+    }
+	
 	
 }

@@ -56,22 +56,24 @@ public class ReturnToNature_Sim extends Simtemplate {
 	
 	public  Boolean onTurnEndsTrigger(Board b, Minion triggerEffectMinion, UColor turnEndColor)
     {
-		//if()
-		if(triggerEffectMinion.owner.getAc()>=0)
-		{
-			triggerEffectMinion.owner.buffMinionWithoutMessage(0, 0, 1, b);
-		}
         return true;//buff is removed, so we return true
     }
 	
 	public  void onMinionDiedTrigger(Board b, Minion triggerEffectMinion, Minion diedMinion, Minion attacker, AttackType attackType, DamageType dmgtype)
     {
-		//unbuff wolf if a wolf dies
+
 		if(triggerEffectMinion.owner != null && triggerEffectMinion.owner == diedMinion)
 		{
 			b.changeMaxRessource(ResourceName.GROWTH, triggerEffectMinion.position.color, 1);
 		}
 			
+        return;
+    }
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	m.owner.buffMinionWithoutMessage(0, 1, 0, b);
         return;
     }
 	

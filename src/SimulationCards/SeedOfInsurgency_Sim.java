@@ -34,11 +34,23 @@ public class SeedOfInsurgency_Sim extends Simtemplate {
 		if(triggerEffectMinion.owner != null && triggerEffectMinion.owner == diedMinion)
 		{
 			//summon illthorn
-			Minion ill = new Minion(diedMinion.card, -1, diedMinion.position.color);
-			b.summonList.add(b.new SummonItem(ill, diedMinion.position, 1));
+			Minion ill = new Minion(diedMinion.card, triggerEffectMinion.cardID, diedMinion.position.color);
+			boolean issummoned = b.addItemToSummonList(b.new SummonItem(ill, diedMinion.position, 1));
+			
+			if(issummoned)//minion will be summoned!
+			{
+				//make dying minion to token. so it is not added to grave! :D
+				triggerEffectMinion.cardID = -1;
+			}
 			//b.summonUnitOnPosition(new Position(diedMinion.position), ill);
 		}
 			
+        return;
+    }
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
         return;
     }
 	

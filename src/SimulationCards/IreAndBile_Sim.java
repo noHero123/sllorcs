@@ -2,7 +2,9 @@ package SimulationCards;
 
 import java.util.ArrayList;
 
+import BattleStuff.AttackType;
 import BattleStuff.Board;
+import BattleStuff.DamageType;
 import BattleStuff.UColor;
 import BattleStuff.Kind;
 import BattleStuff.Minion;
@@ -42,8 +44,14 @@ public class IreAndBile_Sim extends Simtemplate {
 		//let it end at OPPONENT turn
 		if(turnEndColor== triggerEffectMinion.position.color) return false;
 		
-		triggerEffectMinion.owner.buffMinionWithoutMessage(-1, 0, 0, b);
-		triggerEffectMinion.owner.curse-=1;
         return true;//buff is removed, so we return true
+    }
+	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	m.owner.buffMinionWithoutMessage(-1, 0, 0, b);
+	 	m.owner.curse-=1;
+        return;
     }
 }

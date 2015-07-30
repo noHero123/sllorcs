@@ -25,7 +25,7 @@ public class Overdrive_Sim extends Simtemplate {
 		Minion target = b.getMinionOnPosition(targets.get(0));
 		b.doDmg(target, playedCard, 1, AttackType.UNDEFINED, DamageType.MAGICAL);
 		target.buffMinionWithoutMessage(0, 0, -2, b);//status update is done in add card as enchantment
-		target.addCardAsEnchantment("ENCHANTMENT", "Bear Paw", playedCard.card.cardDescription, playedCard, b);
+		target.addCardAsEnchantment("ENCHANTMENT", "Overdrive", playedCard.card.cardDescription, playedCard, b);
         return;
     }
 	
@@ -38,6 +38,12 @@ public class Overdrive_Sim extends Simtemplate {
 		}
 	}
 	
+	public  void onDeathrattle(Board b, Minion m, Minion attacker, AttackType attacktype, DamageType dmgtype)
+    {
+	 	if(m.owner== null) return;
+	 	
+        return;
+    }
 	
 	
 }

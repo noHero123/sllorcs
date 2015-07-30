@@ -29,7 +29,7 @@ public class AnimaConduit_Sim extends Simtemplate {
 			
 			int random = b.getRandomNumber(0, poses.size()-1);
 			
-			b.summonList.add(b.new SummonItem(ill, poses.get(random)));
+			b.addItemToSummonList(b.new SummonItem(ill, poses.get(random)));
 			b.doDmg(triggerEffectMinion, triggerEffectMinion, 1, AttackType.UNDEFINED, DamageType.SUPERIOR);
 		}
 			

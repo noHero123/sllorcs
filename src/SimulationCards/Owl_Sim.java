@@ -22,6 +22,7 @@ public class Owl_Sim extends Simtemplate {
     {
 		UPosition targ = targets.get(0);
 		
+		triggerEffectMinion.buffMinion(0, 0, 1, b);
 		triggerEffectMinion.movesThisTurn++;
 		b.unitChangesPlace(triggerEffectMinion.position, targ);
 
