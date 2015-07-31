@@ -13,6 +13,15 @@ import BattleStuff.SubType;
 public class UhuLongnose_Sim extends Simtemplate {
 	//"id":363,"name":"Uhu Longnose","description":"When Uhu's Countdown is 0, you may reset its Countdown to increase [current] Energy by the number of Gravelocks you control."
 
+	public  void getBattlecryEffect(Board b, Minion own, Minion target)
+    {
+		for(Minion m : b.getPlayerFieldList(own.position.color))
+		{
+			if(m.typeId == 363) b.destroyMinion(m, own);
+		}
+		
+    }
+	
 	public  void onAbilityIsActivated(Board b, Minion triggerEffectMinion, ArrayList<UPosition> targets )
     {
 		triggerEffectMinion.resetAcWithMessage(b);

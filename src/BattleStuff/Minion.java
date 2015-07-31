@@ -40,7 +40,7 @@ public class Minion {
 	//public int column = -1;// 0-2
 	public int lvl=0;
 	
-	public String bufftype ="";
+	public BuffType bufftype = BuffType.NONE;
 	public String buffDescription ="";
 	public String buffName ="";
 	
@@ -151,7 +151,7 @@ public class Minion {
 		this.typeId = c.typeId;
 		this.buffName="";
 		this.buffDescription="";
-		this.bufftype="";
+		this.bufftype=BuffType.NONE;
 		this.attackType = c.getAttackType();
 		this.subtypes.clear();
 		for(SubType s : c.subtypes)
@@ -197,7 +197,8 @@ public class Minion {
 	
 	public Minion (String type, String name, String description, Card c, UColor ownercolor)
 	{
-		this.bufftype = type;
+		this.bufftype = BuffType.BUFF;
+		if(type.equals("ENCHANTMENT")) this.bufftype = BuffType.ENCHANTMENT;
 		this.buffName = name;
 		this.buffDescription = description;
 		this.card = c;
@@ -238,7 +239,7 @@ public class Minion {
 	
 		this.buffName="";
 		this.buffDescription="";
-		this.bufftype="";
+		this.bufftype=BuffType.NONE;
 		this.attackType = this.card.getAttackType();
 		this.subtypes.clear();
 		for(SubType s : this.card.subtypes)
@@ -492,7 +493,8 @@ public class Minion {
 	public void addCardAsEnchantment(String type, String bname, String description, Minion card, Board b)
 	{
 		card.buffName = bname;
-		card.bufftype =type;
+		card.bufftype =BuffType.BUFF;
+		if(type.equals("ENCHANTMENT")) card.bufftype =BuffType.ENCHANTMENT;
 		card.buffDescription = description;
 		card.attachedCards.clear();
 		card.owner = this;//to know the owner of this card
@@ -691,15 +693,24 @@ public class Minion {
 			newench = true;	
 		}
 		//DO unit got enchanted trigger!
-		for(Minion mnn : b.getAllMinionOfField())
+		if(ench.bufftype == BuffType.ENCHANTMENT)
 		{
-			mnn.card.cardSim.onUnitGotEnchantment(b, mnn, this, newench);
+			//only triggered for 370 and 302 :D
+			for(Minion mnn : b.getAllMinionOfField())
+			{
+				mnn.card.cardSim.onUnitGotEnchantment(b, mnn, this, newench);
+			}
 		}
 	}
 	
 	public void removeEnchantment(Minion e, boolean writeUpdateMessage, Board b)
 	{
 		boolean start = this.hasEnchantment();
+		
+		boolean isEnchantment = false;
+		boolean onWhiteSide = false;
+		if(e.bufftype == BuffType.ENCHANTMENT) isEnchantment=true;
+		if(e.owner.position.color == UColor.white) onWhiteSide = true;
 		
 		this.attachedCards.remove(e);
 		//ArrayList<Minion> temp = new ArrayList<Minion>(this.attachedCards);
@@ -718,14 +729,22 @@ public class Minion {
 		e.owner=null;
 		
 		boolean end = this.hasEnchantment();
-		
-		if(start == false && end == true)
+		boolean isLastOne=false;
+		if(start == true && end == false)
 		{
+			isLastOne=true;
+		}
+		
+		if(isEnchantment)
+		{
+			//only triggered for 370 and 302 :D
 			for(Minion mnn : b.getAllMinionOfField())
 			{
-				mnn.card.cardSim.onUnitLostAllEnchantments(b, mnn, this);
+				mnn.card.cardSim.onUnitLoseEnchantment(b, mnn, this, isLastOne);
 			}
 		}
+		
+		
 		
 	}
 	

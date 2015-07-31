@@ -57,11 +57,14 @@ public class EarthbornMystic_Sim extends Simtemplate {
         return;
     }
     
-    public  void onUnitLostAllEnchantments(Board b, Minion triggerEffectMinion, Minion minion )
+	
+	public  void onUnitLoseEnchantment(Board b, Minion triggerEffectMinion, Minion minion, boolean isLastOne)
     {
-    	if(triggerEffectMinion.position.color != minion.position.color) return;
+		if(triggerEffectMinion.position.color != minion.position.color || !isLastOne) return;
     	minion.buffMinion(-1, 0, 0, b);
         return;
+
     }
+	
     
 }

@@ -869,11 +869,11 @@ public class Board {
 						if(buffs.equals(""))
 						{
 							//BUFF
-							buffs = "{\"name\":\"" + mm.card.cardname +"\",\"description\":\"" + mm.buffDescription + "\",\"type\":\""+m.bufftype+"\"}";
+							buffs = "{\"name\":\"" + mm.card.cardname +"\",\"description\":\"" + mm.buffDescription + "\",\"type\":\""+m.bufftype.toString()+"\"}";
 						}
 						else
 						{
-							buffs += ",{\"name\":\"" + mm.card.cardname +"\",\"description\":\"" + mm.buffDescription + "\",\"type\":\""+m.bufftype+"\"}";
+							buffs += ",{\"name\":\"" + mm.card.cardname +"\",\"description\":\"" + mm.buffDescription + "\",\"type\":\""+m.bufftype.toString()+"\"}";
 						}
 					}
 					
@@ -1185,11 +1185,11 @@ public class Board {
 			if(buffs.equals(""))
 			{
 				//BUFF
-				buffs = "{\"name\":\"" + mm.buffName +"\",\"description\":\"" + mm.buffDescription + "\",\"type\":\""+mm.bufftype+"\"}";
+				buffs = "{\"name\":\"" + mm.buffName +"\",\"description\":\"" + mm.buffDescription + "\",\"type\":\""+mm.bufftype.toString()+"\"}";
 			}
 			else
 			{
-				buffs += ",{\"name\":\"" + mm.buffName +"\",\"description\":\"" + mm.buffDescription + "\",\"type\":\""+mm.bufftype+"\"}";
+				buffs += ",{\"name\":\"" + mm.buffName +"\",\"description\":\"" + mm.buffDescription + "\",\"type\":\""+mm.bufftype.toString()+"\"}";
 			}
 		}
 		

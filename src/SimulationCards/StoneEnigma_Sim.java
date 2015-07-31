@@ -24,7 +24,7 @@ public class StoneEnigma_Sim extends Simtemplate
 	public void onCardPlay(Board b, UColor player , ArrayList<UPosition> targets, Minion playedCard)
     {
 		
-		ArrayList<Minion> rules = new ArrayList<Minion>(b.getPlayerRules(playedCard.position.color));
+		ArrayList<Minion> rules = b.getAllRules();
 		for(Minion rule : rules)
 		{
 			b.ruleCountDown(rule, 1000);

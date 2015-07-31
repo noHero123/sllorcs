@@ -322,7 +322,7 @@ public class Simtemplate {
         return;
     }
     
-    public  void onUnitLostAllEnchantments(Board b, Minion triggerEffectMinion, Minion minion )
+    public  void onUnitLoseEnchantment(Board b, Minion triggerEffectMinion, Minion minion, boolean isLastOne)
     {
         return;
     }
@@ -699,7 +699,7 @@ public class Simtemplate {
     	if(id == 381) return new OumLasaHighGuard_Sim();
     	if(id == 382) return new IrvaVoiceOfTheDead_Sim();
     	if(id == 540) return new OmenOfDamnation_Sim();
-    	
+
     	//energy set 6 :D
     	if(id == 322) return new OculusCannon_Sim();
     	if(id == 339) return new GravelockBurrows_Sim();
@@ -736,6 +736,22 @@ public class Simtemplate {
     	if(id == 541) return new AescalonSpires_Sim();
     	
     	
+    	//growth set 6
+    	if(id == 321) return new Skythorn_Sim();
+    	if(id == 334) return new FjordsOfVigor_Sim();
+    	if(id == 335) return new BuddingRetreat_Sim();
+    	if(id == 336) return new ClandestineOrchard_Sim();
+    	if(id == 348) return new RekindledSpirit_Sim();
+    	if(id == 370) return new VildaTheVerdant_Sim();
+    	if(id == 371) return new Nog_Sim();
+    	if(id == 372) return new EarthbornKeeper_Sim();
+    	if(id == 373) return new GustyIzulr_Sim();
+    	if(id == 374) return new TerreneBrute_Sim();
+    	if(id == 375) return new BuddingVaettr_Sim();
+    	if(id == 376) return new EarthenMirth_Sim();
+    	if(id == 377) return new EarthenMirth_Sim();
+    	if(id == 378) return new NogNest_Sim();
+    	if(id == 542) return new NogNest_Sim();
     	
     	
     	
